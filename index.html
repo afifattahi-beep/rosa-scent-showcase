@@ -26,7 +26,7 @@
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-body { font-family: var(--sans); font-weight: 300; color: var(--ink); background: var(--ivory); line-height: 1.7; overflow-x: hidden; transition: background 0.8s var(--ease); }
+body { font-family: var(--sans); font-weight: 300; color: var(--ink); background: var(--ivory); line-height: 1.7; overflow-x: hidden; transition: background 1s var(--ease); }
 body.locked { overflow: hidden; }
 h1, h2, h3, h4 { font-family: var(--serif); font-weight: 500; }
 a { color: inherit; text-decoration: none; }
@@ -61,32 +61,33 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .hero h1 em { color: var(--rose-gold); font-style: normal; }
 .hero .tagline { font-family: var(--serif); font-style: italic; font-size: clamp(1.3rem, 3vw, 1.9rem); color: var(--ink); margin-bottom: 2.6rem; }
 
-.catalog { background: var(--current-bg, var(--ivory)); transition: background 0.8s var(--ease); perspective: 1200px; overflow: hidden; }
-.stone-wrapper { position: relative; max-width: 900px; margin: 0 auto; padding: 2rem 0; transform-style: preserve-3d; }
-.stone-stage { position: relative; width: 100%; min-height: 560px; display: flex; align-items: center; justify-content: center; transform-style: preserve-3d; }
+/* Expanded Rich Background Colors */
+.catalog { background: var(--current-bg, var(--ivory-deep)); transition: background 1s var(--ease); padding: 7rem 0; overflow: hidden; }
+.stone-wrapper { position: relative; max-width: 900px; margin: 0 auto; padding: 2rem 0; }
+.stone-stage { position: relative; width: 100%; min-height: 560px; display: flex; align-items: center; justify-content: center; }
 
 .stone-card {
   position: absolute;
-  width: 320px;
-  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s;
+  width: 380px;
+  transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1);
   opacity: 0;
-  transform: translate3d(250px, 0, -250px) scale(0.7) rotateY(-25deg);
+  transform: translateX(120%) scale(0.7);
   pointer-events: none;
 }
 .stone-card.active {
   opacity: 1;
-  transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
+  transform: translateX(0) scale(1);
   pointer-events: auto;
   z-index: 10;
 }
 .stone-card.prev {
   opacity: 0.35;
-  transform: translate3d(-240px, 0, -200px) scale(0.75) rotateY(25deg);
+  transform: translateX(-85%) scale(0.8);
   z-index: 5;
 }
 .stone-card.next {
   opacity: 0.35;
-  transform: translate3d(240px, 0, -200px) scale(0.75) rotateY(-25deg);
+  transform: translateX(85%) scale(0.8);
   z-index: 5;
 }
 
@@ -94,7 +95,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   position: relative;
   width: 260px;
   height: 80px;
-  margin: 120px auto 20px;
+  margin: 140px auto 20px;
   background: linear-gradient(135deg, #d3cbbe, #8a8172);
   border-radius: 50%;
   box-shadow: 0 30px 40px rgba(50,40,35,0.35), inset 0 8px 15px rgba(255,255,255,0.6);
@@ -116,37 +117,20 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   bottom: 35px;
   left: 50%;
   transform: translateX(-50%);
-  width: 220px;
-  cursor: grab;
-  user-select: none;
-  touch-action: none;
-  transform-style: preserve-3d;
+  width: 240px;
+  animation: levitate 4s ease-in-out infinite;
 }
-.bottle-holder:active { cursor: grabbing; }
-
-.bottle-3d-box {
-  width: 100%;
-  height: auto;
-  transform-style: preserve-3d;
-  transition: transform 0.1s ease-out;
+@keyframes levitate {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-10px); }
 }
 
-.bottle-3d-box img {
+.bottle-holder img {
   width: 100%;
   height: auto;
   display: block;
-  filter: drop-shadow(0 15px 20px rgba(0,0,0,0.3));
+  filter: drop-shadow(0 20px 25px rgba(0,0,0,0.3));
   border-radius: 16px;
-  pointer-events: none;
-}
-
-.touch-hint {
-  font-size: 0.7rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--burgundy);
-  margin-top: 0.4rem;
-  opacity: 0.7;
 }
 
 .stone-info { background: #fff; border: 1px solid var(--line); text-align: center; padding: 1.8rem; box-shadow: var(--shadow); margin-top: 1rem; }
@@ -217,7 +201,7 @@ footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding
       <span class="eyebrow">The Collection</span>
       <h2>Six Signatures, One Soul</h2>
       <div class="ornament">✦</div>
-      <p>Touch & drag the bottle to rotate in 3D. Click arrows to switch perfumes.</p>
+      <p>Explore our exclusive collection of luxury oil-based fragrances.</p>
     </div>
     <div class="stone-wrapper">
       <button class="carousel-btn prev-btn" id="prevBtn">&#10094;</button>
@@ -297,12 +281,12 @@ footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding
 <script>
 const CURRENCY = '৳';
 const PRODUCTS = [
-  { id:'aurora', name:'Aurora', price:190, bg:'linear-gradient(135deg, #FAF6EF, #FCE8EE)', desc:'Tender rose petals and ripe berries over soft musk.', img: 'public/aurora.jpeg' },
-  { id:'elixir', name:'Elixir', price:190, bg:'linear-gradient(135deg, #FAF6EF, #EBF5EC)', desc:'Verdant potion of crushed leaves, citrus, and white florals.', img: 'public/elixir.jpeg' },
-  { id:'cloud', name:'Cloud', price:190, bg:'linear-gradient(135deg, #FAF6EF, #ECF4FC)', desc:'Clean cotton, powdery iris, and gentle musk.', img: 'public/cloud.jpeg' },
-  { id:'moonlight', name:'Moonlight', price:190, bg:'linear-gradient(135deg, #FAF6EF, #EAEFFC)', desc:'Night-blooming flowers and cool lavender under velvet sky.', img: 'public/moonlight.jpeg' },
-  { id:'white-sand', name:'White Sand', price:190, bg:'linear-gradient(135deg, #FAF6EF, #E6F6F8)', desc:'Salty ocean breeze and coconut blossom over driftwood.', img: 'public/white-sand.jpeg' },
-  { id:'sea-sage', name:'Sea Sage', price:190, bg:'linear-gradient(135deg, #FAF6EF, #EEF5F1)', desc:'Wild coastal sage with sea spray and cedarwood.', img: 'public/sea-sage.jpeg' }
+  { id:'aurora', name:'Aurora', price:190, bg: 'radial-gradient(circle at center, #FCE8EE 0%, #E8C4BC 60%, #D4A39B 100%)', desc:'Tender rose petals and ripe berries over soft musk.', img: 'public/aurora.jpeg' },
+  { id:'elixir', name:'Elixir', price:190, bg: 'radial-gradient(circle at center, #EBF5EC 0%, #C8E6C9 60%, #A5D6A7 100%)', desc:'Verdant potion of crushed leaves, citrus, and white florals.', img: 'public/elixir.jpeg' },
+  { id:'cloud', name:'Cloud', price:190, bg: 'radial-gradient(circle at center, #ECF4FC 0%, #B3E5FC 60%, #81D4FA 100%)', desc:'Clean cotton, powdery iris, and gentle musk.', img: 'public/cloud.jpeg' },
+  { id:'moonlight', name:'Moonlight', price:190, bg: 'radial-gradient(circle at center, #EAEFFC 0%, #C5D3E8 60%, #90CAF9 100%)', desc:'Night-blooming flowers and cool lavender under velvet sky.', img: 'public/moonlight.jpeg' },
+  { id:'white-sand', name:'White Sand', price:190, bg: 'radial-gradient(circle at center, #E6F6F8 0%, #B2DFDB 100%)', desc:'Salty ocean breeze and coconut blossom over driftwood.', img: 'public/white-sand.jpeg' },
+  { id:'sea-sage', name:'Sea Sage', price:190, bg: 'radial-gradient(circle at center, #EEF5F1 0%, #C8E6C9 100%)', desc:'Wild coastal sage with sea spray and cedarwood.', img: 'public/sea-sage.jpeg' }
 ];
 
 let currentIndex = 0;
@@ -310,15 +294,9 @@ let cart = JSON.parse(localStorage.getItem('rosa_cart') || '[]');
 const $ = s => document.querySelector(s);
 const byId = id => PRODUCTS.find(p => p.id === id);
 
-// Touch & Drag 3D Rotation State Variables
-let isDragging = false;
-let startX = 0, startY = 0;
-let rotX = 0, rotY = 0;
-
 function render3DCarousel() {
   const p = PRODUCTS[currentIndex];
   document.documentElement.style.setProperty('--current-bg', p.bg);
-  rotX = 0; rotY = 0; // Reset rotation on slide change
 
   const stage = $('#stoneStage');
   stage.innerHTML = PRODUCTS.map((item, index) => {
@@ -330,66 +308,18 @@ function render3DCarousel() {
       <div class="stone-card ${pos}">
         <div class="pedestal">
           <div class="pedestal-top"></div>
-          <div class="bottle-holder" id="${pos === 'active' ? 'activeHolder' : ''}">
-            <div class="bottle-3d-box" id="${pos === 'active' ? 'activeBox' : ''}">
-              <img src="${item.img}" alt="${item.name} Perfume" onerror="this.src='${item.img.replace('jpeg', 'jpg')}'" />
-            </div>
+          <div class="bottle-holder">
+            <img src="${item.img}" alt="${item.name} Perfume" onerror="this.src='${item.img.replace('jpeg', 'jpg')}'" />
           </div>
         </div>
         <div class="stone-info">
           <h3>${item.name}</h3>
           <p class="notes-preview">${item.desc}</p>
           <div class="price">${CURRENCY}${item.price}</div>
-          <p class="touch-hint">👆 Touch & drag bottle to tilt</p>
           <button class="btn btn-solid btn-block" onclick="addToCart('${item.id}')">Add to Cart</button>
         </div>
       </div>`;
   }).join('');
-
-  setup3DRotation();
-}
-
-function setup3DRotation() {
-  const holder = $('#activeHolder');
-  const box = $('#activeBox');
-  if (!holder || !box) return;
-
-  const handleStart = (e) => {
-    isDragging = true;
-    const pt = e.touches ? e.touches[0] : e;
-    startX = pt.clientX;
-    startY = pt.clientY;
-  };
-
-  const handleMove = (e) => {
-    if (!isDragging) return;
-    const pt = e.touches ? e.touches[0] : e;
-    const deltaX = pt.clientX - startX;
-    const deltaY = pt.clientY - startY;
-
-    rotY += deltaX * 0.4;
-    rotX -= deltaY * 0.4;
-
-    // Limit X rotation so the bottle doesn't turn completely upside down accidentally
-    rotX = Math.max(-45, Math.min(45, rotX));
-
-    box.style.transform = `rotateY(${rotY}deg) rotateX(${rotX}deg)`;
-
-    startX = pt.clientX;
-    startY = pt.clientY;
-  };
-
-  const handleEnd = () => {
-    isDragging = false;
-  };
-
-  holder.addEventListener('mousedown', handleStart);
-  window.addEventListener('mousemove', handleMove);
-  window.addEventListener('mouseup', handleEnd);
-
-  holder.addEventListener('touchstart', handleStart, { passive: true });
-  window.addEventListener('touchmove', handleMove, { passive: true });
-  window.addEventListener('touchend', handleEnd);
 }
 
 $('#nextBtn').onclick = () => { currentIndex = (currentIndex + 1) % PRODUCTS.length; render3DCarousel(); };
