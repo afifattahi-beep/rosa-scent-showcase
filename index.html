@@ -61,7 +61,6 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .hero h1 em { color: var(--rose-gold); font-style: normal; }
 .hero .tagline { font-family: var(--serif); font-style: italic; font-size: clamp(1.3rem, 3vw, 1.9rem); color: var(--ink); margin-bottom: 2.6rem; }
 
-/* Large Full Screen Canvas for Product Themes */
 .catalog { background: var(--current-bg, var(--ivory-deep)); transition: background 1s var(--ease); padding: 6rem 0; overflow: hidden; }
 .stone-wrapper { position: relative; max-width: 900px; margin: 0 auto; padding: 2rem 0; perspective: 1200px; }
 .stone-stage { position: relative; width: 100%; min-height: 560px; display: flex; align-items: center; justify-content: center; }
@@ -95,7 +94,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   position: relative;
   width: 280px;
   height: 85px;
-  margin: 160px auto 20px;
+  margin: 190px auto 20px;
   background: linear-gradient(135deg, #d3cbbe, #8a8172);
   border-radius: 50%;
   box-shadow: 0 30px 40px rgba(50,40,35,0.35), inset 0 8px 15px rgba(255,255,255,0.6);
@@ -112,13 +111,13 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   border: 1px solid rgba(255,255,255,0.6);
 }
 
-/* Independent 3D Spinning Bottle */
+/* Enlarged Bottle Container */
 .bottle-container {
   position: absolute;
-  bottom: 40px;
+  bottom: 30px;
   left: 50%;
-  width: 140px;
-  height: 220px;
+  width: 240px;
+  height: 320px;
   transform: translateX(-50%);
   transform-style: preserve-3d;
   cursor: grab;
@@ -139,7 +138,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   height: 100%;
   object-fit: contain;
   display: block;
-  filter: drop-shadow(0 20px 25px rgba(0,0,0,0.35));
+  filter: drop-shadow(0 25px 30px rgba(0,0,0,0.4));
   pointer-events: none;
 }
 
