@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Rosa Fragrance — The Essence of Elegance</title>
-<meta name="description" content="Rosa Fragrance — luxury oil-based perfumes in 6 ml bottles on 3D stone pedestals. The Essence of Elegance." />
+<meta name="description" content="Rosa Fragrance — luxury oil-based perfumes in 6 ml bottles on 3D stone pedestals." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -115,4 +115,441 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .petal { position: absolute; border-radius: 80% 0 80% 0; background: linear-gradient(135deg, rgba(232,196,188,0.7), rgba(183,110,121,0.25)); animation: float 14s ease-in-out infinite; }
 .petal.p1 { width: 90px; height: 90px; top: 18%; left: 10%; }
 .petal.p2 { width: 60px; height: 60px; bottom: 20%; right: 12%; animation-delay: -4s; transform: rotate(60deg); }
-.petal.p3 { width: 40px; height: 40px; top: 28%; right: 22%; animation-delay: -8
+.petal.p3 { width: 40px; height: 40px; top: 28%; right: 22%; animation-delay: -8s; }
+.petal.p4 { width: 70px; height: 70px; bottom: 14%; left: 24%; animation-delay: -2s; opacity: 0.6; }
+@keyframes float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-24px) rotate(25deg); } }
+
+.hero-inner { position: relative; padding: 6rem 1rem 3rem; }
+.hero h1 { font-size: clamp(3.4rem, 11vw, 8rem); line-height: 1; color: var(--burgundy); font-weight: 400; letter-spacing: 0.06em; }
+.hero h1 em { color: var(--rose-gold); font-style: normal; }
+.hero .tagline { font-family: var(--serif); font-style: italic; font-size: clamp(1.3rem, 3vw, 1.9rem); color: var(--ink); margin-bottom: 2.6rem; }
+
+/* =========================================================
+   3D BOTTLE DRAWING
+   ========================================================= */
+.bottle { --s: 1; position: relative; width: calc(70px * var(--s)); height: calc(150px * var(--s)); margin: auto; filter: drop-shadow(0 18px 18px rgba(0,0,0,0.12)); }
+.bottle .cap { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: calc(30px * var(--s)); height: calc(40px * var(--s)); border-radius: calc(4px * var(--s)) calc(4px * var(--s)) calc(2px * var(--s)) calc(2px * var(--s)); background: linear-gradient(90deg, #8c5a4e, #e9c2b3 35%, #c8907f 60%, #7d4c42); }
+.bottle .neck { position: absolute; left: 50%; top: calc(44px * var(--s)); transform: translateX(-50%); width: calc(18px * var(--s)); height: calc(10px * var(--s)); background: rgba(255,255,255,0.55); border: 1px solid rgba(0,0,0,0.06); }
+.bottle .body { position: absolute; left: 0; right: 0; bottom: 0; height: calc(98px * var(--s)); border-radius: calc(10px * var(--s)); overflow: hidden; background: linear-gradient(160deg, rgba(255,255,255,0.75), rgba(255,255,255,0.25)); border: 1px solid rgba(255,255,255,0.9); }
+.bottle .liquid { position: absolute; left: calc(4px * var(--s)); right: calc(4px * var(--s)); bottom: calc(4px * var(--s)); height: 78%; border-radius: calc(7px * var(--s)); background: linear-gradient(180deg, var(--c), var(--c2)); }
+.bottle .shine { position: absolute; top: calc(8px * var(--s)); left: calc(9px * var(--s)); width: calc(7px * var(--s)); height: 72%; border-radius: 10px; background: linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0)); }
+.bottle .label { position: absolute; left: 50%; top: 52%; transform: translate(-50%,-50%); background: rgba(250,246,239,0.92); padding: calc(4px * var(--s)) calc(6px * var(--s)); text-align: center; border: 1px solid rgba(183,110,121,0.5); min-width: 72%; }
+.bottle .label b { display: block; font-family: var(--serif); font-weight: 600; font-size: calc(9px * var(--s)); letter-spacing: 0.12em; color: var(--burgundy); line-height: 1.1; }
+.bottle .label i { display: block; font-style: normal; font-size: calc(5px * var(--s)); letter-spacing: 0.2em; color: var(--muted); }
+
+/* =========================================================
+   3D STONE CAROUSEL SECTION
+   ========================================================= */
+.catalog { background: linear-gradient(var(--ivory), var(--ivory-deep)); overflow: hidden; }
+.stone-wrapper { position: relative; max-width: 900px; margin: 0 auto; padding: 2rem 0; }
+.stone-stage { position: relative; width: 100%; min-height: 480px; display: flex; align-items: center; justify-content: center; }
+
+.stone-card {
+  position: absolute;
+  width: 320px;
+  transition: all 0.7s var(--ease);
+  opacity: 0;
+  transform: translateX(100%) scale(0.7);
+  pointer-events: none;
+}
+.stone-card.active {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+  pointer-events: auto;
+  z-index: 10;
+}
+.stone-card.prev {
+  opacity: 0.35;
+  transform: translateX(-80%) scale(0.8) rotateY(15deg);
+  z-index: 5;
+}
+.stone-card.next {
+  opacity: 0.35;
+  transform: translateX(80%) scale(0.8) rotateY(-15deg);
+  z-index: 5;
+}
+
+/* Sculpted 3D Stone Pedestal */
+.pedestal {
+  position: relative;
+  width: 220px;
+  height: 60px;
+  margin: 110px auto 30px;
+  background: linear-gradient(135deg, #d3cbbe, #9e9587);
+  border-radius: 50%;
+  box-shadow:
+    0 25px 35px rgba(50, 40, 35, 0.3),
+    inset 0 6px 12px rgba(255, 255, 255, 0.5),
+    inset 0 -8px 16px rgba(0, 0, 0, 0.4);
+}
+.pedestal-top {
+  position: absolute;
+  top: -15px;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background: radial-gradient(ellipse at center, #e8e2d8 0%, #b8af9f 70%, #8a8172 100%);
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.bottle-holder {
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: transform 0.5s var(--ease);
+}
+.stone-card.active .bottle-holder {
+  animation: levitate 4s ease-in-out infinite;
+}
+@keyframes levitate {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-10px); }
+}
+
+.stone-info {
+  background: #fff;
+  border: 1px solid var(--line);
+  text-align: center;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+}
+.stone-info h3 { font-size: 2rem; color: var(--burgundy); }
+.stone-info .price { font-family: var(--serif); font-size: 1.5rem; color: var(--burgundy); margin: 0.4rem 0 1rem; }
+
+/* Arrows & Navigation */
+.carousel-btn {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid var(--burgundy);
+  color: var(--burgundy);
+  font-size: 1.4rem;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  z-index: 20;
+  transition: all 0.3s;
+}
+.carousel-btn:hover { background: var(--burgundy); color: #fff; }
+.carousel-btn.prev-btn { left: 10px; }
+.carousel-btn.next-btn { right: 10px; }
+
+/* =========================================================
+   OVERLAYS, MODAL & CART
+   ========================================================= */
+.overlay { position: fixed; inset: 0; background: rgba(28,23,24,0.45); backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity 0.4s; z-index: 60; }
+.overlay.show { opacity: 1; pointer-events: auto; }
+.close { position: absolute; top: 1rem; right: 1rem; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; font-size: 1.4rem; color: var(--burgundy); }
+
+.modal { position: fixed; left: 50%; top: 50%; transform: translate(-50%,-46%) scale(0.97); width: min(850px, 92vw); max-height: 90vh; overflow: auto; background: var(--ivory); z-index: 70; opacity: 0; pointer-events: none; transition: all 0.45s var(--ease); display: grid; grid-template-columns: 1fr 1.1fr; }
+.modal.show { opacity: 1; pointer-events: auto; transform: translate(-50%,-50%) scale(1); }
+.modal-visual { display: grid; place-items: center; padding: 3rem 1rem; background: radial-gradient(circle at 50% 55%, var(--tint), transparent 70%), var(--tint-soft); }
+.modal-info { padding: 2.5rem 2rem; }
+.modal-info h3 { font-size: 2.5rem; color: var(--burgundy); }
+.modal-info .desc { color: var(--muted); margin: 1rem 0; font-size: 0.9rem; }
+
+.drawer { position: fixed; top: 0; right: 0; height: 100%; width: min(400px, 100vw); background: var(--ivory); z-index: 70; transform: translateX(100%); transition: transform 0.5s var(--ease); display: flex; flex-direction: column; box-shadow: -20px 0 50px -20px rgba(0,0,0,0.25); }
+.drawer.show { transform: none; }
+.drawer-head { padding: 1.6rem; border-bottom: 1px solid var(--line); position: relative; }
+.drawer-items { flex: 1; overflow: auto; padding: 1rem 1.6rem; }
+.drawer-foot { padding: 1.4rem 1.6rem; border-top: 1px solid var(--line); background: #fff; }
+
+/* =========================================================
+   CHECKOUT
+   ========================================================= */
+.checkout { background: var(--ivory-deep); }
+.checkout-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 2.5rem; }
+@media(max-width:850px) { .checkout-grid { grid-template-columns: 1fr; } }
+.panel { background: #fff; border: 1px solid var(--line); padding: 2rem; }
+.field { margin-bottom: 1rem; }
+.field label { display: block; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 500; margin-bottom: 0.4rem; }
+.field input, .field textarea { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--line); background: var(--ivory); font: inherit; font-size: 0.9rem; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.bkash { border: 1px solid var(--rose-gold-light); background: #fff; padding: 1.4rem; margin: 1.2rem 0; }
+.bkash-number { font-family: var(--serif); font-size: 1.6rem; color: var(--burgundy); margin: 0.4rem 0; }
+.summary-item { display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid var(--line); }
+
+/* Footer & Toast */
+footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding: 4rem 0 2rem; }
+.toast { position: fixed; bottom: 1.6rem; left: 50%; transform: translate(-50%,120%); background: var(--ink); color: var(--ivory); padding: 0.8rem 1.5rem; font-size: 0.8rem; z-index: 90; transition: transform 0.4s var(--ease); }
+.toast.show { transform: translate(-50%,0); }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav" id="nav">
+  <div class="container">
+    <a href="#home" class="logo">ROSA <span>Fragrance</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#collection">Collection</a></li>
+      <li><a href="#about">Our Story</a></li>
+      <li><a href="#checkout">Checkout</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="cart-btn" id="cartBtn">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+      <button class="menu-btn" id="menuBtn">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 8h16M4 16h16"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<header class="hero" id="home">
+  <div class="petal p1"></div><div class="petal p2"></div><div class="petal p3"></div><div class="petal p4"></div>
+  <div class="hero-inner">
+    <span class="eyebrow">Maison de Parfum · Oil-based</span>
+    <h1>ROSA <em>Fragrance</em></h1>
+    <div class="ornament">✦</div>
+    <p class="tagline">The Essence of Elegance</p>
+    <a href="#collection" class="btn btn-solid">Shop Now</a>
+  </div>
+</header>
+
+<!-- 3D Stone Pedestal Carousel -->
+<section class="section catalog" id="collection">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">The Collection</span>
+      <h2>Six Signatures, One Soul</h2>
+      <div class="ornament">✦</div>
+      <p>Pure oil-based perfumes resting on sculpted 3D stone pedestals. Click the arrows to explore.</p>
+    </div>
+
+    <div class="stone-wrapper">
+      <button class="carousel-btn prev-btn" id="prevBtn">&#10094;</button>
+      <div class="stone-stage" id="stoneStage">
+        <!-- Rendered by JavaScript -->
+      </div>
+      <button class="carousel-btn next-btn" id="nextBtn">&#10095;</button>
+    </div>
+  </div>
+</section>
+
+<!-- About -->
+<section class="section" id="about" style="text-align:center;">
+  <div class="container" style="max-width:680px;">
+    <span class="eyebrow">Our Story</span>
+    <div class="ornament">❦</div>
+    <blockquote style="font-family:var(--serif);font-size:1.6rem;font-style:italic;">
+      “Rosa was born from a single rose — its quiet strength, its tender bloom, its scent that lingers long after it is gone.”
+    </blockquote>
+  </div>
+</section>
+
+<!-- Checkout -->
+<section class="section checkout" id="checkout">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Checkout</span>
+      <h2>Complete Your Order</h2>
+      <div class="ornament">✦</div>
+    </div>
+
+    <div class="checkout-grid" id="checkoutWrap">
+      <form class="panel" id="checkoutForm">
+        <h3>Delivery Details</h3>
+        <div class="two">
+          <div class="field"><label>Full Name *</label><input id="fName" required /></div>
+          <div class="field"><label>Phone Number *</label><input id="fPhone" type="tel" required placeholder="01XXXXXXXXX" /></div>
+        </div>
+        <div class="field"><label>Delivery Address *</label><textarea id="fAddress" required></textarea></div>
+
+        <div class="bkash">
+          <h4>bKash Payment</h4>
+          <div class="bkash-number">01632-319773</div>
+          <p style="font-size:0.8rem;color:var(--muted)">Send money to the number above and enter your details below:</p>
+        </div>
+        <div class="two">
+          <div class="field"><label>Your bKash Number *</label><input id="fSender" type="tel" required /></div>
+          <div class="field"><label>Transaction ID (TrxID) *</label><input id="fTrx" required /></div>
+        </div>
+        <button type="submit" class="btn btn-solid btn-block">Place Order</button>
+      </form>
+
+      <aside class="panel">
+        <h3>Order Summary</h3>
+        <div id="summaryItems"></div>
+        <div style="display:flex;justify-content:space-between;margin-top:1rem;">
+          <span>Total</span><strong id="summaryTotal" style="font-family:var(--serif);font-size:1.5rem;color:var(--burgundy)">৳0</strong>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- Overlays -->
+<div class="overlay" id="overlay"></div>
+
+<!-- Modal -->
+<div class="modal" id="modal">
+  <button class="close" data-close>&times;</button>
+  <div class="modal-visual" id="mVisual"></div>
+  <div class="modal-info">
+    <h3 id="mName"></h3>
+    <p class="price" id="mPrice" style="font-family:var(--serif);color:var(--burgundy);font-size:1.4rem"></p>
+    <p class="desc" id="mDesc"></p>
+    <button class="btn btn-solid btn-block" id="mAdd">Add to Cart</button>
+  </div>
+</div>
+
+<!-- Cart Drawer -->
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <h3>Shopping Bag</h3>
+    <button class="close" data-close>&times;</button>
+  </div>
+  <div class="drawer-items" id="drawerItems"></div>
+  <div class="drawer-foot">
+    <div style="display:flex;justify-content:space-between;margin-bottom:1rem;">
+      <span>Subtotal</span><strong id="subtotal" style="font-family:var(--serif);font-size:1.5rem;color:var(--burgundy)">৳0</strong>
+    </div>
+    <a href="#checkout" class="btn btn-solid btn-block" onclick="closeDrawer()">Checkout</a>
+  </div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const CURRENCY = '৳';
+const PRODUCTS = [
+  { id:'aurora', name:'Aurora', price:190, c:'#F7B6C8', c2:'#E77FA0', desc:'Tender rose petals and ripe berries over soft musk.' },
+  { id:'elixir', name:'Elixir', price:190, c:'#A8D8A0', c2:'#6FB866', desc:'Verdant potion of crushed leaves, citrus, and white florals.' },
+  { id:'cloud', name:'Cloud', price:190, c:'#CFE6F7', c2:'#9FCBEA', desc:'Clean cotton, powdery iris, and gentle musk.' },
+  { id:'moonlight', name:'Moonlight', price:190, c:'#6F8FD8', c2:'#3A55A8', desc:'Night-blooming flowers and cool lavender under velvet sky.' },
+  { id:'white-sand', name:'White Sand', price:190, c:'#5EC4D6', c2:'#1F8FAE', desc:'Salty ocean breeze and coconut blossom over driftwood.' },
+  { id:'sea-sage', name:'Sea Sage', price:190, c:'#7FB59A', c2:'#3F7D60', desc:'Wild coastal sage with sea spray and cedarwood.' }
+];
+
+let currentIndex = 0;
+let cart = JSON.parse(localStorage.getItem('rosa_cart') || '[]');
+
+const $ = s => document.querySelector(s);
+const byId = id => PRODUCTS.find(p => p.id === id);
+
+function bottleHTML(p, s = 1) {
+  return `<div class="bottle" style="--s:${s};--c:${p.c};--c2:${p.c2}">
+    <div class="cap"></div><div class="neck"></div>
+    <div class="body"><div class="liquid"></div><div class="shine"></div>
+      <div class="label"><b>ROSA</b><i>${p.name.toUpperCase()}</i></div></div>
+  </div>`;
+}
+
+function render3DCarousel() {
+  const stage = $('#stoneStage');
+  stage.innerHTML = PRODUCTS.map((p, index) => {
+    let positionClass = '';
+    if (index === currentIndex) positionClass = 'active';
+    else if (index === (currentIndex - 1 + PRODUCTS.length) % PRODUCTS.length) positionClass = 'prev';
+    else if (index === (currentIndex + 1) % PRODUCTS.length) positionClass = 'next';
+
+    return `
+      <div class="stone-card ${positionClass}">
+        <div class="pedestal" onclick="openModal('${p.id}')" style="cursor:pointer;">
+          <div class="pedestal-top"></div>
+          <div class="bottle-holder">
+            ${bottleHTML(p, 1.1)}
+          </div>
+        </div>
+        <div class="stone-info">
+          <h3>${p.name}</h3>
+          <div class="price">${CURRENCY}${p.price}</div>
+          <button class="btn btn-solid btn-block" onclick="addToCart('${p.id}')">Add to Cart</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+$('#nextBtn').onclick = () => { currentIndex = (currentIndex + 1) % PRODUCTS.length; render3DCarousel(); };
+$('#prevBtn').onclick = () => { currentIndex = (currentIndex - 1 + PRODUCTS.length) % PRODUCTS.length; render3DCarousel(); };
+
+function saveCart() {
+  localStorage.setItem('rosa_cart', JSON.stringify(cart));
+  updateCartUI();
+}
+
+function updateCartUI() {
+  $('#cartCount').textContent = cart.reduce((s, i) => s + i.qty, 0);
+  const total = cart.reduce((s, i) => s + byId(i.id).price * i.qty, 0);
+  $('#subtotal').textContent = CURRENCY + total;
+  $('#summaryTotal').textContent = CURRENCY + total;
+
+  $('#drawerItems').innerHTML = cart.map(i => {
+    const p = byId(i.id);
+    return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <div><h4>${p.name}</h4><small>${i.qty} x ${CURRENCY}${p.price}</small></div>
+      <button onclick="removeItem('${p.id}')" style="color:red;font-size:0.8rem;">Remove</button>
+    </div>`;
+  }).join('');
+
+  $('#summaryItems').innerHTML = cart.map(i => {
+    const p = byId(i.id);
+    return `<div class="summary-item"><span>${p.name} x ${i.qty}</span><strong>${CURRENCY}${p.price * i.qty}</strong></div>`;
+  }).join('');
+}
+
+function addToCart(id) {
+  const item = cart.find(i => i.id === id);
+  if (item) item.qty++;
+  else cart.push({ id, qty: 1 });
+  saveCart();
+  showToast('Added to bag');
+  openDrawer();
+}
+
+function removeItem(id) {
+  cart = cart.filter(i => i.id !== id);
+  saveCart();
+}
+
+function showToast(msg) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function openModal(id) {
+  const p = byId(id);
+  $('#mName').textContent = p.name;
+  $('#mPrice').textContent = CURRENCY + p.price;
+  $('#mDesc').textContent = p.desc;
+  $('#mVisual').innerHTML = bottleHTML(p, 1.3);
+  $('#mAdd').onclick = () => { addToCart(p.id); closeModal(); };
+  $('#modal').classList.add('show');
+  $('#overlay').classList.add('show');
+}
+
+function closeModal() { $('#modal').classList.remove('show'); $('#overlay').classList.remove('show'); }
+function openDrawer() { $('#drawer').classList.add('show'); $('#overlay').classList.add('show'); }
+function closeDrawer() { $('#drawer').classList.remove('show'); $('#overlay').classList.remove('show'); }
+
+$('#cartBtn').onclick = openDrawer;
+document.querySelectorAll('[data-close]').forEach(b => b.onclick = () => { closeModal(); closeDrawer(); });
+$('#overlay').onclick = () => { closeModal(); closeDrawer(); };
+
+$('#checkoutForm').onsubmit = e => {
+  e.preventDefault();
+  if (!cart.length) return alert('Your cart is empty');
+  $('#checkoutWrap').innerHTML = `<div class="panel" style="text-align:center;grid-column:1/-1;"><h3>Order Placed!</h3><p>We will call you shortly to confirm delivery.</p></div>`;
+  cart = [];
+  saveCart();
+};
+
+render3DCarousel();
+updateCartUI();
+</script>
+</body>
+</html>
