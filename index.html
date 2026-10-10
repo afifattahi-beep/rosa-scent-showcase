@@ -111,7 +111,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   border: 1px solid rgba(255,255,255,0.6);
 }
 
-/* Pristine Upright Bottle Container */
+/* Interactive Floating Bottle Container with Smooth Motion */
 .bottle-container {
   position: absolute;
   bottom: 25px;
@@ -119,10 +119,11 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   width: 240px;
   height: 320px;
   transform: translateX(-50%);
-  transition: transform 0.4s var(--ease);
+  transition: transform 0.5s var(--ease);
+  cursor: pointer;
 }
 .bottle-container:hover {
-  transform: translateX(-50%) scale(1.05);
+  transform: translateX(-50%) translateY(-10px) scale(1.06);
 }
 
 .bottle-container img {
@@ -130,7 +131,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   height: 100%;
   object-fit: contain;
   display: block;
-  filter: drop-shadow(0 25px 30px rgba(0,0,0,0.35));
+  filter: drop-shadow(0 30px 35px rgba(0,0,0,0.4));
   pointer-events: none;
 }
 
@@ -171,7 +172,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .field input, .field textarea { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--line); background: var(--ivory); font: inherit; }
 .two { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .bkash { border: 1px solid var(--rose-gold-light); background: #fff; padding: 1.4rem; margin: 1.2rem 0; }
-.bkash-number { font-family: var(--serif); font-size: 1.6rem; color: var(--burgundy); margin: 0.4rem 0; }
+.bkash-number { font-family: varserif; font-size: 1.6rem; color: var(--burgundy); margin: 0.4rem 0; }
 footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding: 4rem 0 2rem; text-align: center; font-size: 0.8rem; }
 .toast { position: fixed; bottom: 1.6rem; left: 50%; transform: translate(-50%,120%); background: var(--ink); color: var(--ivory); padding: 0.8rem 1.5rem; font-size: 0.8rem; z-index: 90; transition: transform 0.4s; }
 .toast.show { transform: translate(-50%,0); }
@@ -212,7 +213,7 @@ footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding
       <span class="eyebrow">The Collection</span>
       <h2>Six Signatures, One Soul</h2>
       <div class="ornament">✦</div>
-      <p>Explore our luxury oil-based fragrances on stone pedestals.</p>
+      <p>Hover or touch the bottle to see it float gracefully on the pedestal.</p>
     </div>
     <div class="stone-wrapper">
       <button class="carousel-btn prev-btn" id="prevBtn">&#10094;</button>
@@ -326,7 +327,7 @@ function render3DCarousel() {
           <h3>${item.name}</h3>
           <p class="notes-preview">${item.desc}</p>
           <div class="price">${CURRENCY}${item.price}</div>
-          <p class="touch-hint">✦ Luxury Oil-Based Fragrance</p>
+          <p class="touch-hint">✨ Luxury Oil-Based Fragrance</p>
           <button class="btn btn-solid btn-block" onclick="addToCart('${item.id}')">Add to Cart</button>
         </div>
       </div>`;
