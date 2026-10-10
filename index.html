@@ -67,7 +67,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 
 .stone-card {
   position: absolute;
-  width: 380px;
+  width: 400px;
   transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1);
   opacity: 0;
   transform: translateX(120%) scale(0.7);
@@ -92,9 +92,9 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 
 .pedestal {
   position: relative;
-  width: 280px;
-  height: 85px;
-  margin: 190px auto 20px;
+  width: 300px;
+  height: 90px;
+  margin: 180px auto 20px;
   background: linear-gradient(135deg, #d3cbbe, #8a8172);
   border-radius: 50%;
   box-shadow: 0 30px 40px rgba(50,40,35,0.35), inset 0 8px 15px rgba(255,255,255,0.6);
@@ -105,19 +105,19 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   top: -20px;
   left: 0;
   right: 0;
-  height: 60px;
+  height: 65px;
   background: radial-gradient(ellipse at center, #f4eee3 0%, #c4bba9 70%, #948b7c 100%);
   border-radius: 50%;
   border: 1px solid rgba(255,255,255,0.6);
 }
 
-/* 3D Volumetric Extruded Bottle Container */
+/* Perfect 3D Interactive Display */
 .bottle-container {
   position: absolute;
-  bottom: 30px;
+  bottom: 25px;
   left: 50%;
-  width: 240px;
-  height: 320px;
+  width: 280px;
+  height: 340px;
   transform: translateX(-50%);
   transform-style: preserve-3d;
   cursor: grab;
@@ -130,23 +130,18 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   width: 100%;
   height: 100%;
   transform-style: preserve-3d;
-  transition: transform 0.05s ease-out;
+  transition: transform 0.1s ease-out;
 }
 
-/* Multi-layered 3D volume stack */
-.bottle-layer {
-  position: absolute;
-  inset: 0;
+.spinning-bottle img {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 25px 30px rgba(0,0,0,0.35));
+  border-radius: 12px;
   pointer-events: none;
 }
-.bottle-layer:nth-child(1) { transform: translateZ(0px); }
-.bottle-layer:nth-child(2) { transform: translateZ(2px); filter: brightness(0.95); }
-.bottle-layer:nth-child(3) { transform: translateZ(4px); filter: brightness(0.9); }
-.bottle-layer:nth-child(4) { transform: translateZ(6px); filter: brightness(0.85); }
-.bottle-layer:nth-child(5) { transform: translateZ(8px); filter: brightness(0.8); }
 
 .touch-hint {
   font-size: 0.7rem;
@@ -226,7 +221,7 @@ footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding
       <span class="eyebrow">The Collection</span>
       <h2>Six Signatures, One Soul</h2>
       <div class="ornament">✦</div>
-      <p>Touch and drag the bottle to rotate and tilt it in 3D volume.</p>
+      <p>Touch and drag to tilt and rotate the perfume display smoothly.</p>
     </div>
     <div class="stone-wrapper">
       <button class="carousel-btn prev-btn" id="prevBtn">&#10094;</button>
@@ -336,11 +331,7 @@ function render3DCarousel() {
           <div class="pedestal-top"></div>
           <div class="bottle-container" id="${pos === 'active' ? 'activeBottle' : ''}">
             <div class="spinning-bottle" id="${pos === 'active' ? 'spinningBox' : ''}">
-              <img class="bottle-layer" src="${item.img}" alt="${item.name}" onerror="this.src='${item.img.replace('.png', '.jpeg')}'" />
-              <img class="bottle-layer" src="${item.img}" alt="${item.name}" />
-              <img class="bottle-layer" src="${item.img}" alt="${item.name}" />
-              <img class="bottle-layer" src="${item.img}" alt="${item.name}" />
-              <img class="bottle-layer" src="${item.img}" alt="${item.name}" />
+              <img src="${item.img}" alt="${item.name}" onerror="this.src='${item.img.replace('.png', '.jpeg')}'" />
             </div>
           </div>
         </div>
@@ -348,7 +339,7 @@ function render3DCarousel() {
           <h3>${item.name}</h3>
           <p class="notes-preview">${item.desc}</p>
           <div class="price">${CURRENCY}${item.price}</div>
-          <p class="touch-hint">👆 Drag to rotate 3D volume block</p>
+          <p class="touch-hint">👆 Touch & drag to tilt smoothly</p>
           <button class="btn btn-solid btn-block" onclick="addToCart('${item.id}')">Add to Cart</button>
         </div>
       </div>`;
@@ -375,8 +366,12 @@ function setupBottleSpinning() {
     const deltaX = pt.clientX - startX;
     const deltaY = pt.clientY - startY;
 
-    rotY += deltaX * 0.8;
-    rotX -= deltaY * 0.8;
+    rotY += deltaX * 0.6;
+    rotX -= deltaY * 0.6;
+
+    // Soft tilt range so it looks clean and natural
+    rotX = Math.max(-45, Math.min(45, rotX));
+    rotY = Math.max(-45, Math.min(45, rotY));
 
     box.style.transform = `rotateY(${rotY}deg) rotateX(${rotX}deg)`;
     startX = pt.clientX;
