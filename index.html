@@ -111,7 +111,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   border: 1px solid rgba(255,255,255,0.6);
 }
 
-/* Enlarged Bottle Container */
+/* 3D Interactive Bottle Container */
 .bottle-container {
   position: absolute;
   bottom: 30px;
@@ -130,7 +130,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   width: 100%;
   height: 100%;
   transform-style: preserve-3d;
-  transition: transform 0.05s linear;
+  transition: transform 0.05s ease-out;
 }
 
 .spinning-bottle img {
@@ -138,7 +138,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   height: 100%;
   object-fit: contain;
   display: block;
-  filter: drop-shadow(0 25px 30px rgba(0,0,0,0.4));
+  filter: drop-shadow(0 30px 35px rgba(0,0,0,0.45));
   pointer-events: none;
 }
 
@@ -220,7 +220,7 @@ footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding
       <span class="eyebrow">The Collection</span>
       <h2>Six Signatures, One Soul</h2>
       <div class="ornament">✦</div>
-      <p>Touch and drag the perfume bottle to spin it 360° independently.</p>
+      <p>Touch and drag the bottle in any direction to tilt and rotate it freely.</p>
     </div>
     <div class="stone-wrapper">
       <button class="carousel-btn prev-btn" id="prevBtn">&#10094;</button>
@@ -311,12 +311,12 @@ const PRODUCTS = [
 let currentIndex = 0;
 let cart = JSON.parse(localStorage.getItem('rosa_cart') || '[]');
 const $ = s => document.querySelector(s);
-let rotY = 0, isDragging = false, startX = 0;
+let rotY = 0, rotX = 0, isDragging = false, startX = 0, startY = 0;
 
 function render3DCarousel() {
   const p = PRODUCTS[currentIndex];
   document.documentElement.style.setProperty('--current-bg', p.bg);
-  rotY = 0;
+  rotY = 0; rotX = 0;
 
   const stage = $('#stoneStage');
   stage.innerHTML = PRODUCTS.map((item, index) => {
@@ -338,7 +338,7 @@ function render3DCarousel() {
           <h3>${item.name}</h3>
           <p class="notes-preview">${item.desc}</p>
           <div class="price">${CURRENCY}${item.price}</div>
-          <p class="touch-hint">👆 Swipe bottle left/right to spin</p>
+          <p class="touch-hint">👆 Drag in any direction to tilt/spin</p>
           <button class="btn btn-solid btn-block" onclick="addToCart('${item.id}')">Add to Cart</button>
         </div>
       </div>`;
@@ -356,15 +356,21 @@ function setupBottleSpinning() {
     isDragging = true;
     const pt = e.touches ? e.touches[0] : e;
     startX = pt.clientX;
+    startY = pt.clientY;
   };
 
   const onMove = (e) => {
     if (!isDragging) return;
     const pt = e.touches ? e.touches[0] : e;
     const deltaX = pt.clientX - startX;
+    const deltaY = pt.clientY - startY;
+
     rotY += deltaX * 0.8;
-    box.style.transform = `rotateY(${rotY}deg)`;
+    rotX -= deltaY * 0.8;
+
+    box.style.transform = `rotateY(${rotY}deg) rotateX(${rotX}deg)`;
     startX = pt.clientX;
+    startY = pt.clientY;
   };
 
   const onEnd = () => { isDragging = false; };
