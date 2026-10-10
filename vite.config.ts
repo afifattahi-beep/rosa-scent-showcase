@@ -1,17 +1,10 @@
-import { defineConfig } from '@tanstack/start/config'
+import { defineConfig } from 'vite'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
-  vite: {
-    plugins: [
-      viteTsConfigPaths({
-        projects: ['./tsconfig.json'],
-      }),
-      tailwindcss(),
-    ],
-  },
-  server: {
-    entry: 'server',
-  },
+  plugins: [
+    viteTsConfigPaths(),
+    tailwindcss(),
+  ],
 })
