@@ -26,7 +26,7 @@
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-body { font-family: var(--sans); font-weight: 300; color: var(--ink); background: var(--ivory); line-height: 1.7; overflow-x: hidden; }
+body { font-family: var(--sans); font-weight: 300; color: var(--ink); background: var(--ivory); line-height: 1.7; overflow-x: hidden; transition: background 0.8s var(--ease); }
 body.locked { overflow: hidden; }
 h1, h2, h3, h4 { font-family: var(--serif); font-weight: 500; }
 a { color: inherit; text-decoration: none; }
@@ -44,6 +44,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .section { padding: 6rem 0; }
 .section-head { text-align: center; max-width: 620px; margin: 0 auto 3rem; }
 .section-head h2 { font-size: clamp(2.2rem, 5vw, 3.2rem); color: var(--burgundy); line-height: 1.15; margin-top: 0.6rem; }
+
 .nav { position: fixed; inset: 0 0 auto; z-index: 50; transition: all 0.4s var(--ease); padding: 1.4rem 0; background: rgba(250,246,239,0.92); backdrop-filter: blur(10px); box-shadow: 0 1px 0 var(--line); }
 .nav .container { display: flex; align-items: center; justify-content: space-between; }
 .logo { font-family: var(--serif); font-size: 1.6rem; letter-spacing: 0.12em; color: var(--burgundy); font-weight: 600; }
@@ -53,12 +54,14 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .nav-actions { display: flex; align-items: center; gap: 0.6rem; }
 .cart-btn { position: relative; padding: 0.4rem; color: var(--burgundy); }
 .cart-count { position: absolute; top: -2px; right: -4px; background: var(--rose-gold); color: #fff; font-size: 0.62rem; font-weight: 600; min-width: 18px; height: 18px; border-radius: 9px; display: grid; place-items: center; padding: 0 4px; }
+
 .hero { min-height: 100vh; display: grid; place-items: center; text-align: center; position: relative; overflow: hidden; background: radial-gradient(ellipse 60% 50% at 20% 30%, rgba(232,196,188,0.55), transparent 70%), var(--ivory); }
 .hero-inner { position: relative; padding: 6rem 1rem 3rem; }
 .hero h1 { font-size: clamp(3.4rem, 11vw, 8rem); line-height: 1; color: var(--burgundy); font-weight: 400; letter-spacing: 0.06em; }
 .hero h1 em { color: var(--rose-gold); font-style: normal; }
 .hero .tagline { font-family: var(--serif); font-style: italic; font-size: clamp(1.3rem, 3vw, 1.9rem); color: var(--ink); margin-bottom: 2.6rem; }
-.bottle { --s: 1; position: relative; width: calc(70px * var(--s)); height: calc(150px * var(--s)); margin: auto; filter: drop-shadow(0 18px 18px rgba(0,0,0,0.12)); }
+
+.bottle { --s: 1; position: relative; width: calc(70px * var(--s)); height: calc(150px * var(--s)); margin: auto; filter: drop-shadow(0 18px 18px rgba(0,0,0,0.15)); }
 .bottle .cap { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: calc(30px * var(--s)); height: calc(40px * var(--s)); border-radius: 4px; background: linear-gradient(90deg, #8c5a4e, #e9c2b3 35%, #c8907f 60%, #7d4c42); }
 .bottle .neck { position: absolute; left: 50%; top: calc(44px * var(--s)); transform: translateX(-50%); width: calc(18px * var(--s)); height: calc(10px * var(--s)); background: rgba(255,255,255,0.55); border: 1px solid rgba(0,0,0,0.06); }
 .bottle .body { position: absolute; left: 0; right: 0; bottom: 0; height: calc(98px * var(--s)); border-radius: 10px; overflow: hidden; background: linear-gradient(160deg, rgba(255,255,255,0.75), rgba(255,255,255,0.25)); border: 1px solid rgba(255,255,255,0.9); }
@@ -67,22 +70,81 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .bottle .label { position: absolute; left: 50%; top: 52%; transform: translate(-50%,-50%); background: rgba(250,246,239,0.92); padding: 4px 6px; text-align: center; border: 1px solid rgba(183,110,121,0.5); min-width: 72%; }
 .bottle .label b { display: block; font-family: var(--serif); font-weight: 600; font-size: 9px; letter-spacing: 0.12em; color: var(--burgundy); }
 .bottle .label i { display: block; font-style: normal; font-size: 5px; letter-spacing: 0.2em; color: var(--muted); }
-.catalog { background: linear-gradient(var(--ivory), var(--ivory-deep)); overflow: hidden; }
-.stone-wrapper { position: relative; max-width: 900px; margin: 0 auto; padding: 2rem 0; }
-.stone-stage { position: relative; width: 100%; min-height: 480px; display: flex; align-items: center; justify-content: center; }
-.stone-card { position: absolute; width: 320px; transition: all 0.7s var(--ease); opacity: 0; transform: translateX(100%) scale(0.7); pointer-events: none; }
-.stone-card.active { opacity: 1; transform: translateX(0) scale(1); pointer-events: auto; z-index: 10; }
-.stone-card.prev { opacity: 0.35; transform: translateX(-80%) scale(0.8); z-index: 5; }
-.stone-card.next { opacity: 0.35; transform: translateX(80%) scale(0.8); z-index: 5; }
-.pedestal { position: relative; width: 220px; height: 60px; margin: 110px auto 30px; background: linear-gradient(135deg, #d3cbbe, #9e9587); border-radius: 50%; box-shadow: 0 25px 35px rgba(50,40,35,0.3), inset 0 6px 12px rgba(255,255,255,0.5); }
-.pedestal-top { position: absolute; top: -15px; left: 0; right: 0; height: 50px; background: radial-gradient(ellipse at center, #e8e2d8 0%, #b8af9f 70%, #8a8172 100%); border-radius: 50%; }
-.bottle-holder { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); }
-.stone-info { background: #fff; border: 1px solid var(--line); text-align: center; padding: 1.5rem; box-shadow: var(--shadow); }
-.stone-info h3 { font-size: 2rem; color: var(--burgundy); }
-.stone-info .price { font-family: var(--serif); font-size: 1.5rem; color: var(--burgundy); margin: 0.4rem 0 1rem; }
-.carousel-btn { position: absolute; top: 40%; transform: translateY(-50%); width: 50px; height: 50px; border-radius: 50%; background: #fff; border: 1.5px solid var(--burgundy); color: var(--burgundy); font-size: 1.4rem; display: grid; place-items: center; z-index: 20; }
-.carousel-btn.prev-btn { left: 10px; }
-.carousel-btn.next-btn { right: 10px; }
+
+/* True 3D Stone Carousel with Perspective */
+.catalog { background: var(--current-bg, var(--ivory)); transition: background 0.8s var(--ease); perspective: 1400px; overflow: hidden; }
+.stone-wrapper { position: relative; max-width: 700px; margin: 0 auto; padding: 2rem 0; transform-style: preserve-3d; }
+.stone-stage { position: relative; width: 100%; min-height: 520px; display: flex; align-items: center; justify-content: center; transform-style: preserve-3d; }
+
+.stone-card {
+  position: absolute;
+  width: 340px;
+  transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+  opacity: 0;
+  transform: translate3d(250px, 0, -250px) scale(0.7) rotateY(-25deg);
+  pointer-events: none;
+}
+.stone-card.active {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
+  pointer-events: auto;
+  z-index: 10;
+}
+.stone-card.prev {
+  opacity: 0.4;
+  transform: translate3d(-260px, 0, -200px) scale(0.8) rotateY(25deg);
+  z-index: 5;
+}
+.stone-card.next {
+  opacity: 0.4;
+  transform: translate3d(260px, 0, -200px) scale(0.8) rotateY(-25deg);
+  z-index: 5;
+}
+
+/* Sculpted 3D Stone Pedestal */
+.pedestal {
+  position: relative;
+  width: 240px;
+  height: 70px;
+  margin: 130px auto 30px;
+  background: linear-gradient(135deg, #d3cbbe, #8a8172);
+  border-radius: 50%;
+  box-shadow: 0 30px 40px rgba(50,40,35,0.35), inset 0 8px 15px rgba(255,255,255,0.6);
+  transform: rotateX(15deg);
+}
+.pedestal-top {
+  position: absolute;
+  top: -18px;
+  left: 0;
+  right: 0;
+  height: 55px;
+  background: radial-gradient(ellipse at center, #f4eee3 0%, #c4bba9 70%, #948b7c 100%);
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.6);
+}
+
+.bottle-holder {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: levitate 4s ease-in-out infinite;
+}
+@keyframes levitate {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-12px); }
+}
+
+.stone-info { background: #fff; border: 1px solid var(--line); text-align: center; padding: 1.8rem; box-shadow: var(--shadow); }
+.stone-info h3 { font-size: 2.2rem; color: var(--burgundy); }
+.stone-info .price { font-family: var(--serif); font-size: 1.6rem; color: var(--burgundy); margin: 0.4rem 0 1rem; }
+.stone-info p.notes-preview { font-size: 0.85rem; color: var(--muted); margin-bottom: 1rem; font-style: italic; }
+
+.carousel-btn { position: absolute; top: 45%; transform: translateY(-50%); width: 54px; height: 54px; border-radius: 50%; background: #fff; border: 1.5px solid var(--burgundy); color: var(--burgundy); font-size: 1.4rem; display: grid; place-items: center; z-index: 20; box-shadow: 0 10px 25px rgba(0,0,0,0.15); transition: all 0.3s; }
+.carousel-btn:hover { background: var(--burgundy); color: #fff; transform: translateY(-50%) scale(1.08); }
+.carousel-btn.prev-btn { left: -10px; }
+.carousel-btn.next-btn { right: -10px; }
+
 .overlay { position: fixed; inset: 0; background: rgba(28,23,24,0.45); backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity 0.4s; z-index: 60; }
 .overlay.show { opacity: 1; pointer-events: auto; }
 .drawer { position: fixed; top: 0; right: 0; height: 100%; width: min(400px, 100vw); background: var(--ivory); z-index: 70; transform: translateX(100%); transition: transform 0.5s var(--ease); display: flex; flex-direction: column; box-shadow: -20px 0 50px -20px rgba(0,0,0,0.25); }
@@ -90,6 +152,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .drawer-head { padding: 1.6rem; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
 .drawer-items { flex: 1; overflow: auto; padding: 1rem 1.6rem; }
 .drawer-foot { padding: 1.4rem 1.6rem; border-top: 1px solid var(--line); background: #fff; }
+
 .checkout { background: var(--ivory-deep); }
 .checkout-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 2.5rem; }
 @media(max-width:850px) { .checkout-grid { grid-template-columns: 1fr; } }
@@ -220,12 +283,12 @@ footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding
 <script>
 const CURRENCY = '৳';
 const PRODUCTS = [
-  { id:'aurora', name:'Aurora', price:190, c:'#F7B6C8', c2:'#E77FA0' },
-  { id:'elixir', name:'Elixir', price:190, c:'#A8D8A0', c2:'#6FB866' },
-  { id:'cloud', name:'Cloud', price:190, c:'#CFE6F7', c2:'#9FCBEA' },
-  { id:'moonlight', name:'Moonlight', price:190, c:'#6F8FD8', c2:'#3A55A8' },
-  { id:'white-sand', name:'White Sand', price:190, c:'#5EC4D6', c2:'#1F8FAE' },
-  { id:'sea-sage', name:'Sea Sage', price:190, c:'#7FB59A', c2:'#3F7D60' }
+  { id:'aurora', name:'Aurora', price:190, c:'#F7B6C8', c2:'#E77FA0', bg:'linear-gradient(135deg, #FAF6EF, #FCE8EE)', desc:'A blush of first light — tender rose petals and ripe berries unfold over a soft, glowing musk.' },
+  { id:'elixir', name:'Elixir', price:190, c:'#A8D8A0', c2:'#6FB866', bg:'linear-gradient(135deg, #FAF6EF, #EBF5EC)', desc:'A verdant potion of crushed leaves and dewy stems, brightened with citrus and white florals.' },
+  { id:'cloud', name:'Cloud', price:190, c:'#CFE6F7', c2:'#9FCBEA', bg:'linear-gradient(135deg, #FAF6EF, #ECF4FC)', desc:'Weightless and airy, like silk drifting through a morning sky — clean cotton and powdery iris.' },
+  { id:'moonlight', name:'Moonlight', price:190, c:'#6F8FD8', c2:'#3A55A8', bg:'linear-gradient(135deg, #FAF6EF, #EAEFFC)', desc:'A nocturne in blue — night-blooming flowers and cool lavender glow beneath sandalwood.' },
+  { id:'white-sand', name:'White Sand', price:190, c:'#5EC4D6', c2:'#1F8FAE', bg:'linear-gradient(135deg, #FAF6EF, #E6F6F8)', desc:'Sun-warmed shores and an endless ocean horizon — salty breeze and coconut blossom.' },
+  { id:'sea-sage', name:'Sea Sage', price:190, c:'#7FB59A', c2:'#3F7D60', bg:'linear-gradient(135deg, #FAF6EF, #EEF5F1)', desc:'Wild sage growing on coastal cliffs, kissed by sea spray — herbal and grounding.' }
 ];
 
 let currentIndex = 0;
@@ -242,8 +305,11 @@ function bottleHTML(p, s = 1) {
 }
 
 function render3DCarousel() {
+  const p = PRODUCTS[currentIndex];
+  document.documentElement.style.setProperty('--current-bg', p.bg);
+
   const stage = $('#stoneStage');
-  stage.innerHTML = PRODUCTS.map((p, index) => {
+  stage.innerHTML = PRODUCTS.map((item, index) => {
     let pos = '';
     if (index === currentIndex) pos = 'active';
     else if (index === (currentIndex - 1 + PRODUCTS.length) % PRODUCTS.length) pos = 'prev';
@@ -252,12 +318,13 @@ function render3DCarousel() {
       <div class="stone-card ${pos}">
         <div class="pedestal">
           <div class="pedestal-top"></div>
-          <div class="bottle-holder">${bottleHTML(p, 1.1)}</div>
+          <div class="bottle-holder">${bottleHTML(item, 1.1)}</div>
         </div>
         <div class="stone-info">
-          <h3>${p.name}</h3>
-          <div class="price">${CURRENCY}${p.price}</div>
-          <button class="btn btn-solid btn-block" onclick="addToCart('${p.id}')">Add to Cart</button>
+          <h3>${item.name}</h3>
+          <p class="notes-preview">${item.desc}</p>
+          <div class="price">${CURRENCY}${item.price}</div>
+          <button class="btn btn-solid btn-block" onclick="addToCart('${item.id}')">Add to Cart</button>
         </div>
       </div>`;
   }).join('');
@@ -277,15 +344,15 @@ function updateCartUI() {
   $('#subtotal').textContent = CURRENCY + total;
   $('#summaryTotal').textContent = CURRENCY + total;
   $('#drawerItems').innerHTML = cart.map(i => {
-    const p = byId(i.id);
+    const item = byId(i.id);
     return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-      <div><h4>${p.name}</h4><small>${i.qty} x ${CURRENCY}${p.price}</small></div>
-      <button onclick="removeItem('${p.id}')" style="color:red;font-size:0.8rem;">Remove</button>
+      <div><h4>${item.name}</h4><small>${i.qty} x ${CURRENCY}${item.price}</small></div>
+      <button onclick="removeItem('${item.id}')" style="color:red;font-size:0.8rem;">Remove</button>
     </div>`;
   }).join('');
   $('#summaryItems').innerHTML = cart.map(i => {
-    const p = byId(i.id);
-    return `<div style="display:flex;justify-content:space-between;padding:0.6rem 0;border-bottom:1px solid rgba(0,0,0,0.1)"><span>${p.name} x ${i.qty}</span><strong>${CURRENCY}${p.price * i.qty}</strong></div>`;
+    const item = byId(i.id);
+    return `<div style="display:flex;justify-content:space-between;padding:0.6rem 0;border-bottom:1px solid rgba(0,0,0,0.1)"><span>${item.name} x ${i.qty}</span><strong>${CURRENCY}${item.price * i.qty}</strong></div>`;
   }).join('');
 }
 
