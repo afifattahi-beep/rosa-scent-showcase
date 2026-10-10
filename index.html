@@ -273,12 +273,12 @@ footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding
 <script>
 const CURRENCY = '৳';
 const PRODUCTS = [
-  { id:'aurora', name:'Aurora', price:190, bg:'linear-gradient(135deg, #FAF6EF, #FCE8EE)', desc:'Tender rose petals and ripe berries over soft musk.', img: '/aurora.jpeg' },
-  { id:'elixir', name:'Elixir', price:190, bg:'linear-gradient(135deg, #FAF6EF, #EBF5EC)', desc:'Verdant potion of crushed leaves, citrus, and white florals.', img: '/elixir.jpeg' },
-  { id:'cloud', name:'Cloud', price:190, bg:'linear-gradient(135deg, #FAF6EF, #ECF4FC)', desc:'Clean cotton, powdery iris, and gentle musk.', img: '/cloud.jpeg' },
-  { id:'moonlight', name:'Moonlight', price:190, bg:'linear-gradient(135deg, #FAF6EF, #EAEFFC)', desc:'Night-blooming flowers and cool lavender under velvet sky.', img: '/moonlight.jpeg' },
-  { id:'white-sand', name:'White Sand', price:190, bg:'linear-gradient(135deg, #FAF6EF, #E6F6F8)', desc:'Salty ocean breeze and coconut blossom over driftwood.', img: '/white-sand.jpeg' },
-  { id:'sea-sage', name:'Sea Sage', price:190, bg:'linear-gradient(135deg, #FAF6EF, #EEF5F1)', desc:'Wild coastal sage with sea spray and cedarwood.', img: '/sea-sage.jpeg' }
+  { id:'aurora', name:'Aurora', price:190, bg:'linear-gradient(135deg, #FAF6EF, #FCE8EE)', desc:'Tender rose petals and ripe berries over soft musk.', img: 'public/aurora.jpeg' },
+  { id:'elixir', name:'Elixir', price:190, bg:'linear-gradient(135deg, #FAF6EF, #EBF5EC)', desc:'Verdant potion of crushed leaves, citrus, and white florals.', img: 'public/elixir.jpeg' },
+  { id:'cloud', name:'Cloud', price:190, bg:'linear-gradient(135deg, #FAF6EF, #ECF4FC)', desc:'Clean cotton, powdery iris, and gentle musk.', img: 'public/cloud.jpeg' },
+  { id:'moonlight', name:'Moonlight', price:190, bg:'linear-gradient(135deg, #FAF6EF, #EAEFFC)', desc:'Night-blooming flowers and cool lavender under velvet sky.', img: 'public/moonlight.jpeg' },
+  { id:'white-sand', name:'White Sand', price:190, bg:'linear-gradient(135deg, #FAF6EF, #E6F6F8)', desc:'Salty ocean breeze and coconut blossom over driftwood.', img: 'public/white-sand.jpeg' },
+  { id:'sea-sage', name:'Sea Sage', price:190, bg:'linear-gradient(135deg, #FAF6EF, #EEF5F1)', desc:'Wild coastal sage with sea spray and cedarwood.', img: 'public/sea-sage.jpeg' }
 ];
 
 let currentIndex = 0;
@@ -300,7 +300,7 @@ function render3DCarousel() {
       <div class="stone-card ${pos}">
         <div class="pedestal">
           <div class="pedestal-top"></div>
-          <div class="bottle-holder"><img src="${item.img}" alt="${item.name} Perfume" onerror="this.src='${item.img.replace('.jpeg', '.jpg')}'" /></div>
+          <div class="bottle-holder"><img src="${item.img}" alt="${item.name} Perfume" onerror="this.src='${item.img.replace('jpeg', 'jpg')}'" /></div>
         </div>
         <div class="stone-info">
           <h3>${item.name}</h3>
