@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Rosa Fragrance — The Essence of Elegance</title>
-<meta name="description" content="Rosa Fragrance — luxury oil-based perfumes in 6 ml bottles on 3D stone pedestals." />
+<meta name="description" content="Rosa Fragrance — luxury oil-based perfumes in 6 ml bottles on custom scenic stages." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -26,7 +26,7 @@
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-body { font-family: var(--sans); font-weight: 300; color: var(--ink); background: var(--ivory); line-height: 1.7; overflow-x: hidden; transition: background 1s var(--ease); }
+body { font-family: var(--sans); font-weight: 300; color: var(--ink); background: var(--ivory); line-height: 1.7; overflow-x: hidden; }
 body.locked { overflow: hidden; }
 h1, h2, h3, h4 { font-family: var(--serif); font-weight: 500; }
 a { color: inherit; text-decoration: none; }
@@ -61,13 +61,14 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .hero h1 em { color: var(--rose-gold); font-style: normal; }
 .hero .tagline { font-family: var(--serif); font-style: italic; font-size: clamp(1.3rem, 3vw, 1.9rem); color: var(--ink); margin-bottom: 2.6rem; }
 
-.catalog { background: var(--current-bg, var(--ivory-deep)); transition: background 1s var(--ease); padding: 6rem 0; overflow: hidden; }
-.stone-wrapper { position: relative; max-width: 900px; margin: 0 auto; padding: 2rem 0; perspective: 1200px; }
-.stone-stage { position: relative; width: 100%; min-height: 560px; display: flex; align-items: center; justify-content: center; }
+.catalog { background: var(--ivory-deep); padding: 6rem 0; overflow: hidden; }
+.stone-wrapper { position: relative; max-width: 960px; margin: 0 auto; padding: 2rem 0; perspective: 1200px; }
+.stone-stage { position: relative; width: 100%; min-height: 580px; display: flex; align-items: center; justify-content: center; }
 
 .stone-card {
   position: absolute;
-  width: 400px;
+  width: 460px;
+  max-width: 90vw;
   transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1);
   opacity: 0;
   transform: translateX(120%) scale(0.7);
@@ -90,67 +91,45 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   z-index: 5;
 }
 
-.pedestal {
+/* Custom Background Display Card */
+.stage-card {
   position: relative;
-  width: 300px;
-  height: 90px;
-  margin: 180px auto 20px;
-  background: linear-gradient(135deg, #d3cbbe, #8a8172);
-  border-radius: 50%;
-  box-shadow: 0 30px 40px rgba(50,40,35,0.35), inset 0 8px 15px rgba(255,255,255,0.6);
-  transform: rotateX(15deg);
-}
-.pedestal-top {
-  position: absolute;
-  top: -20px;
-  left: 0;
-  right: 0;
-  height: 65px;
-  background: radial-gradient(ellipse at center, #f4eee3 0%, #c4bba9 70%, #948b7c 100%);
-  border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.6);
+  width: 100%;
+  height: 380px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 25px 45px rgba(0,0,0,0.25);
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--line);
 }
 
-/* Interactive Floating Bottle Container with Smooth Motion */
-.bottle-container {
+.bottle-overlay {
   position: absolute;
-  bottom: 25px;
+  bottom: 20px;
   left: 50%;
-  width: 240px;
-  height: 320px;
   transform: translateX(-50%);
-  transition: transform 0.5s var(--ease);
-  cursor: pointer;
+  width: 160px;
+  height: 250px;
+  transition: transform 0.4s var(--ease);
 }
-.bottle-container:hover {
-  transform: translateX(-50%) translateY(-10px) scale(1.06);
+.stage-card:hover .bottle-overlay {
+  transform: translateX(-50%) translateY(-8px) scale(1.05);
 }
 
-.bottle-container img {
+.bottle-overlay img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  display: block;
-  filter: drop-shadow(0 30px 35px rgba(0,0,0,0.4));
-  pointer-events: none;
+  filter: drop-shadow(0 20px 25px rgba(0,0,0,0.5));
 }
 
-.touch-hint {
-  font-size: 0.7rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--burgundy);
-  margin-top: 0.5rem;
-  opacity: 0.8;
-  font-weight: 500;
-}
-
-.stone-info { background: #fff; border: 1px solid var(--line); text-align: center; padding: 1.8rem; box-shadow: var(--shadow); margin-top: 1rem; }
+.stone-info { background: #fff; border: 1px solid var(--line); text-align: center; padding: 1.8rem; box-shadow: var(--shadow); margin-top: 1rem; border-radius: 12px; }
 .stone-info h3 { font-size: 2.2rem; color: var(--burgundy); }
 .stone-info .price { font-family: var(--serif); font-size: 1.6rem; color: var(--burgundy); margin: 0.4rem 0 1rem; }
 .stone-info p.notes-preview { font-size: 0.85rem; color: var(--muted); margin-bottom: 1rem; font-style: italic; }
 
-.carousel-btn { position: absolute; top: 45%; transform: translateY(-50%); width: 54px; height: 54px; border-radius: 50%; background: #fff; border: 1.5px solid var(--burgundy); color: var(--burgundy); font-size: 1.4rem; display: grid; place-items: center; z-index: 20; box-shadow: 0 10px 25px rgba(0,0,0,0.15); transition: all 0.3s; }
+.carousel-btn { position: absolute; top: 38%; transform: translateY(-50%); width: 54px; height: 54px; border-radius: 50%; background: #fff; border: 1.5px solid var(--burgundy); color: var(--burgundy); font-size: 1.4rem; display: grid; place-items: center; z-index: 20; box-shadow: 0 10px 25px rgba(0,0,0,0.15); transition: all 0.3s; }
 .carousel-btn:hover { background: var(--burgundy); color: #fff; transform: translateY(-50%) scale(1.08); }
 .carousel-btn.prev-btn { left: -10px; }
 .carousel-btn.next-btn { right: -10px; }
@@ -172,7 +151,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .field input, .field textarea { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--line); background: var(--ivory); font: inherit; }
 .two { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .bkash { border: 1px solid var(--rose-gold-light); background: #fff; padding: 1.4rem; margin: 1.2rem 0; }
-.bkash-number { font-family: varserif; font-size: 1.6rem; color: var(--burgundy); margin: 0.4rem 0; }
+.bkash-number { font-family: var(--serif); font-size: 1.6rem; color: var(--burgundy); margin: 0.4rem 0; }
 footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding: 4rem 0 2rem; text-align: center; font-size: 0.8rem; }
 .toast { position: fixed; bottom: 1.6rem; left: 50%; transform: translate(-50%,120%); background: var(--ink); color: var(--ivory); padding: 0.8rem 1.5rem; font-size: 0.8rem; z-index: 90; transition: transform 0.4s; }
 .toast.show { transform: translate(-50%,0); }
@@ -213,7 +192,7 @@ footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding
       <span class="eyebrow">The Collection</span>
       <h2>Six Signatures, One Soul</h2>
       <div class="ornament">✦</div>
-      <p>Hover or touch the bottle to see it float gracefully on the pedestal.</p>
+      <p>Explore our luxury oil-based fragrances crafted in signature visual worlds.</p>
     </div>
     <div class="stone-wrapper">
       <button class="carousel-btn prev-btn" id="prevBtn">&#10094;</button>
@@ -293,22 +272,20 @@ footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding
 <script>
 const CURRENCY = '৳';
 const PRODUCTS = [
-  { id:'aurora', name:'Aurora', price:190, bg: 'radial-gradient(ellipse 90% 90% at 50% 50%, #FCE8EE 0%, #E8C4BC 65%, #D4A39B 100%)', desc:'Tender rose petals and ripe berries over soft musk.', img: 'public/bottle-aurora.png' },
-  { id:'elixir', name:'Elixir', price:190, bg: 'radial-gradient(ellipse 90% 90% at 50% 50%, #EBF5EC 0%, #C8E6C9 65%, #A5D6A7 100%)', desc:'Verdant potion of crushed leaves, citrus, and white florals.', img: 'public/bottle-elixir.png' },
-  { id:'cloud', name:'Cloud', price:190, bg: 'radial-gradient(ellipse 90% 90% at 50% 50%, #ECF4FC 0%, #B3E5FC 65%, #81D4FA 100%)', desc:'Clean cotton, powdery iris, and gentle musk.', img: 'public/bottle-cloud.png' },
-  { id:'moonlight', name:'Moonlight', price:190, bg: 'radial-gradient(ellipse 90% 90% at 50% 50%, #EAEFFC 0%, #C5D3E8 65%, #90CAF9 100%)', desc:'Night-blooming flowers and cool lavender under velvet sky.', img: 'public/bottle-moonlight.png' },
-  { id:'white-sand', name:'White Sand', price:190, bg: 'radial-gradient(ellipse 90% 90% at 50% 50%, #E6F6F8 0%, #B2DFDB 65%, #80CBC4 100%)', desc:'Salty ocean breeze and coconut blossom over driftwood.', img: 'public/bottle-white-sand.png' },
-  { id:'sea-sage', name:'Sea Sage', price:190, bg: 'radial-gradient(ellipse 90% 90% at 50% 50%, #EEF5F1 0%, #C8E6C9 65%, #A5D6A7 100%)', desc:'Wild coastal sage with sea spray and cedarwood.', img: 'public/bottle-sea-sage.png' }
+  { id:'aurora', name:'Aurora', price:190, bg: 'public/bg-aurora.jpeg', desc:'Tender rose petals and ripe berries over soft musk.', img: 'public/bottle-aurora.png' },
+  { id:'elixir', name:'Elixir', price:190, bg: 'public/bg-elixir.jpeg', desc:'Verdant potion of crushed leaves, citrus, and white florals.', img: 'public/bottle-elixir.png' },
+  { id:'cloud', name:'Cloud', price:190, bg: 'public/bg-cloud.jpeg', desc:'Clean cotton, powdery iris, and gentle musk.', img: 'public/bottle-cloud.png' },
+  { id:'moonlight', name:'Moonlight', price:190, bg: 'public/bg-moonlight.jpeg', desc:'Night-blooming flowers and cool lavender under velvet sky.', img: 'public/bottle-moonlight.png' },
+  { id:'white-sand', name:'White Sand', price:190, bg: 'public/bg-white-sand.jpeg', desc:'Salty ocean breeze and coconut blossom over driftwood.', img: 'public/bottle-white-sand.png' },
+  { id:'sea-sage', name:'Sea Sage', price:190, bg: 'public/bg-sea-sage.jpeg', desc:'Wild coastal sage with sea spray and cedarwood.', img: 'public/bottle-sea-sage.png' }
 ];
 
 let currentIndex = 0;
 let cart = JSON.parse(localStorage.getItem('rosa_cart') || '[]');
 const $ = s => document.querySelector(s);
+const byId = id => PRODUCTS.find(p => p.id === id);
 
 function render3DCarousel() {
-  const p = PRODUCTS[currentIndex];
-  document.documentElement.style.setProperty('--current-bg', p.bg);
-
   const stage = $('#stoneStage');
   stage.innerHTML = PRODUCTS.map((item, index) => {
     let pos = '';
@@ -317,17 +294,15 @@ function render3DCarousel() {
     else if (index === (currentIndex + 1) % PRODUCTS.length) pos = 'next';
     return `
       <div class="stone-card ${pos}">
-        <div class="pedestal">
-          <div class="pedestal-top"></div>
-          <div class="bottle-container">
-            <img src="${item.img}" alt="${item.name}" onerror="this.src='${item.img.replace('.png', '.jpeg')}'" />
+        <div class="stage-card" style="background-image: url('${item.bg}');">
+          <div class="bottle-overlay">
+            <img src="${item.img}" alt="${item.name} Perfume" onerror="this.src='${item.img.replace('.png', '.jpeg')}'" />
           </div>
         </div>
         <div class="stone-info">
           <h3>${item.name}</h3>
           <p class="notes-preview">${item.desc}</p>
           <div class="price">${CURRENCY}${item.price}</div>
-          <p class="touch-hint">✨ Luxury Oil-Based Fragrance</p>
           <button class="btn btn-solid btn-block" onclick="addToCart('${item.id}')">Add to Cart</button>
         </div>
       </div>`;
