@@ -61,9 +61,9 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .hero h1 em { color: var(--rose-gold); font-style: normal; }
 .hero .tagline { font-family: var(--serif); font-style: italic; font-size: clamp(1.3rem, 3vw, 1.9rem); color: var(--ink); margin-bottom: 2.6rem; }
 
-/* Expanded Rich Background Colors */
-.catalog { background: var(--current-bg, var(--ivory-deep)); transition: background 1s var(--ease); padding: 7rem 0; overflow: hidden; }
-.stone-wrapper { position: relative; max-width: 900px; margin: 0 auto; padding: 2rem 0; }
+/* Large Full Screen Canvas for Product Themes */
+.catalog { background: var(--current-bg, var(--ivory-deep)); transition: background 1s var(--ease); padding: 6rem 0; overflow: hidden; }
+.stone-wrapper { position: relative; max-width: 900px; margin: 0 auto; padding: 2rem 0; perspective: 1200px; }
 .stone-stage { position: relative; width: 100%; min-height: 560px; display: flex; align-items: center; justify-content: center; }
 
 .stone-card {
@@ -93,9 +93,9 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 
 .pedestal {
   position: relative;
-  width: 260px;
-  height: 80px;
-  margin: 140px auto 20px;
+  width: 280px;
+  height: 85px;
+  margin: 160px auto 20px;
   background: linear-gradient(135deg, #d3cbbe, #8a8172);
   border-radius: 50%;
   box-shadow: 0 30px 40px rgba(50,40,35,0.35), inset 0 8px 15px rgba(255,255,255,0.6);
@@ -112,25 +112,45 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   border: 1px solid rgba(255,255,255,0.6);
 }
 
-.bottle-holder {
+/* Independent 3D Spinning Bottle */
+.bottle-container {
   position: absolute;
-  bottom: 35px;
+  bottom: 40px;
   left: 50%;
+  width: 140px;
+  height: 220px;
   transform: translateX(-50%);
-  width: 240px;
-  animation: levitate 4s ease-in-out infinite;
+  transform-style: preserve-3d;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
 }
-@keyframes levitate {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(-10px); }
+.bottle-container:active { cursor: grabbing; }
+
+.spinning-bottle {
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.05s linear;
 }
 
-.bottle-holder img {
+.spinning-bottle img {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: contain;
   display: block;
-  filter: drop-shadow(0 20px 25px rgba(0,0,0,0.3));
-  border-radius: 16px;
+  filter: drop-shadow(0 20px 25px rgba(0,0,0,0.35));
+  pointer-events: none;
+}
+
+.touch-hint {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--burgundy);
+  margin-top: 0.5rem;
+  opacity: 0.8;
+  font-weight: 500;
 }
 
 .stone-info { background: #fff; border: 1px solid var(--line); text-align: center; padding: 1.8rem; box-shadow: var(--shadow); margin-top: 1rem; }
@@ -201,7 +221,7 @@ footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding
       <span class="eyebrow">The Collection</span>
       <h2>Six Signatures, One Soul</h2>
       <div class="ornament">✦</div>
-      <p>Explore our exclusive collection of luxury oil-based fragrances.</p>
+      <p>Touch and drag the perfume bottle to spin it 360° independently.</p>
     </div>
     <div class="stone-wrapper">
       <button class="carousel-btn prev-btn" id="prevBtn">&#10094;</button>
@@ -281,22 +301,23 @@ footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding
 <script>
 const CURRENCY = '৳';
 const PRODUCTS = [
-  { id:'aurora', name:'Aurora', price:190, bg: 'radial-gradient(circle at center, #FCE8EE 0%, #E8C4BC 60%, #D4A39B 100%)', desc:'Tender rose petals and ripe berries over soft musk.', img: 'public/aurora.jpeg' },
-  { id:'elixir', name:'Elixir', price:190, bg: 'radial-gradient(circle at center, #EBF5EC 0%, #C8E6C9 60%, #A5D6A7 100%)', desc:'Verdant potion of crushed leaves, citrus, and white florals.', img: 'public/elixir.jpeg' },
-  { id:'cloud', name:'Cloud', price:190, bg: 'radial-gradient(circle at center, #ECF4FC 0%, #B3E5FC 60%, #81D4FA 100%)', desc:'Clean cotton, powdery iris, and gentle musk.', img: 'public/cloud.jpeg' },
-  { id:'moonlight', name:'Moonlight', price:190, bg: 'radial-gradient(circle at center, #EAEFFC 0%, #C5D3E8 60%, #90CAF9 100%)', desc:'Night-blooming flowers and cool lavender under velvet sky.', img: 'public/moonlight.jpeg' },
-  { id:'white-sand', name:'White Sand', price:190, bg: 'radial-gradient(circle at center, #E6F6F8 0%, #B2DFDB 100%)', desc:'Salty ocean breeze and coconut blossom over driftwood.', img: 'public/white-sand.jpeg' },
-  { id:'sea-sage', name:'Sea Sage', price:190, bg: 'radial-gradient(circle at center, #EEF5F1 0%, #C8E6C9 100%)', desc:'Wild coastal sage with sea spray and cedarwood.', img: 'public/sea-sage.jpeg' }
+  { id:'aurora', name:'Aurora', price:190, bg: 'radial-gradient(ellipse 90% 90% at 50% 50%, #FCE8EE 0%, #E8C4BC 65%, #D4A39B 100%)', desc:'Tender rose petals and ripe berries over soft musk.', img: 'public/bottle-aurora.png' },
+  { id:'elixir', name:'Elixir', price:190, bg: 'radial-gradient(ellipse 90% 90% at 50% 50%, #EBF5EC 0%, #C8E6C9 65%, #A5D6A7 100%)', desc:'Verdant potion of crushed leaves, citrus, and white florals.', img: 'public/bottle-elixir.png' },
+  { id:'cloud', name:'Cloud', price:190, bg: 'radial-gradient(ellipse 90% 90% at 50% 50%, #ECF4FC 0%, #B3E5FC 65%, #81D4FA 100%)', desc:'Clean cotton, powdery iris, and gentle musk.', img: 'public/bottle-cloud.png' },
+  { id:'moonlight', name:'Moonlight', price:190, bg: 'radial-gradient(ellipse 90% 90% at 50% 50%, #EAEFFC 0%, #C5D3E8 65%, #90CAF9 100%)', desc:'Night-blooming flowers and cool lavender under velvet sky.', img: 'public/bottle-moonlight.png' },
+  { id:'white-sand', name:'White Sand', price:190, bg: 'radial-gradient(ellipse 90% 90% at 50% 50%, #E6F6F8 0%, #B2DFDB 65%, #80CBC4 100%)', desc:'Salty ocean breeze and coconut blossom over driftwood.', img: 'public/bottle-white-sand.png' },
+  { id:'sea-sage', name:'Sea Sage', price:190, bg: 'radial-gradient(ellipse 90% 90% at 50% 50%, #EEF5F1 0%, #C8E6C9 65%, #A5D6A7 100%)', desc:'Wild coastal sage with sea spray and cedarwood.', img: 'public/bottle-sea-sage.png' }
 ];
 
 let currentIndex = 0;
 let cart = JSON.parse(localStorage.getItem('rosa_cart') || '[]');
 const $ = s => document.querySelector(s);
-const byId = id => PRODUCTS.find(p => p.id === id);
+let rotY = 0, isDragging = false, startX = 0;
 
 function render3DCarousel() {
   const p = PRODUCTS[currentIndex];
   document.documentElement.style.setProperty('--current-bg', p.bg);
+  rotY = 0;
 
   const stage = $('#stoneStage');
   stage.innerHTML = PRODUCTS.map((item, index) => {
@@ -308,18 +329,54 @@ function render3DCarousel() {
       <div class="stone-card ${pos}">
         <div class="pedestal">
           <div class="pedestal-top"></div>
-          <div class="bottle-holder">
-            <img src="${item.img}" alt="${item.name} Perfume" onerror="this.src='${item.img.replace('jpeg', 'jpg')}'" />
+          <div class="bottle-container" id="${pos === 'active' ? 'activeBottle' : ''}">
+            <div class="spinning-bottle" id="${pos === 'active' ? 'spinningBox' : ''}">
+              <img src="${item.img}" alt="${item.name} Perfume" onerror="this.src='${item.img.replace('.png', '.jpeg')}'" />
+            </div>
           </div>
         </div>
         <div class="stone-info">
           <h3>${item.name}</h3>
           <p class="notes-preview">${item.desc}</p>
           <div class="price">${CURRENCY}${item.price}</div>
+          <p class="touch-hint">👆 Swipe bottle left/right to spin</p>
           <button class="btn btn-solid btn-block" onclick="addToCart('${item.id}')">Add to Cart</button>
         </div>
       </div>`;
   }).join('');
+
+  setupBottleSpinning();
+}
+
+function setupBottleSpinning() {
+  const container = $('#activeBottle');
+  const box = $('#spinningBox');
+  if (!container || !box) return;
+
+  const onStart = (e) => {
+    isDragging = true;
+    const pt = e.touches ? e.touches[0] : e;
+    startX = pt.clientX;
+  };
+
+  const onMove = (e) => {
+    if (!isDragging) return;
+    const pt = e.touches ? e.touches[0] : e;
+    const deltaX = pt.clientX - startX;
+    rotY += deltaX * 0.8;
+    box.style.transform = `rotateY(${rotY}deg)`;
+    startX = pt.clientX;
+  };
+
+  const onEnd = () => { isDragging = false; };
+
+  container.addEventListener('mousedown', onStart);
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', onEnd);
+
+  container.addEventListener('touchstart', onStart, { passive: true });
+  window.addEventListener('touchmove', onMove, { passive: true });
+  window.addEventListener('touchend', onEnd);
 }
 
 $('#nextBtn').onclick = () => { currentIndex = (currentIndex + 1) % PRODUCTS.length; render3DCarousel(); };
