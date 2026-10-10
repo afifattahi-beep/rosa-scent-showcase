@@ -2,720 +2,117 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Rosa Fragrance — The Essence of Elegance</title>
-<meta name="description" content="Rosa Fragrance — luxury oil-based perfumes in 6 ml bottles. The Essence of Elegance." />
+<meta name="description" content="Rosa Fragrance — luxury oil-based perfumes in 6 ml bottles on 3D stone pedestals. The Essence of Elegance." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <style>
 /* =========================================================
-   DESIGN TOKENS
+   DESIGN TOKENS & BASE
    ========================================================= */
-:root{
-  --ivory:#FAF6EF;
-  --ivory-deep:#F3EBDF;
-  --burgundy:#6B1E2E;
-  --burgundy-dark:#4A1320;
-  --rose-gold:#B76E79;
-  --rose-gold-light:#E8C4BC;
-  --ink:#1C1718;
-  --muted:#6E6264;
-  --line:rgba(107,30,46,.15);
-  --shadow:0 20px 50px -25px rgba(74,19,32,.35);
-  --serif:'Cormorant Garamond',Georgia,serif;
-  --sans:'Montserrat',system-ui,sans-serif;
-  --ease:cubic-bezier(.22,.61,.36,1);
+:root {
+  --ivory: #FAF6EF;
+  --ivory-deep: #F2E8D9;
+  --burgundy: #6B1E2E;
+  --burgundy-dark: #4A1320;
+  --rose-gold: #B76E79;
+  --rose-gold-light: #E8C4BC;
+  --ink: #1C1718;
+  --muted: #6E6264;
+  --line: rgba(107,30,46,0.15);
+  --shadow: 0 25px 50px -12px rgba(74,19,32,0.25);
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Montserrat', system-ui, sans-serif;
+  --ease: cubic-bezier(.22, .61, .36, 1);
 }
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:var(--sans);font-weight:300;color:var(--ink);background:var(--ivory);line-height:1.7;-webkit-font-smoothing:antialiased}
-body.locked{overflow:hidden}
-h1,h2,h3,h4{font-family:var(--serif);font-weight:500;letter-spacing:.01em}
-a{color:inherit;text-decoration:none}
-button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
-img{max-width:100%}
-.container{width:min(1180px,90%);margin:auto}
 
-/* ---------- Buttons ---------- */
-.btn{display:inline-block;padding:1rem 2.4rem;font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;font-weight:500;border:1px solid var(--burgundy);color:var(--burgundy);transition:all .4s var(--ease);background:transparent}
-.btn:hover{background:var(--burgundy);color:var(--ivory)}
-.btn-solid{background:var(--burgundy);color:var(--ivory)}
-.btn-solid:hover{background:var(--burgundy-dark);border-color:var(--burgundy-dark)}
-.btn-block{width:100%;text-align:center}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  font-weight: 300;
+  color: var(--ink);
+  background: var(--ivory);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+body.locked { overflow: hidden; }
 
-/* ---------- Ornament (delicate line + rose bud) ---------- */
-.ornament{display:flex;align-items:center;justify-content:center;gap:.9rem;color:var(--rose-gold);margin:1rem auto 1.4rem}
-.ornament::before,.ornament::after{content:"";width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--rose-gold))}
-.ornament::after{transform:scaleX(-1)}
-.eyebrow{font-size:.7rem;letter-spacing:.4em;text-transform:uppercase;color:var(--rose-gold);font-weight:500}
-.section{padding:7rem 0}
-.section-head{text-align:center;max-width:620px;margin:0 auto 4rem}
-.section-head h2{font-size:clamp(2.2rem,5vw,3.2rem);color:var(--burgundy);line-height:1.15;margin-top:.6rem}
-.section-head p{color:var(--muted)}
+h1, h2, h3, h4 { font-family: var(--serif); font-weight: 500; letter-spacing: 0.01em; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+.container { width: min(1180px, 90%); margin: auto; }
 
-/* ---------- Fade-in on scroll ---------- */
-.reveal{opacity:0;transform:translateY(28px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
-.reveal.visible{opacity:1;transform:none}
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 1rem 2.4rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-weight: 500;
+  border: 1px solid var(--burgundy);
+  color: var(--burgundy);
+  transition: all 0.4s var(--ease);
+  background: transparent;
+}
+.btn:hover { background: var(--burgundy); color: var(--ivory); }
+.btn-solid { background: var(--burgundy); color: var(--ivory); }
+.btn-solid:hover { background: var(--burgundy-dark); border-color: var(--burgundy-dark); }
+.btn-block { width: 100%; text-align: center; }
+
+/* Typography & Layout elements */
+.ornament { display: flex; align-items: center; justify-content: center; gap: 0.9rem; color: var(--rose-gold); margin: 1rem auto 1.4rem; }
+.ornament::before, .ornament::after { content: ""; width: 60px; height: 1px; background: linear-gradient(90deg, transparent, var(--rose-gold)); }
+.ornament::after { transform: scaleX(-1); }
+.eyebrow { font-size: 0.7rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--rose-gold); font-weight: 500; }
+.section { padding: 6rem 0; }
+.section-head { text-align: center; max-width: 620px; margin: 0 auto 3rem; }
+.section-head h2 { font-size: clamp(2.2rem, 5vw, 3.2rem); color: var(--burgundy); line-height: 1.15; margin-top: 0.6rem; }
 
 /* =========================================================
-   NAVIGATION (sticky)
+   STICKY NAVIGATION
    ========================================================= */
-.nav{position:fixed;inset:0 0 auto;z-index:50;transition:all .4s var(--ease);padding:1.4rem 0}
-.nav.scrolled{background:rgba(250,246,239,.92);backdrop-filter:blur(10px);padding:.8rem 0;box-shadow:0 1px 0 var(--line)}
-.nav .container{display:flex;align-items:center;justify-content:space-between;gap:1rem}
-.logo{font-family:var(--serif);font-size:1.6rem;letter-spacing:.12em;color:var(--burgundy);font-weight:600}
-.logo span{color:var(--rose-gold);font-style:italic;font-weight:400}
-.nav-links{display:flex;gap:2.4rem;list-style:none}
-.nav-links a{font-size:.72rem;letter-spacing:.25em;text-transform:uppercase;font-weight:500;position:relative}
-.nav-links a::after{content:"";position:absolute;left:0;bottom:-4px;height:1px;width:0;background:var(--rose-gold);transition:width .4s var(--ease)}
-.nav-links a:hover::after{width:100%}
-.nav-actions{display:flex;align-items:center;gap:.6rem}
-.cart-btn{position:relative;padding:.4rem;color:var(--burgundy)}
-.cart-count{position:absolute;top:-2px;right:-4px;background:var(--rose-gold);color:#fff;font-size:.62rem;font-weight:600;min-width:18px;height:18px;border-radius:9px;display:grid;place-items:center;padding:0 4px;transition:transform .3s}
-.cart-count.bump{transform:scale(1.35)}
-.menu-btn{display:none;padding:.4rem;color:var(--burgundy)}
-@media(max-width:820px){
-  .menu-btn{display:block}
-  .nav-links{position:fixed;inset:0 0 auto;top:0;flex-direction:column;align-items:center;gap:1.8rem;background:var(--ivory);padding:6rem 0 3rem;transform:translateY(-100%);transition:transform .5s var(--ease);box-shadow:var(--shadow);z-index:-1}
-  .nav-links.open{transform:none}
+.nav { position: fixed; inset: 0 0 auto; z-index: 50; transition: all 0.4s var(--ease); padding: 1.4rem 0; }
+.nav.scrolled { background: rgba(250,246,239,0.92); backdrop-filter: blur(10px); padding: 0.8rem 0; box-shadow: 0 1px 0 var(--line); }
+.nav .container { display: flex; align-items: center; justify-content: space-between; }
+.logo { font-family: var(--serif); font-size: 1.6rem; letter-spacing: 0.12em; color: var(--burgundy); font-weight: 600; }
+.logo span { color: var(--rose-gold); font-style: italic; font-weight: 400; }
+.nav-links { display: flex; gap: 2.4rem; list-style: none; }
+.nav-links a { font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase; font-weight: 500; position: relative; }
+.nav-links a::after { content: ""; position: absolute; left: 0; bottom: -4px; height: 1px; width: 0; background: var(--rose-gold); transition: width 0.4s var(--ease); }
+.nav-links a:hover::after { width: 100%; }
+.nav-actions { display: flex; align-items: center; gap: 0.6rem; }
+.cart-btn { position: relative; padding: 0.4rem; color: var(--burgundy); }
+.cart-count { position: absolute; top: -2px; right: -4px; background: var(--rose-gold); color: #fff; font-size: 0.62rem; font-weight: 600; min-width: 18px; height: 18px; border-radius: 9px; display: grid; place-items: center; padding: 0 4px; transition: transform 0.3s; }
+.cart-count.bump { transform: scale(1.35); }
+.menu-btn { display: none; padding: 0.4rem; color: var(--burgundy); }
+
+@media(max-width:820px) {
+  .menu-btn { display: block; }
+  .nav-links { position: fixed; inset: 0 0 auto; top: 0; flex-direction: column; align-items: center; gap: 1.8rem; background: var(--ivory); padding: 6rem 0 3rem; transform: translateY(-100%); transition: transform 0.5s var(--ease); box-shadow: var(--shadow); z-index: -1; }
+  .nav-links.open { transform: none; }
 }
 
 /* =========================================================
    HERO
    ========================================================= */
-.hero{min-height:100vh;min-height:100svh;display:grid;place-items:center;text-align:center;position:relative;overflow:hidden;
+.hero {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
   background:
-    radial-gradient(ellipse 60% 50% at 20% 30%,rgba(232,196,188,.55),transparent 70%),
-    radial-gradient(ellipse 50% 45% at 85% 75%,rgba(183,110,121,.28),transparent 70%),
-    radial-gradient(ellipse 40% 35% at 70% 15%,rgba(107,30,46,.10),transparent 70%),
-    var(--ivory)}
-.petal{position:absolute;border-radius:80% 0 80% 0;background:linear-gradient(135deg,rgba(232,196,188,.7),rgba(183,110,121,.25));filter:blur(.5px);animation:float 14s ease-in-out infinite}
-.petal.p1{width:90px;height:90px;top:18%;left:10%}
-.petal.p2{width:60px;height:60px;bottom:20%;right:12%;animation-delay:-4s;transform:rotate(60deg)}
-.petal.p3{width:40px;height:40px;top:28%;right:22%;animation-delay:-8s}
-.petal.p4{width:70px;height:70px;bottom:14%;left:24%;animation-delay:-2s;opacity:.6}
-@keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-24px) rotate(25deg)}}
-.hero-inner{position:relative;padding:6rem 1rem 3rem}
-.hero h1{font-size:clamp(3.4rem,11vw,8rem);line-height:1;color:var(--burgundy);font-weight:400;letter-spacing:.06em}
-.hero h1 em{color:var(--rose-gold);font-weight:400}
-.hero .tagline{font-family:var(--serif);font-style:italic;font-size:clamp(1.3rem,3vw,1.9rem);color:var(--ink);margin-bottom:2.6rem}
-.hero .eyebrow{display:block;margin-bottom:1.4rem}
-.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);width:1px;height:50px;background:linear-gradient(var(--rose-gold),transparent);animation:hint 2.2s infinite}
-@keyframes hint{0%{opacity:0;transform:translate(-50%,-10px)}50%{opacity:1}100%{opacity:0;transform:translate(-50%,10px)}}
-
-/* =========================================================
-   CSS-DRAWN 6 ML BOTTLE
-   ========================================================= */
-.bottle{--s:1;position:relative;width:calc(70px*var(--s));height:calc(150px*var(--s));margin:auto;filter:drop-shadow(0 18px 18px rgba(0,0,0,.12))}
-.bottle .cap{position:absolute;left:50%;top:0;transform:translateX(-50%);width:calc(30px*var(--s));height:calc(40px*var(--s));border-radius:calc(4px*var(--s)) calc(4px*var(--s)) calc(2px*var(--s)) calc(2px*var(--s));
-  background:linear-gradient(90deg,#8c5a4e,#e9c2b3 35%,#c8907f 60%,#7d4c42)}
-.bottle .cap::after{content:"";position:absolute;inset:auto 0 calc(-6px*var(--s));height:calc(6px*var(--s));background:linear-gradient(90deg,#6f4238,#d6a493,#6f4238)}
-.bottle .neck{position:absolute;left:50%;top:calc(44px*var(--s));transform:translateX(-50%);width:calc(18px*var(--s));height:calc(10px*var(--s));background:rgba(255,255,255,.55);border:1px solid rgba(0,0,0,.06)}
-.bottle .body{position:absolute;left:0;right:0;bottom:0;height:calc(98px*var(--s));border-radius:calc(10px*var(--s));overflow:hidden;
-  background:linear-gradient(160deg,rgba(255,255,255,.75),rgba(255,255,255,.25));border:1px solid rgba(255,255,255,.9);box-shadow:inset 0 0 0 1px rgba(0,0,0,.04)}
-.bottle .liquid{position:absolute;left:calc(4px*var(--s));right:calc(4px*var(--s));bottom:calc(4px*var(--s));height:78%;border-radius:calc(7px*var(--s));
-  background:linear-gradient(180deg,var(--c),var(--c2))}
-.bottle .shine{position:absolute;top:calc(8px*var(--s));left:calc(9px*var(--s));width:calc(7px*var(--s));height:72%;border-radius:10px;background:linear-gradient(rgba(255,255,255,.85),rgba(255,255,255,0))}
-.bottle .label{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);background:rgba(250,246,239,.92);padding:calc(4px*var(--s)) calc(6px*var(--s));text-align:center;border:1px solid rgba(183,110,121,.5);min-width:72%}
-.bottle .label b{display:block;font-family:var(--serif);font-weight:600;font-size:calc(9px*var(--s));letter-spacing:.12em;color:var(--burgundy);line-height:1.1}
-.bottle .label i{display:block;font-style:normal;font-size:calc(5px*var(--s));letter-spacing:.2em;color:var(--muted)}
-
-/* =========================================================
-   3D STONE PEDESTAL CATALOG & CAROUSEL
-   ========================================================= */
-.catalog{background:linear-gradient(var(--ivory),var(--ivory-deep));perspective:1200px;overflow:hidden}
-.stone-stage{position:relative;max-width:760px;margin:0 auto;padding:2rem 0;transform-style:preserve-3d}
-.stone-slider{display:flex;transition:transform 0.8s var(--ease);transform-style:preserve-3d}
-.stone-slide{min-width:100%;box-sizing:border-box;padding:0 1rem;transform-style:preserve-3d;opacity:0.3;transform:scale(0.85) translateZ(-100px);transition:all 0.8s var(--ease);pointer-events:none}
-.stone-slide.active{opacity:1;transform:scale(1) translateZ(0);pointer-events:auto}
-
-/* 3D Stone Platform */
-.stone-platform{position:relative;background:radial-gradient(ellipse at center, #d8d0c5 0%, #a89f91 70%, #7b7266 100%);height:130px;width:340px;margin:120px auto 0;border-radius:50%;box-shadow:0 30px 60px rgba(50,40,35,0.35), inset 0 10px 20px rgba(255,255,255,0.4), inset 0 -15px 25px rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;transform:rotateX(60deg) rotateZ(-10deg);transform-style:preserve-3d}
-.stone-platform::after{content:"";position:absolute;inset:-10px;border-radius:50%;border:2px dashed rgba(255,255,255,0.25)}
-.bottle-container{position:absolute;bottom:70px;left:50%;transform:translateX(-50%) rotateZ(10deg) rotateX(-60deg);transform-origin:bottom center;transition:transform 0.6s var(--ease)}
-.stone-slide.active .bottle-container{animation:levitate 4s ease-in-out infinite}
-@keyframes levitate{0%,100%{transform:translateX(-50%) translateY(0) rotateZ(10deg) rotateX(-60deg)}50%{transform:translateX(-50%) translateY(-12px) rotateZ(10deg) rotateX(-60deg)}}
-
-/* Card details underneath stone */
-.stone-card-info{background:#fff;border:1px solid var(--line);text-align:center;padding:2rem;max-width:460px;margin:-30px auto 0;box-shadow:var(--shadow);position:relative;z-index:10}
-.stone-card-info h3{font-size:2.2rem;color:var(--burgundy);margin-bottom:.2rem}
-.stone-card-info .price{font-family:var(--serif);font-size:1.6rem;color:var(--burgundy);margin:.6rem 0 1.2rem}
-
-/* Navigation controls */
-.carousel-controls{display:flex;align-items:center;justify-content:center;gap:2rem;margin-top:2.5rem}
-.carousel-btn{width:54px;height:54px;border-radius:50%;background:#fff;border:1px solid var(--burgundy);color:var(--burgundy);display:grid;place-items:center;font-size:1.2rem;box-shadow:0 10px 25px rgba(107,30,46,0.15);transition:all 0.3s var(--ease)}
-.carousel-btn:hover{background:var(--burgundy);color:var(--ivory);transform:scale(1.08)}
-.carousel-dots{display:flex;gap:.6rem;align-items:center}
-.carousel-dot{width:10px;height:10px;border-radius:50%;background:var(--rose-gold-light);cursor:pointer;transition:all 0.3s}
-.carousel-dot.active{background:var(--burgundy);transform:scale(1.3)}
-
-/* =========================================================
-   OVERLAY, MODAL, DRAWER (shared)
-   ========================================================= */
-.overlay{position:fixed;inset:0;background:rgba(28,23,24,.45);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .4s;z-index:60}
-.overlay.show{opacity:1;pointer-events:auto}
-.close{position:absolute;top:1rem;right:1rem;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:1.4rem;color:var(--burgundy);transition:background .3s}
-.close:hover{background:var(--ivory-deep)}
-
-/* Product detail modal */
-.modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-46%) scale(.97);width:min(900px,92vw);max-height:90vh;overflow:auto;background:var(--ivory);z-index:70;opacity:0;pointer-events:none;transition:all .45s var(--ease);display:grid;grid-template-columns:1fr 1.1fr}
-.modal.show{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
-.modal-visual{display:grid;place-items:center;padding:3rem 1rem;background:radial-gradient(circle at 50% 55%,var(--tint),transparent 70%),var(--tint-soft)}
-.modal-info{padding:3rem 2.6rem}
-.modal-info h3{font-size:2.8rem;color:var(--burgundy);line-height:1}
-.modal-info .desc{color:var(--muted);margin:1.2rem 0}
-.notes{list-style:none;border-top:1px solid var(--line);margin:1.2rem 0 1.6rem}
-.notes li{display:grid;grid-template-columns:90px 1fr;padding:.75rem 0;border-bottom:1px solid var(--line);font-size:.9rem}
-.notes span{font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:var(--rose-gold);font-weight:500;padding-top:.15rem}
-.placeholder-tag{display:inline-block;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;background:var(--ivory-deep);color:var(--muted);padding:.2rem .6rem;border:1px dashed var(--rose-gold-light)}
-@media(max-width:720px){.modal{grid-template-columns:1fr}.modal-info{padding:2rem 1.5rem}.modal-info h3{font-size:2.2rem}}
-
-/* Cart drawer */
-.drawer{position:fixed;top:0;right:0;height:100%;width:min(420px,100vw);background:var(--ivory);z-index:70;transform:translateX(100%);transition:transform .5s var(--ease);display:flex;flex-direction:column;box-shadow:-20px 0 50px -20px rgba(0,0,0,.25)}
-.drawer.show{transform:none}
-.drawer-head{padding:1.8rem 1.6rem 1.2rem;border-bottom:1px solid var(--line);position:relative}
-.drawer-head h3{font-size:1.9rem;color:var(--burgundy)}
-.drawer-items{flex:1;overflow:auto;padding:.6rem 1.6rem}
-.empty{text-align:center;color:var(--muted);padding:4rem 0;font-family:var(--serif);font-style:italic;font-size:1.3rem}
-.ci{display:grid;grid-template-columns:56px 1fr auto;gap:1rem;align-items:center;padding:1.1rem 0;border-bottom:1px solid var(--line)}
-.ci-thumb{background:var(--tint-soft);height:76px;display:grid;place-items:center}
-.ci h4{font-size:1.25rem;line-height:1.1}
-.ci small{color:var(--muted);font-size:.7rem}
-.qty{display:inline-flex;align-items:center;border:1px solid var(--line);margin-top:.4rem}
-.qty button{width:28px;height:28px;font-size:1rem;color:var(--burgundy)}
-.qty button:hover{background:var(--ivory-deep)}
-.qty span{min-width:26px;text-align:center;font-size:.85rem}
-.ci-right{text-align:right}
-.ci-right .p{font-family:var(--serif);font-size:1.15rem;color:var(--burgundy)}
-.remove{font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);text-decoration:underline;margin-top:.3rem}
-.remove:hover{color:var(--burgundy)}
-.drawer-foot{padding:1.4rem 1.6rem 1.8rem;border-top:1px solid var(--line);background:#fff}
-.row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1rem}
-.row strong{font-family:var(--serif);font-size:1.6rem;color:var(--burgundy);font-weight:500}
-
-/* =========================================================
-   CHECKOUT
-   ========================================================= */
-.checkout{background:var(--ivory-deep)}
-.checkout-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:3rem;align-items:start}
-@media(max-width:900px){.checkout-grid{grid-template-columns:1fr}}
-.panel{background:#fff;border:1px solid var(--line);padding:2.4rem}
-@media(max-width:560px){.panel{padding:1.6rem 1.2rem}}
-.panel h3{font-size:1.7rem;color:var(--burgundy);margin-bottom:1.2rem}
-.field{margin-bottom:1.2rem}
-.field label{display:block;font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;font-weight:500;margin-bottom:.45rem;color:var(--ink)}
-.field input,.field textarea{width:100%;padding:.85rem 1rem;border:1px solid var(--line);background:var(--ivory);font:inherit;font-size:.95rem;color:var(--ink);transition:border-color .3s,box-shadow .3s;border-radius:0}
-.field input:focus,.field textarea:focus{outline:none;border-color:var(--rose-gold);box-shadow:0 0 0 3px rgba(183,110,121,.15)}
-.field textarea{resize:vertical;min-height:90px}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-@media(max-width:560px){.two{grid-template-columns:1fr}}
-.bkash{border:1px solid var(--rose-gold-light);background:linear-gradient(135deg,#fff,#fbefee);padding:1.6rem;margin:1.6rem 0}
-.bkash h4{font-size:1.4rem;color:var(--burgundy);display:flex;align-items:center;gap:.6rem}
-.bkash .badge{background:#E2136E;color:#fff;font-family:var(--sans);font-size:.62rem;letter-spacing:.15em;padding:.25rem .6rem;font-weight:600}
-.bkash-number{font-family:var(--serif);font-size:1.8rem;color:var(--ink);letter-spacing:.06em;margin:.6rem 0;display:flex;align-items:center;gap:.8rem;flex-wrap:wrap}
-.copy{font-family:var(--sans);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;border:1px solid var(--rose-gold);color:var(--rose-gold);padding:.3rem .7rem}
-.bkash ol{padding-left:1.2rem;font-size:.88rem;color:var(--muted)}
-.bkash ol li{margin:.3rem 0}
-.bkash ol strong{color:var(--burgundy)}
-.summary-item{display:flex;justify-content:space-between;padding:.7rem 0;border-bottom:1px solid var(--line);font-size:.92rem}
-.summary-item em{color:var(--muted);font-style:normal}
-.error{color:#a3182f;font-size:.8rem;margin-top:.6rem;min-height:1.2em}
-.confirm{text-align:center;padding:3rem 1rem}
-.confirm .check{width:72px;height:72px;border-radius:50%;margin:0 auto 1.4rem;display:grid;place-items:center;border:1px solid var(--rose-gold);color:var(--rose-gold);font-size:2rem}
-.confirm h3{font-size:2.4rem}
-.confirm p{color:var(--muted);max-width:440px;margin:.6rem auto}
-
-/* =========================================================
-   ABOUT
-   ========================================================= */
-.about{text-align:center;position:relative;overflow:hidden}
-.about::before{content:"";position:absolute;width:520px;height:520px;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(232,196,188,.35),transparent 65%)}
-.about-inner{position:relative;max-width:720px;margin:auto}
-.about blockquote{font-family:var(--serif);font-size:clamp(1.4rem,3vw,2rem);line-height:1.55;font-style:italic;color:var(--ink)}
-.about p.small{color:var(--muted);margin-top:1.6rem}
-.signature{font-family:var(--serif);font-size:1.6rem;color:var(--burgundy);margin-top:1.4rem;letter-spacing:.1em}
-
-/* =========================================================
-   FOOTER
-   ========================================================= */
-footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:5rem 0 2rem}
-.foot-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:3rem}
-@media(max-width:760px){.foot-grid{grid-template-columns:1fr;text-align:center}}
-footer .logo{color:var(--ivory)}
-footer .logo span{color:var(--rose-gold-light)}
-footer h5{font-size:.68rem;letter-spacing:.3em;text-transform:uppercase;color:var(--rose-gold-light);margin-bottom:1rem;font-weight:500}
-footer ul{list-style:none}
-footer li{margin:.4rem 0;font-size:.9rem}
-footer a:hover{color:var(--rose-gold-light)}
-.socials{display:flex;gap:.8rem}
-@media(max-width:760px){.socials{justify-content:center}}
-.socials a{width:40px;height:40px;border:1px solid rgba(232,196,188,.4);border-radius:50%;display:grid;place-items:center;transition:all .3s}
-.socials a:hover{background:var(--rose-gold);border-color:var(--rose-gold);color:#fff}
-.copyright{border-top:1px solid rgba(232,196,188,.2);margin-top:3.5rem;padding-top:1.6rem;text-align:center;font-size:.75rem;letter-spacing:.1em}
-
-/* Toast */
-.toast{position:fixed;bottom:1.6rem;left:50%;transform:translate(-50%,120%);background:var(--ink);color:var(--ivory);padding:.9rem 1.6rem;font-size:.8rem;letter-spacing:.08em;z-index:90;transition:transform .45s var(--ease)}
-.toast.show{transform:translate(-50%,0)}
-</style>
-</head>
-<body>
-
-<!-- ======================= NAVIGATION ======================= -->
-<nav class="nav" id="nav">
-  <div class="container">
-    <a href="#home" class="logo">ROSA <span>Fragrance</span></a>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="#home">Home</a></li>
-      <li><a href="#collection">Collection</a></li>
-      <li><a href="#about">Our Story</a></li>
-      <li><a href="#checkout">Checkout</a></li>
-    </ul>
-    <div class="nav-actions">
-      <button class="cart-btn" id="cartBtn" aria-label="Open cart">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
-        <span class="cart-count" id="cartCount">0</span>
-      </button>
-      <button class="menu-btn" id="menuBtn" aria-label="Menu">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 8h16M4 16h16"/></svg>
-      </button>
-    </div>
-  </div>
-</nav>
-
-<!-- ======================= HERO ======================= -->
-<header class="hero" id="home">
-  <div class="petal p1"></div><div class="petal p2"></div><div class="petal p3"></div><div class="petal p4"></div>
-  <div class="hero-inner reveal">
-    <span class="eyebrow">Maison de Parfum · Oil-based</span>
-    <h1>ROSA <em>Fragrance</em></h1>
-    <div class="ornament"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 3c3 2 4 5 2 8-1 1.5-3 1.5-4 0-2-3-1-6 2-8z"/><path d="M12 11v10M12 16c-2-1-4-1-5 0M12 18c2-1 4-1 5 0"/></svg></div>
-    <p class="tagline">The Essence of Elegance</p>
-    <a href="#collection" class="btn btn-solid">Shop Now</a>
-  </div>
-  <div class="scroll-hint"></div>
-</header>
-
-<!-- ======================= PRODUCT CATALOG (3D STONE CAROUSEL) ======================= -->
-<section class="section catalog" id="collection">
-  <div class="container">
-    <div class="section-head reveal">
-      <span class="eyebrow">The Collection</span>
-      <h2>Six Signatures, One Soul</h2>
-      <div class="ornament">✦</div>
-      <p>Pure oil-based perfumes on sculpted stone pedestals — use the arrows to explore each signature scent.</p>
-    </div>
-    
-    <div class="stone-stage">
-      <div class="stone-slider" id="stoneSlider">
-        <!-- Rendered dynamically by JS -->
-      </div>
-      
-      <div class="carousel-controls">
-        <button class="carousel-btn" id="prevBtn" aria-label="Previous Perfume">&#10094;</button>
-        <div class="carousel-dots" id="carouselDots"></div>
-        <button class="carousel-btn" id="nextBtn" aria-label="Next Perfume">&#10095;</button>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ======================= ABOUT ======================= -->
-<section class="section about" id="about">
-  <div class="about-inner reveal">
-    <span class="eyebrow">Our Story</span>
-    <div class="ornament">❦</div>
-    <blockquote>
-      “Rosa was born from a single rose — its quiet strength, its tender bloom, its scent that lingers long after it is gone.”
-    </blockquote>
-    <p class="small">
-      At Rosa Fragrance, we craft oil-based perfumes that sit softly on the skin and unfold slowly through the day.
-      Each blend is composed in small batches, poured by hand and sealed in a petite 6 ml bottle — a private ritual of
-      beauty you can carry anywhere. No alcohol, no haste; only pure essence, made with devotion.
-    </p>
-    <div class="signature">— Rosa</div>
-  </div>
-</section>
-
-<!-- ======================= CHECKOUT ======================= -->
-<section class="section checkout" id="checkout">
-  <div class="container">
-    <div class="section-head reveal">
-      <span class="eyebrow">Checkout</span>
-      <h2>Complete Your Order</h2>
-      <div class="ornament">✦</div>
-    </div>
-
-    <div class="checkout-grid reveal" id="checkoutWrap">
-      <!-- Form -->
-      <form class="panel" id="checkoutForm" novalidate>
-        <h3>Delivery Details</h3>
-        <div class="two">
-          <div class="field"><label for="fName">Full Name *</label><input id="fName" required autocomplete="name" /></div>
-          <div class="field"><label for="fPhone">Phone Number *</label><input id="fPhone" type="tel" required placeholder="01XXXXXXXXX" autocomplete="tel" /></div>
-        </div>
-        <div class="field"><label for="fAddress">Delivery Address *</label><textarea id="fAddress" required placeholder="House, road, area, city"></textarea></div>
-        <div class="field"><label for="fNote">Order Note (optional)</label><textarea id="fNote" placeholder="Gift message, delivery instructions…"></textarea></div>
-
-        <!-- bKash payment -->
-        <div class="bkash">
-          <h4><span class="badge">bKash</span> Payment</h4>
-          <div class="bkash-number"><span id="bkashNum">01632-319773</span><button type="button" class="copy" id="copyBtn">Copy</button></div>
-          <ol>
-            <li>Open your bKash app and choose <strong>Send Money</strong>.</li>
-            <li>Send the total amount of <strong id="bkashTotal">৳0</strong> to the number above.</li>
-            <li>Note the <strong>Transaction ID (TrxID)</strong> from your confirmation SMS.</li>
-            <li>Enter your bKash number and TrxID below, then place your order.</li>
-          </ol>
-        </div>
-        <div class="two">
-          <div class="field"><label for="fSender">Your bKash Number *</label><input id="fSender" type="tel" required placeholder="01XXXXXXXXX" /></div>
-          <div class="field"><label for="fTrx">Transaction ID (TrxID) *</label><input id="fTrx" required placeholder="e.g. 8N7A6B5C4D" style="text-transform:uppercase" /></div>
-        </div>
-        <button type="submit" class="btn btn-solid btn-block">Place Order</button>
-        <p class="error" id="formError"></p>
-      </form>
-
-      <!-- Summary -->
-      <aside class="panel">
-        <h3>Order Summary</h3>
-        <div id="summaryItems"></div>
-        <div class="row" style="margin-top:1.2rem"><span>Delivery</span><span class="meta">Confirmed by phone</span></div>
-        <div class="row"><span>Total</span><strong id="summaryTotal">৳0</strong></div>
-      </aside>
-    </div>
-  </div>
-</section>
-
-<!-- ======================= FOOTER ======================= -->
-<footer>
-  <div class="container">
-    <div class="foot-grid">
-      <div>
-        <a href="#home" class="logo">ROSA <span>Fragrance</span></a>
-        <p style="margin-top:1rem;max-width:320px;font-size:.9rem">The Essence of Elegance. Luxury oil-based perfumes, hand-poured in small batches.</p>
-      </div>
-      <div>
-        <h5>Explore</h5>
-        <ul><li><a href="#collection">Collection</a></li><li><a href="#about">Our Story</a></li><li><a href="#checkout">Checkout</a></li></ul>
-      </div>
-      <div>
-        <h5>Follow Us</h5>
-        <div class="socials">
-          <a href="#" aria-label="Facebook" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M14 8V6c0-.8.2-1.3 1.4-1.3H17V1.2C16.6 1.1 15.4 1 14 1c-3 0-4.9 1.8-4.9 5.1V8H6v3.9h3.1V23H14V11.9h3.1l.5-3.9H14z"/></svg></a>
-          <a href="#" aria-label="Instagram" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg></a>
-          <a href="#" aria-label="WhatsApp" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20l1.3-3.8A8 8 0 1 1 8 19z"/><path d="M9 9c0 3 3 6 6 6l1-1.5-2-1-1 1c-1-.5-2-1.5-2.5-2.5l1-1-1-2z"/></svg></a>
-        </div>
-      </div>
-    </div>
-    <div class="copyright">© <span id="year"></span> Rosa Fragrance. All rights reserved.</div>
-  </div>
-</footer>
-
-<!-- ======================= OVERLAYS ======================= -->
-<div class="overlay" id="overlay"></div>
-
-<!-- Product detail modal -->
-<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mName">
-  <button class="close" data-close aria-label="Close">×</button>
-  <div class="modal-visual" id="mVisual"></div>
-  <div class="modal-info">
-    <span class="eyebrow">6 ml · Oil-based perfume</span>
-    <h3 id="mName" style="margin-top:.6rem"></h3>
-    <p class="price" id="mPrice"></p>
-    <span class="placeholder-tag">Placeholder text — to be replaced</span>
-    <p class="desc" id="mDesc"></p>
-    <ul class="notes" id="mNotes"></ul>
-    <button class="btn btn-solid btn-block" id="mAdd">Add to Cart</button>
-  </div>
-</div>
-
-<!-- Cart drawer -->
-<aside class="drawer" id="drawer" aria-label="Shopping cart">
-  <div class="drawer-head">
-    <span class="eyebrow">Your Selection</span>
-    <h3>Shopping Bag</h3>
-    <button class="close" data-close aria-label="Close cart">×</button>
-  </div>
-  <div class="drawer-items" id="drawerItems"></div>
-  <div class="drawer-foot">
-    <div class="row"><span>Subtotal</span><strong id="subtotal">৳0</strong></div>
-    <a href="#checkout" class="btn btn-solid btn-block" id="toCheckout">Proceed to Checkout</a>
-  </div>
-</aside>
-
-<div class="toast" id="toast"></div>
-
-<script>
-/* =========================================================
-   PRODUCT DATA
-   ========================================================= */
-const CURRENCY = '৳';
-const PRODUCTS = [
-  { id:'aurora', name:'Aurora', price:190,
-    c:'#F7B6C8', c2:'#E77FA0', tint:'rgba(247,182,200,.45)', tintSoft:'#FDF0F3', accent:'#E77FA0', accentDeep:'#B9476E',
-    desc:'[Placeholder] A blush of first light — tender rose petals and ripe berries unfold over a soft, glowing musk. Romantic, luminous and endlessly feminine.',
-    notes:{ top:'Pink pepper, Raspberry', heart:'Damask rose, Peony', base:'White musk, Vanilla' } },
-  { id:'elixir', name:'Elixir', price:190,
-    c:'#A8D8A0', c2:'#6FB866', tint:'rgba(140,200,130,.4)', tintSoft:'#F0F8EE', accent:'#7EBF75', accentDeep:'#4E8F46',
-    desc:'[Placeholder] A verdant potion of crushed leaves and dewy stems, brightened with citrus and softened by a whisper of white florals.',
-    notes:{ top:'Bergamot, Green apple', heart:'Fig leaf, Jasmine', base:'Vetiver, Soft amber' } },
-  { id:'cloud', name:'Cloud', price:190,
-    c:'#CFE6F7', c2:'#9FCBEA', tint:'rgba(175,212,240,.45)', tintSoft:'#F1F7FC', accent:'#9FCBEA', accentDeep:'#5D93BC',
-    desc:'[Placeholder] Weightless and airy, like silk drifting through a morning sky — clean cotton, powdery iris and the gentlest touch of musk.',
-    notes:{ top:'Pear, Aldehydes', heart:'Iris, Cotton flower', base:'Cashmere musk, Ambrette' } },
-  { id:'moonlight', name:'Moonlight', price:190,
-    c:'#6F8FD8', c2:'#3A55A8', tint:'rgba(100,130,210,.35)', tintSoft:'#EEF1FA', accent:'#4D69BE', accentDeep:'#2F468F',
-    desc:'[Placeholder] A nocturne in blue — night-blooming flowers and cool lavender glow beneath a velvet sky of sandalwood and tonka.',
-    notes:{ top:'Lavender, Cardamom', heart:'Night jasmine, Tuberose', base:'Sandalwood, Tonka bean' } },
-  { id:'white-sand', name:'White Sand', price:190,
-    c:'#5EC4D6', c2:'#1F8FAE', tint:'rgba(70,175,205,.35)', tintSoft:'#ECF7FA', accent:'#2A9EBB', accentDeep:'#1A7090',
-    desc:'[Placeholder] Sun-warmed shores and an endless ocean horizon — salty breeze and coconut blossom melt into warm, sheer driftwood.',
-    notes:{ top:'Sea salt, Lemon zest', heart:'Coconut blossom, Frangipani', base:'Driftwood, Ambergris' } },
-  { id:'sea-sage', name:'Sea Sage', price:190,
-    c:'#7FB59A', c2:'#3F7D60', tint:'rgba(95,155,125,.35)', tintSoft:'#EDF5F0', accent:'#4E8C6E', accentDeep:'#2F654C',
-    desc:'[Placeholder] Wild sage growing on coastal cliffs, kissed by sea spray — herbal, mineral and grounding, with a soft woody embrace.',
-    notes:{ top:'Sea mist, Grapefruit', heart:'Clary sage, Rosemary', base:'Cedarwood, Oakmoss' } },
-];
-
-const $ = s => document.querySelector(s);
-const money = n => CURRENCY + n.toLocaleString('en-IN');
-const byId = id => PRODUCTS.find(p => p.id === id);
-
-function bottleHTML(p, s = 1){
-  return `<div class="bottle" style="--s:${s};--c:${p.c};--c2:${p.c2}">
-    <div class="cap"></div><div class="neck"></div>
-    <div class="body"><div class="liquid"></div><div class="shine"></div>
-      <div class="label"><b>ROSA</b><i>${p.name.toUpperCase()}</i></div></div>
-  </div>`;
+    radial-gradient(ellipse 60% 50% at 20% 30%, rgba(232,196,188,0.55), transparent 70%),
+    radial-gradient(ellipse 50% 45% at 85% 75%, rgba(183,110,121,0.28), transparent 70%),
+    var(--ivory);
 }
-
-/* =========================================================
-   3D STONE CAROUSEL RENDER & LOGIC
-   ========================================================= */
-let currentSlide = 0;
-
-function renderCarousel(){
-  const slider = $('#stoneSlider');
-  const dotsContainer = $('#carouselDots');
-  
-  slider.innerHTML = PRODUCTS.map((p, index) => `
-    <div class="stone-slide ${index === currentSlide ? 'active' : ''}" style="--tint:${p.tint};--tint-soft:${p.tintSoft};--accent:${p.accent};--accent-deep:${p.accentDeep}">
-      <div style="cursor:pointer;" onclick="openModal('${p.id}')">
-        <div class="stone-platform">
-          <div class="bottle-container">
-            ${bottleHTML(p, 1.1)}
-          </div>
-        </div>
-      </div>
-      <div class="stone-card-info">
-        <h3>${p.name}</h3>
-        <p class="meta">6 ml · Oil-based perfume</p>
-        <div class="price">${money(p.price)}</div>
-        <button class="btn btn-solid btn-block" onclick="addToCart('${p.id}')">Add to Cart</button>
-      </div>
-    </div>
-  `).join('');
-
-  dotsContainer.innerHTML = PRODUCTS.map((_, index) => `
-    <div class="carousel-dot ${index === currentSlide ? 'active' : ''}" onclick="goToSlide(${index})"></div>
-  `).join('');
-
-  slider.style.transform = `translateX(-${currentSlide * 100}%)`;
-}
-
-function nextSlide(){
-  currentSlide = (currentSlide + 1) % PRODUCTS.length;
-  renderCarousel();
-}
-
-function prevSlide(){
-  currentSlide = (currentSlide - 1 + PRODUCTS.length) % PRODUCTS.length;
-  renderCarousel();
-}
-
-function goToSlide(index){
-  currentSlide = index;
-  renderCarousel();
-}
-
-$('#nextBtn').addEventListener('click', nextSlide);
-$('#prevBtn').addEventListener('click', prevSlide);
-
-/* =========================================================
-   MODAL, CART, CHECKOUT & APP STATE
-   ========================================================= */
-let cart = JSON.parse(localStorage.getItem('rosa_cart') || '[]');
-
-function saveCart(){
-  localStorage.setItem('rosa_cart', JSON.stringify(cart));
-  updateCartUI();
-}
-
-function updateCartUI(){
-  const count = cart.reduce((sum, item) => sum + item.qty, 0);
-  const countEl = $('#cartCount');
-  countEl.textContent = count;
-  countEl.classList.add('bump');
-  setTimeout(() => countEl.classList.remove('bump'), 300);
-
-  const subtotal = cart.reduce((sum, item) => sum + byId(item.id).price * item.qty, 0);
-  $('#subtotal').textContent = money(subtotal);
-  $('#bkashTotal').textContent = money(subtotal);
-  $('#summaryTotal').textContent = money(subtotal);
-
-  const itemsContainer = $('#drawerItems');
-  if(cart.length === 0){
-    itemsContainer.innerHTML = `<div class="empty">Your shopping bag is empty</div>`;
-  } else {
-    itemsContainer.innerHTML = cart.map(item => {
-      const p = byId(item.id);
-      return `<div class="ci" style="--tint-soft:${p.tintSoft}">
-        <div class="ci-thumb">${bottleHTML(p, 0.35)}</div>
-        <div>
-          <h4>${p.name}</h4>
-          <small>${money(p.price)} each</small>
-          <div class="qty">
-            <button onclick="changeQty('${p.id}', -1)">-</button>
-            <span>${item.qty}</span>
-            <button onclick="changeQty('${p.id}', 1)">+</button>
-          </div>
-        </div>
-        <div class="ci-right">
-          <div class="p">${money(p.price * item.qty)}</div>
-          <button class="remove" onclick="removeItem('${p.id}')">Remove</button>
-        </div>
-      </div>`;
-    }).join('');
-  }
-
-  const summaryContainer = $('#summaryItems');
-  summaryContainer.innerHTML = cart.length === 0 ? '<div style="color:var(--muted);font-size:.9rem">No items added yet.</div>' :
-    cart.map(item => {
-      const p = byId(item.id);
-      return `<div class="summary-item"><span>${p.name} <em>× ${item.qty}</em></span><strong>${money(p.price * item.qty)}</strong></div>`;
-    }).join('');
-}
-
-function addToCart(id){
-  const existing = cart.find(i => i.id === id);
-  if(existing){ existing.qty++; }
-  else { cart.push({ id, qty: 1 }); }
-  saveCart();
-  showToast(`Added ${byId(id).name} to your bag`);
-  openDrawer();
-}
-
-function changeQty(id, delta){
-  const item = cart.find(i => i.id === id);
-  if(!item) return;
-  item.qty += delta;
-  if(item.qty <= 0) cart = cart.filter(i => i.id !== id);
-  saveCart();
-}
-
-function removeItem(id){
-  cart = cart.filter(i => i.id !== id);
-  saveCart();
-}
-
-function showToast(msg){
-  const t = $('#toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
-}
-
-/* Modal */
-function openModal(id){
-  const p = byId(id);
-  $('#mName').textContent = p.name;
-  $('#mPrice').textContent = money(p.price);
-  $('#mDesc').textContent = p.desc;
-  $('#mVisual').innerHTML = bottleHTML(p, 1.3);
-  $('#mVisual').style.cssText = `--tint:${p.tint};--tint-soft:${p.tintSoft}`;
-  $('#mNotes').innerHTML = `
-    <li><span>Top</span>${p.notes.top}</li>
-    <li><span>Heart</span>${p.notes.heart}</li>
-    <li><span>Base</span>${p.notes.base}</li>
-  `;
-  $('#mAdd').onclick = () => { addToCart(p.id); closeModal(); };
-  $('#modal').classList.add('show');
-  $('#overlay').classList.add('show');
-  document.body.classList.add('locked');
-}
-
-function closeModal(){
-  $('#modal').classList.remove('show');
-  $('#overlay').classList.remove('show');
-  document.body.classList.remove('locked');
-}
-
-/* Drawer */
-function openDrawer(){
-  $('#drawer').classList.add('show');
-  $('#overlay').classList.add('show');
-  document.body.classList.add('locked');
-}
-
-function closeDrawer(){
-  $('#drawer').classList.remove('show');
-  $('#overlay').classList.remove('show');
-  document.body.classList.remove('locked');
-}
-
-$('#cartBtn').onclick = openDrawer;
-document.querySelectorAll('[data-close]').forEach(el => el.onclick = () => { closeModal(); closeDrawer(); });
-$('#overlay').onclick = () => { closeModal(); closeDrawer(); };
-
-/* Navigation & Mobile menu */
-window.onscroll = () => {
-  if(window.scrollY > 40) $('#nav').classList.add('scrolled');
-  else $('#nav').classList.remove('scrolled');
-};
-
-$('#menuBtn').onclick = () => $('#navLinks').classList.toggle('open');
-document.querySelectorAll('.nav-links a').forEach(a => a.onclick = () => $('#navLinks').classList.remove('open'));
-
-/* Copy bKash */
-$('#copyBtn').onclick = () => {
-  navigator.clipboard.writeText($('#bkashNum').textContent);
-  showToast('bKash number copied to clipboard');
-};
-
-/* Checkout Form Submission */
-$('#checkoutForm').onsubmit = e => {
-  e.preventDefault();
-  if(cart.length === 0){
-    $('#formError').textContent = 'Please add at least one perfume to your bag.';
-    return;
-  }
-  const name = $('#fName').value.trim();
-  const phone = $('#fPhone').value.trim();
-  const address = $('#fAddress').value.trim();
-  const sender = $('#fSender').value.trim();
-  const trx = $('#fTrx').value.trim();
-
-  if(!name || !phone || !address || !sender || !trx){
-    $('#formError').textContent = 'Please fill in all required fields marked with *';
-    return;
-  }
-  $('#formError').textContent = '';
-
-  $('#checkoutWrap').innerHTML = `
-    <div class="panel confirm" style="grid-column: 1 / -1">
-      <div class="check">✓</div>
-      <h3>Order Placed Successfully!</h3>
-      <p>Thank you, <strong>${name}</strong>. We have received your order and bKash payment verification (TrxID: <strong>${trx.toUpperCase()}</strong>).</p>
-      <p style="margin-top:1rem">We will call you at <strong>${phone}</strong> shortly to confirm your delivery address.</p>
-    </div>
-  `;
-  cart = [];
-  saveCart();
-};
-
-$('#year').textContent = new Date().getFullYear();
-renderCarousel();
-</script>
-</body>
-</html>
+.petal { position: absolute; border-radius: 80% 0 80% 0; background: linear-gradient(135deg, rgba(232,196,188,0.7), rgba(183,110,121,0.25)); animation: float 14s ease-in-out infinite; }
+.petal.p1 { width: 90px; height: 90px; top: 18%; left: 10%; }
+.petal.p2 { width: 60px; height: 60px; bottom: 20%; right: 12%; animation-delay: -4s; transform: rotate(60deg); }
+.petal.p3 { width: 40px; height: 40px; top: 28%; right: 22%; animation-delay: -8
