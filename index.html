@@ -113,7 +113,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .stone-info { background: #fff; border: 1px solid var(--line); text-align: center; padding: 1.8rem; box-shadow: var(--shadow); margin-top: 1rem; border-radius: 12px; }
 .stone-info h3 { font-size: 2.2rem; color: var(--burgundy); }
 .stone-info .price { font-family: var(--serif); font-size: 1.6rem; color: var(--burgundy); margin: 0.4rem 0 1rem; }
-.stone-info p.notes-preview { font-size: 0.85rem; color: var(--muted); margin-bottom: 1rem; font-style: italic; }
+.stone-info p.notes-preview { font-size: 0.85rem; color: var(--muted); margin-bottom: 1rem; font-style: italic; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
 .carousel-btn { position: absolute; top: 38%; transform: translateY(-50%); width: 54px; height: 54px; border-radius: 50%; background: #fff; border: 1.5px solid var(--burgundy); color: var(--burgundy); font-size: 1.4rem; display: grid; place-items: center; z-index: 20; box-shadow: 0 10px 25px rgba(0,0,0,0.15); transition: all 0.3s; }
 .carousel-btn:hover { background: var(--burgundy); color: #fff; transform: translateY(-50%) scale(1.08); }
@@ -137,55 +137,70 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.4s var(--ease);
+  overflow-y: auto;
+  padding: 2rem 1rem;
 }
 .product-modal.show {
   opacity: 1;
   pointer-events: auto;
 }
 .modal-content {
-  width: min(850px, 90%);
+  width: min(900px, 92%);
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 3rem;
-  align-items: center;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 3.5rem;
+  align-items: start;
   position: relative;
+  margin: auto;
 }
 @media(max-width: 768px) {
   .modal-content { grid-template-columns: 1fr; gap: 1.5rem; text-align: center; }
+  .modal-close { top: -40px !important; right: 0 !important; }
 }
 .modal-close {
   position: absolute;
-  top: -60px;
-  right: 0;
-  font-size: 2.2rem;
+  top: -20px;
+  right: -20px;
+  font-size: 2.5rem;
   color: var(--burgundy);
   cursor: pointer;
   background: none;
   border: none;
+  line-height: 1;
+}
+.modal-left {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .modal-left img {
   width: 100%;
-  max-height: 380px;
+  max-width: 280px;
+  max-height: 400px;
   object-fit: contain;
   display: block;
-  filter: drop-shadow(0 20px 30px rgba(0,0,0,0.15));
+  filter: drop-shadow(0 20px 30px rgba(0,0,0,0.12));
 }
 .modal-right h2 {
-  font-size: clamp(2.4rem, 4vw, 3.2rem);
+  font-size: clamp(2.2rem, 4vw, 3rem);
   color: var(--burgundy);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.3rem;
 }
 .modal-right .price {
   font-family: var(--serif);
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   color: var(--burgundy);
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
 }
 .modal-right p {
   color: var(--muted);
-  font-size: 1rem;
+  font-size: 0.95rem;
   margin-bottom: 2rem;
   line-height: 1.8;
+  text-align: left;
+}
+@media(max-width: 768px) {
+  .modal-right p { text-align: center; }
 }
 
 .overlay { position: fixed; inset: 0; background: rgba(28,23,24,0.45); backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity 0.4s; z-index: 60; }
@@ -246,7 +261,7 @@ footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding
       <span class="eyebrow">The Collection</span>
       <h2>Six Signatures, One Soul</h2>
       <div class="ornament">✦</div>
-      <p>Click any scene to view perfume details.</p>
+      <p>Click any scene to explore perfume details.</p>
     </div>
     <div class="stone-wrapper">
       <button class="carousel-btn prev-btn" id="prevBtn">&#10094;</button>
@@ -342,12 +357,54 @@ footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding
 <script>
 const CURRENCY = '৳';
 const PRODUCTS = [
-  { id:'aurora', name:'Aurora', price:190, desc:'Tender rose petals and ripe berries over soft musk.', scene: 'public/Aurora.jpeg', bottle: 'public/bottle-aurora.png' },
-  { id:'elixir', name:'Elixir', price:190, desc:'Verdant potion of crushed leaves, citrus, and white florals.', scene: 'public/Elixir.jpeg', bottle: 'public/bottle-elixir.png' },
-  { id:'cloud', name:'Cloud', price:190, desc:'Clean cotton, powdery iris, and gentle musk.', scene: 'public/Cloud.jpeg', bottle: 'public/bottle-cloud.png' },
-  { id:'moonlight', name:'Moonlight', price:190, desc:'Night-blooming flowers and cool lavender under velvet sky.', scene: 'public/moonlight.jpeg', bottle: 'public/bottle-moonlight.png' },
-  { id:'white-sand', name:'White Sand', price:190, desc:'Salty ocean breeze and coconut blossom over driftwood.', scene: 'public/whitesand.jpeg', bottle: 'public/bottle-white-sand.png' },
-  { id:'sea-sage', name:'Sea Sage', price:190, desc:'Wild coastal sage with sea spray and cedarwood.', scene: 'public/sea-sage.jpeg', bottle: 'public/bottle-sea-sage.png' }
+  { 
+    id:'aurora', 
+    name:'Aurora', 
+    price:190, 
+    desc:'Aurora is a rich and woody but gentle fragrance that pairs well with your fresh elegant ensemble. It opens with top notes of tangy grapefruit with a dash of rosemary and cardamom. The heart is made up of soft floral notes of ylang-ylang and tuberose. Finally, the base notes are made up of the potent scents of cedar, leather, suede, and vetiver. The scent is pleasant but not overpowering, so you can feel confident wearing it whether you’re at work, at the gym, at a party, or on a date.', 
+    scene: 'public/Aurora.jpeg', 
+    bottle: 'public/bottle-aurora.png' 
+  },
+  { 
+    id:'elixir', 
+    name:'Elixir', 
+    price:190, 
+    desc:'Elixir is powerful and refined, reveals the essence of determination.\n\nAn aromatic freshness opens, lingering on the warm, addictive fullness of Cedar and Sandalwood from New Caledonia that sweeps throughout the intense, woody fragrance.\n\nTop notes are Grapefruit, Lemon, Mint and Pink Pepper; middle notes are Ginger, Nutmeg, Jasmine and Iso E Super; base notes are Incense, Vetiver, Cedar, Sandalwood, Patchouli, Labdanum and White Musk.', 
+    scene: 'public/Elixir.jpeg', 
+    bottle: 'public/bottle-elixir.png' 
+  },
+  { 
+    id:'cloud', 
+    name:'Cloud', 
+    price:190, 
+    desc:'Cloud brings to life the extensive and pristine beauty of Switzerland and their breath-taking Alpine region. The fragrance captures the essence of crystal clear Alpine streams descending over frosted rock face, whilst retaining the comfort of a warm and plush jacket.\n\nA contemporary unisex scent, "Cloud" perfectly balances crisp & sharp citric notes with warming sweet blackcurrant and charming musk.', 
+    scene: 'public/Cloud.jpeg', 
+    bottle: 'public/bottle-cloud.png' 
+  },
+  { 
+    id:'moonlight', 
+    name:'Moonlight', 
+    price:190, 
+    desc:'Discover the Intense freshness from the sea. The scent unfolds into oriental notes of coconut water blended with the sensuality of amber accord. Your ultimate call of freshness, hedonism and seduction.\n\nTop notes are Sea water, Lavender, Mint, Green Notes, Rosemary, Calone and Coriander; middle notes are Sandalwood, Neroli, Geranium and Jasmine; base notes are Musk, Tobacco, Oakmoss, Cedar and Amber.', 
+    scene: 'public/moonlight.jpeg', 
+    bottle: 'public/bottle-moonlight.png' 
+  },
+  { 
+    id:'white-sand', 
+    name:'White Sand', 
+    price:190, 
+    desc:'Mixed with the coolness of the night, the burning desert air exudes profound scents. White Sand is thus the olfactory interpretation of a moment tinted with a thick blue that unleashes the wildest instincts. In the hour when the wolves come out and the sky is set ablaze, a new magic unfolds.\n\nWhite Sand has a juicy, spicy Calabrian Bergamot note with the sensuality of a mysterious and enveloping Papua New Guinean Vanilla absolute accord. The fragrance unfurls a powerful and noble trail.\n\nTop notes are Calabrian bergamot and Pepper; middle notes are Sichuan Pepper, Lavender, Pink Pepper, Vetiver, Patchouli, Geranium and elemi; base notes are Ambroxan, Cedar and Labdanum.', 
+    scene: 'public/whitesand.jpeg', 
+    bottle: 'public/bottle-white-sand.png' 
+  },
+  { 
+    id:'sea-sage', 
+    name:'Sea Sage', 
+    price:190, 
+    desc:'Sea Sage is the fragrance that interprets the sublime elegance through a luminous aura with an intense, vibrant and glowing freshness obtained from the combination of mint leaves, Italian lemon zest and green apple. An addictive sensuality delivered by Oriental, intriguing and enveloping notes like Tonka Beans, Amber, Geranium Flower and Vanilla. A racy virility symbolized by woods such as Cedarwood from Atlas and Virginia, Vetiver and Oak Moss, providing intensity and power.', 
+    scene: 'public/sea-sage.jpeg', 
+    bottle: 'public/bottle-sea-sage.png' 
+  }
 ];
 
 let currentIndex = 0;
@@ -383,6 +440,7 @@ function openProductModal(id) {
   $('#modalImg').onerror = () => { $('#modalImg').src = item.scene; };
   $('#modalTitle').textContent = item.name;
   $('#modalPrice').textContent = CURRENCY + item.price;
+  $('#modalDesc').style.whiteSpace = 'pre-line';
   $('#modalDesc').textContent = item.desc;
   $('#modalAddToCart').onclick = () => {
     addToCart(item.id);
