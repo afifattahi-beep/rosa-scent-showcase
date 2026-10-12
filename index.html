@@ -263,7 +263,7 @@ footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding
       <div class="ornament">✦</div>
       <p>Click any scene to explore perfume details.</p>
     </div>
-    <div class="stone-wrapper">
+    <div class="stone-wrapper" id="carouselWrapper">
       <button class="carousel-btn prev-btn" id="prevBtn">&#10094;</button>
       <div class="stone-stage" id="stoneStage"></div>
       <button class="carousel-btn next-btn" id="nextBtn">&#10095;</button>
@@ -434,6 +434,30 @@ function render3DCarousel() {
   }).join('');
 }
 
+function nextSlide() {
+  currentIndex = (currentIndex + 1) % PRODUCTS.length;
+  render3DCarousel();
+}
+
+function prevSlide() {
+  currentIndex = (currentIndex - 1 + PRODUCTS.length) % PRODUCTS.length;
+  render3DCarousel();
+}
+
+// 2-Second Auto-Play Timer
+let autoPlayTimer = setInterval(nextSlide, 2000);
+
+// Pause auto-play on hover so users can interact easily
+const wrapper = $('#carouselWrapper');
+wrapper.onmouseenter = () => clearInterval(autoPlayTimer);
+wrapper.onmouseleave = () => {
+  clearInterval(autoPlayTimer);
+  autoPlayTimer = setInterval(nextSlide, 2000);
+};
+
+$('#nextBtn').onclick = nextSlide;
+$('#prevBtn').onclick = prevSlide;
+
 function openProductModal(id) {
   const item = byId(id);
   $('#modalImg').src = item.bottle;
@@ -457,9 +481,6 @@ function closeProductModal() {
 
 $('#modalClose').onclick = closeProductModal;
 $('#productModal').onclick = (e) => { if (e.target === $('#productModal')) closeProductModal(); };
-
-$('#nextBtn').onclick = () => { currentIndex = (currentIndex + 1) % PRODUCTS.length; render3DCarousel(); };
-$('#prevBtn').onclick = () => { currentIndex = (currentIndex - 1 + PRODUCTS.length) % PRODUCTS.length; render3DCarousel(); };
 
 function saveCart() {
   localStorage.setItem('rosa_cart', JSON.stringify(cart));
