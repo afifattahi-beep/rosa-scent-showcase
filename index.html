@@ -292,10 +292,10 @@ footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding
         <h3 style="margin-top:1.5rem;">Payment Method</h3>
         <div class="payment-options">
           <label class="payment-option">
-            <input type="radio" name="paymentMethod" value="cod" checked onchange="togglePaymentMethod()" /> Cash on Delivery
+            <input type="radio" name="paymentMethod" value="Cash on Delivery" checked onchange="togglePaymentMethod()" /> Cash on Delivery
           </label>
           <label class="payment-option">
-            <input type="radio" name="paymentMethod" value="bkash" onchange="togglePaymentMethod()" /> bKash Payment
+            <input type="radio" name="paymentMethod" value="bKash" onchange="togglePaymentMethod()" /> bKash Payment
           </label>
         </div>
 
@@ -309,7 +309,7 @@ footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding
           </div>
         </div>
 
-        <button type="submit" class="btn btn-solid btn-block" style="margin-top:1.5rem;">Place Order</button>
+        <button type="submit" class="btn btn-solid btn-block" style="margin-top:1.5rem;">Place Order via WhatsApp</button>
       </form>
       <aside class="panel">
         <h3>Order Summary</h3>
@@ -478,7 +478,7 @@ function togglePaymentMethod() {
   const fSender = $('#fSender');
   const fTrx = $('#fTrx');
   
-  if (method === 'bkash') {
+  if (method === 'bKash') {
     bkashBox.style.display = 'block';
     fSender.required = true;
     fTrx.required = true;
@@ -557,7 +557,7 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2000);
 }
 
-function openDrawer() { $('#drawer').classList.add('show'); $('#overlay').classList.add('show'); }
+function openDrawer() { $('#drawer').classList.add('show'); $('#overlay').classList.add('shadow'); }
 function closeDrawer() { $('#drawer').classList.remove('show'); $('#overlay').classList.remove('show'); }
 
 $('#cartBtn').onclick = openDrawer;
@@ -567,7 +567,37 @@ $('#overlay').onclick = closeDrawer;
 $('#checkoutForm').onsubmit = e => {
   e.preventDefault();
   if (!cart.length) return alert('Your cart is empty');
-  $('#checkoutWrap').innerHTML = `<div class="panel" style="text-align:center;grid-column:1/-1;"><h3>Order Placed Successfully!</h3><p>Thank you for shopping with Rosa Fragrance. We will call you shortly to confirm your order.</p></div>`;
+
+  const name = $('#fName').value;
+  const phone = $('#fPhone').value;
+  const address = $('#fAddress').value;
+  const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+  
+  let orderItems = cart.map(i => {
+    const item = byId(i.id);
+    return `- ${item.name} (${i.qty}x) - ${CURRENCY}${item.price * i.qty}`;
+  }).join('\n');
+
+  const total = cart.reduce((s, i) => s + byId(i.id).price * i.qty, 0);
+
+  let message = `*New Order - Rosa Fragrance*\n\n` +
+                `*Name:* ${name}\n` +
+                `*Phone:* ${phone}\n` +
+                `*Address:* ${address}\n\n` +
+                `*Items:*\n${orderItems}\n\n` +
+                `*Total:* ${CURRENCY}${total}\n` +
+                `*Payment:* ${paymentMethod}`;
+
+  if (paymentMethod === 'bKash') {
+    const sender = $('#fSender').value;
+    const trx = $('#fTrx').value;
+    message += `\n*bKash Number:* ${sender}\n*TrxID:* ${trx}`;
+  }
+
+  const whatsappUrl = `https://wa.me/8801337301890?text=${encodeURIComponent(message)}`;
+  window.open(whatsappUrl, '_blank');
+
+  $('#checkoutWrap').innerHTML = `<div class="panel" style="text-align:center;grid-column:1/-1;"><h3>Order Sent to WhatsApp!</h3><p>Thank you for shopping with Rosa Fragrance. We have opened WhatsApp to complete your order confirmation.</p></div>`;
   cart = [];
   saveCart();
 };
