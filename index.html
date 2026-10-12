@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Rosa Fragrance — The Essence of Elegance</title>
-<meta name="description" content="Rosa Fragrance — luxury oil-based perfumes in 6 ml bottles on custom scenic stages." />
+<meta name="description" content="Rosa Fragrance — luxury oil-based perfumes in 6 ml bottles." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -91,42 +91,25 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   z-index: 5;
 }
 
-/* Custom Background Display Card */
-.stage-card {
-  position: relative;
+/* Scene Card Container */
+.scene-frame {
   width: 100%;
-  aspect-ratio: 4/3;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 25px 45px rgba(0,0,0,0.25);
-  background-size: cover;
-  background-position: center;
   border: 1px solid var(--line);
-}
-
-/* Precise Bottle Alignment for Each Specific Background */
-.bottle-overlay {
-  position: absolute;
+  background: #fff;
   transition: transform 0.4s var(--ease);
 }
-.stage-card:hover .bottle-overlay {
-  transform: scale(1.04);
+.scene-frame:hover {
+  transform: translateY(-4px);
 }
 
-.bottle-overlay img {
+.scene-frame img {
   width: 100%;
   height: auto;
   display: block;
-  filter: drop-shadow(0 15px 20px rgba(0,0,0,0.45));
 }
-
-/* Custom positions per background scene */
-.bottle-aurora { width: 150px; bottom: 22%; left: 42%; }
-.bottle-elixir { width: 160px; bottom: 20%; left: 40%; }
-.bottle-cloud { width: 170px; bottom: 18%; left: 42%; }
-.bottle-moonlight { width: 165px; bottom: 22%; left: 41%; }
-.bottle-white-sand { width: 160px; bottom: 26%; left: 42%; }
-.bottle-sea-sage { width: 170px; bottom: 21%; left: 41%; }
 
 .stone-info { background: #fff; border: 1px solid var(--line); text-align: center; padding: 1.8rem; box-shadow: var(--shadow); margin-top: 1rem; border-radius: 12px; }
 .stone-info h3 { font-size: 2.2rem; color: var(--burgundy); }
@@ -201,7 +184,7 @@ footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding
       <span class="eyebrow">The Collection</span>
       <h2>Six Signatures, One Soul</h2>
       <div class="ornament">✦</div>
-      <p>Explore our luxury oil-based fragrances crafted in signature visual worlds.</p>
+      <p>Explore our luxury oil-based fragrances in their signature scenes.</p>
     </div>
     <div class="stone-wrapper">
       <button class="carousel-btn prev-btn" id="prevBtn">&#10094;</button>
@@ -281,12 +264,12 @@ footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding
 <script>
 const CURRENCY = '৳';
 const PRODUCTS = [
-  { id:'aurora', name:'Aurora', price:190, class:'bottle-aurora', bg: 'public/bg-aurora.jpeg', desc:'Tender rose petals and ripe berries over soft musk.', img: 'public/bottle-aurora.png' },
-  { id:'elixir', name:'Elixir', price:190, class:'bottle-elixir', bg: 'public/bg-elixir.jpeg', desc:'Verdant potion of crushed leaves, citrus, and white florals.', img: 'public/bottle-elixir.png' },
-  { id:'cloud', name:'Cloud', price:190, class:'bottle-cloud', bg: 'public/bg-cloud.jpeg', desc:'Clean cotton, powdery iris, and gentle musk.', img: 'public/bottle-cloud.png' },
-  { id:'moonlight', name:'Moonlight', price:190, class:'bottle-moonlight', bg: 'public/bg-moonlight.jpeg', desc:'Night-blooming flowers and cool lavender under velvet sky.', img: 'public/bottle-moonlight.png' },
-  { id:'white-sand', name:'White Sand', price:190, class:'bottle-white-sand', bg: 'public/bg-white-sand.jpeg', desc:'Salty ocean breeze and coconut blossom over driftwood.', img: 'public/bottle-white-sand.png' },
-  { id:'sea-sage', name:'Sea Sage', price:190, class:'bottle-sea-sage', bg: 'public/bg-sea-sage.jpeg', desc:'Wild coastal sage with sea spray and cedarwood.', img: 'public/bottle-sea-sage.png' }
+  { id:'aurora', name:'Aurora', price:190, desc:'Tender rose petals and ripe berries over soft musk.', img: 'public/Aurora.jpeg' },
+  { id:'elixir', name:'Elixir', price:190, desc:'Verdant potion of crushed leaves, citrus, and white florals.', img: 'public/Elixir.jpeg' },
+  { id:'cloud', name:'Cloud', price:190, desc:'Clean cotton, powdery iris, and gentle musk.', img: 'public/Cloud.jpeg' },
+  { id:'moonlight', name:'Moonlight', price:190, desc:'Night-blooming flowers and cool lavender under velvet sky.', img: 'public/moonlight.jpeg' },
+  { id:'white-sand', name:'White Sand', price:190, desc:'Salty ocean breeze and coconut blossom over driftwood.', img: 'public/whitesand.jpeg' },
+  { id:'sea-sage', name:'Sea Sage', price:190, desc:'Wild coastal sage with sea spray and cedarwood.', img: 'public/sea-sage.jpeg' }
 ];
 
 let currentIndex = 0;
@@ -303,10 +286,8 @@ function render3DCarousel() {
     else if (index === (currentIndex + 1) % PRODUCTS.length) pos = 'next';
     return `
       <div class="stone-card ${pos}">
-        <div class="stage-card" style="background-image: url('${item.bg}');">
-          <div class="bottle-overlay ${item.class}">
-            <img src="${item.img}" alt="${item.name} Perfume" onerror="this.src='${item.img.replace('.png', '.jpeg')}'" />
-          </div>
+        <div class="scene-frame">
+          <img src="${item.img}" alt="${item.name} Fragrance" />
         </div>
         <div class="stone-info">
           <h3>${item.name}</h3>
