@@ -22,6 +22,534 @@
   --shadow: 0 25px 50px -12px rgba(74,19,32,0.25);
   --serif: 'Cormorant Garamond', Georgia, serif;
   --sans: 'Montserrat', system-ui, sans-serif;
+  --ease: cubic-bezier(0.25, 1, 0.5, 1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--sans); font-weight: 300; color: var(--ink); background: var(--ivory); line-height: 1.7; overflow-x: hidden; }
+body.locked { overflow: hidden; }
+h1, h2, h3, h4 { font-family: var(--serif); font-weight: 500; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+.container { width: min(1180px, 90%); margin: auto; }
+.btn { display: inline-block; padding: 1rem 2.4rem; font-size: 0.72rem; letter-spacing: 0.28em; text-transform: uppercase; font-weight: 500; border: 1px solid var(--burgundy); color: var(--burgundy); transition: all 0.4s var(--ease); background: transparent; }
+.btn:hover { background: var(--burgundy); color: var(--ivory); }
+.btn-solid { background: var(--burgundy); color: var(--ivory); }
+.btn-solid:hover { background: var(--burgundy-dark); border-color: var(--burgundy-dark); }
+.btn-block { width: 100%; text-align: center; }
+.ornament { display: flex; align-items: center; justify-content: center; gap: 0.9rem; color: var(--rose-gold); margin: 1rem auto 1.4rem; }
+.ornament::before, .ornament::after { content: ""; width: 60px; height: 1px; background: linear-gradient(90deg, transparent, var(--rose-gold)); }
+.ornament::after { transform: scaleX(-1); }
+.eyebrow { font-size: 0.7rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--rose-gold); font-weight: 500; }
+.section { padding: 6rem 0; }
+.section-head { text-align: center; max-width: 620px; margin: 0 auto 3rem; }
+.section-head h2 { font-size: clamp(2.2rem, 5vw, 3.2rem); color: var(--burgundy); line-height: 1.15; margin-top: 0.6rem; }
+
+.nav { position: fixed; inset: 0 0 auto; z-index: 50; transition: all 0.4s var(--ease); padding: 1.4rem 0; background: rgba(250,246,239,0.92); backdrop-filter: blur(10px); box-shadow: 0 1px 0 var(--line); }
+.nav .container { display: flex; align-items: center; justify-content: space-between; }
+.logo { font-family: var(--serif); font-size: 1.6rem; letter-spacing: 0.12em; color: var(--burgundy); font-weight: 600; }
+.logo span { color: var(--rose-gold); font-style: italic; font-weight: 400; }
+.nav-links { display: flex; gap: 2.4rem; list-style: none; }
+.nav-links a { font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase; font-weight: 500; }
+.nav-actions { display: flex; align-items: center; gap: 0.6rem; }
+.cart-btn { position: relative; padding: 0.4rem; color: var(--burgundy); }
+.cart-count { position: absolute; top: -2px; right: -4px; background: var(--rose-gold); color: #fff; font-size: 0.62rem; font-weight: 600; min-width: 18px; height: 18px; border-radius: 9px; display: grid; place-items: center; padding: 0 4px; }
+
+.hero { min-height: 100vh; display: grid; place-items: center; text-align: center; position: relative; overflow: hidden; background: radial-gradient(ellipse 60% 50% at 20% 30%, rgba(232,196,188,0.55), transparent 70%), var(--ivory); }
+.hero-inner { position: relative; padding: 6rem 1rem 3rem; }
+.hero h1 { font-size: clamp(3.4rem, 11vw, 8rem); line-height: 1; color: var(--burgundy); font-weight: 400; letter-spacing: 0.06em; }
+.hero h1 em { color: var(--rose-gold); font-style: normal; }
+.hero .tagline { font-family: var(--serif); font-style: italic; font-size: clamp(1.3rem, 3vw, 1.9rem); color: var(--ink); margin-bottom: 2.6rem; }
+
+.catalog { background: var(--ivory-deep); padding: 6rem 0; overflow: hidden; }
+.stone-wrapper { position: relative; max-width: 520px; margin: 0 auto; padding: 2rem 0; }
+.stone-stage { overflow: hidden; width: 100%; border-radius: 16px; }
+.stone-track { display: flex; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); will-change: transform; }
+
+.stone-card {
+  min-width: 100%;
+  box-sizing: border-box;
+}
+
+.scene-frame {
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 25px 45px rgba(0,0,0,0.25);
+  border: 1px solid var(--line);
+  background: #fff;
+  cursor: pointer;
+  transition: transform 0.4s var(--ease);
+}
+.scene-frame:hover {
+  transform: translateY(-4px);
+}
+.scene-frame img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.stone-info { background: #fff; border: 1px solid var(--line); text-align: center; padding: 1.8rem; box-shadow: var(--shadow); margin-top: 1rem; border-radius: 12px; }
+.stone-info h3 { font-size: 2.2rem; color: var(--burgundy); }
+.stone-info .price { font-family: var(--serif); font-size: 1.6rem; color: var(--burgundy); margin: 0.4rem 0 1rem; }
+.stone-info p.notes-preview { font-size: 0.85rem; color: var(--muted); margin-bottom: 1rem; font-style: italic; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+.carousel-btn { position: absolute; top: 42%; transform: translateY(-50%); width: 54px; height: 54px; border-radius: 50%; background: #fff; border: 1.5px solid var(--burgundy); color: var(--burgundy); font-size: 1.4rem; display: grid; place-items: center; z-index: 20; box-shadow: 0 10px 25px rgba(0,0,0,0.15); transition: all 0.3s; }
+.carousel-btn:hover { background: var(--burgundy); color: #fff; transform: translateY(-50%) scale(1.08); }
+.carousel-btn.prev-btn { left: -65px; }
+.carousel-btn.next-btn { right: -65px; }
+
+@media(max-width: 700px) {
+  .carousel-btn.prev-btn { left: -10px; }
+  .carousel-btn.next-btn { right: -10px; }
+}
+
+/* Full White Product Detail Interface */
+.product-modal {
+  position: fixed;
+  inset: 0;
+  background: #FFFFFF;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease);
+  overflow-y: auto;
+  padding: 2rem 1rem;
+}
+.product-modal.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+.modal-content {
+  width: min(900px, 92%);
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 3.5rem;
+  align-items: start;
+  position: relative;
+  margin: auto;
+}
+@media(max-width: 768px) {
+  .modal-content { grid-template-columns: 1fr; gap: 1.5rem; text-align: center; }
+  .modal-close { top: -40px !important; right: 0 !important; }
+}
+.modal-close {
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  font-size: 2.5rem;
+  color: var(--burgundy);
+  cursor: pointer;
+  background: none;
+  border: none;
+  line-height: 1;
+}
+.modal-left {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-left img {
+  width: 100%;
+  max-width: 280px;
+  max-height: 400px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 20px 30px rgba(0,0,0,0.12));
+}
+.modal-right h2 {
+  font-size: clamp(2.2rem, 4vw, 3rem);
+  color: var(--burgundy);
+  margin-bottom: 0.3rem;
+}
+.modal-right .price {
+  font-family: var(--serif);
+  font-size: 1.6rem;
+  color: var(--burgundy);
+  margin-bottom: 1.2rem;
+}
+.modal-right p {
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+  line-height: 1.8;
+  text-align: left;
+}
+@media(max-width: 768px) {
+  .modal-right p { text-align: center; }
+}
+
+.overlay { position: fixed; inset: 0; background: rgba(28,23,24,0.45); backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity 0.4s; z-index: 60; }
+.overlay.show { opacity: 1; pointer-events: auto; }
+.drawer { position: fixed; top: 0; right: 0; height: 100%; width: min(400px, 100vw); background: var(--ivory); z-index: 70; transform: translateX(100%); transition: transform 0.5s var(--ease); display: flex; flex-direction: column; box-shadow: -20px 0 50px -20px rgba(0,0,0,0.25); }
+.drawer.show { transform: none; }
+.drawer-head { padding: 1.6rem; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+.drawer-items { flex: 1; overflow: auto; padding: 1rem 1.6rem; }
+.drawer-foot { padding: 1.4rem 1.6rem; border-top: 1px solid var(--line); background: #fff; }
+
+.checkout { background: var(--ivory-deep); }
+.checkout-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 2.5rem; }
+@media(max-width:850px) { .checkout-grid { grid-template-columns: 1fr; } }
+.panel { background: #fff; border: 1px solid var(--line); padding: 2rem; }
+.field { margin-bottom: 1rem; }
+.field label { display: block; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 500; margin-bottom: 0.4rem; }
+.field input, .field textarea { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--line); background: var(--ivory); font: inherit; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.bkash { border: 1px solid var(--rose-gold-light); background: #fff; padding: 1.4rem; margin: 1.2rem 0; }
+.bkash-number { font-family: var(--serif); font-size: 1.6rem; color: var(--burgundy); margin: 0.4rem 0; }
+footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding: 4rem 0 2rem; text-align: center; font-size: 0.8rem; }
+.toast { position: fixed; bottom: 1.6rem; left: 50%; transform: translate(-50%,120%); background: var(--ink); color: var(--ivory); padding: 0.8rem 1.5rem; font-size: 0.8rem; z-index: 90; transition: transform 0.4s; }
+.toast.show { transform: translate(-50%,0); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="container">
+    <a href="#home" class="logo">ROSA <span>Fragrance</span></a>
+    <ul class="nav-links">
+      <li><a href="#collection">Collection</a></li>
+      <li><a href="#about">Our Story</a></li>
+      <li><a href="#checkout">Checkout</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="cart-btn" id="cartBtn">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="home">
+  <div class="hero-inner">
+    <span class="eyebrow">Maison de Parfum · Oil-based</span>
+    <h1>ROSA <em>Fragrance</em></h1>
+    <div class="ornament">✦</div>
+    <p class="tagline">The Essence of Elegance</p>
+    <a href="#collection" class="btn btn-solid">Shop Now</a>
+  </div>
+</header>
+
+<section class="section catalog" id="collection">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">The Collection</span>
+      <h2>Six Signatures, One Soul</h2>
+      <div class="ornament">✦</div>
+      <p>Click any scene to explore perfume details.</p>
+    </div>
+    <div class="stone-wrapper" id="carouselWrapper">
+      <button class="carousel-btn prev-btn" id="prevBtn">&#10094;</button>
+      <div class="stone-stage">
+        <div class="stone-track" id="stoneTrack"></div>
+      </div>
+      <button class="carousel-btn next-btn" id="nextBtn">&#10095;</button>
+    </div>
+  </div>
+</section>
+
+<!-- Product Detail Modal Interface -->
+<div class="product-modal" id="productModal">
+  <div class="modal-content">
+    <button class="modal-close" id="modalClose">&times;</button>
+    <div class="modal-left">
+      <img id="modalImg" src="" alt="Perfume Bottle" />
+    </div>
+    <div class="modal-right">
+      <h2 id="modalTitle"></h2>
+      <div class="price" id="modalPrice"></div>
+      <p id="modalDesc"></p>
+      <button class="btn btn-solid btn-block" id="modalAddToCart">Add to Cart</button>
+    </div>
+  </div>
+</div>
+
+<section class="section" id="about" style="text-align:center;">
+  <div class="container" style="max-width:680px;">
+    <span class="eyebrow">Our Story</span>
+    <div class="ornament">❦</div>
+    <blockquote style="font-family:var(--serif);font-size:1.6rem;font-style:italic;">
+      “Rosa was born from a single rose — its quiet strength, its tender bloom, its scent that lingers long after it is gone.”
+    </blockquote>
+  </div>
+</section>
+
+<section class="section checkout" id="checkout">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Checkout</span>
+      <h2>Complete Your Order</h2>
+      <div class="ornament">✦</div>
+    </div>
+    <div class="checkout-grid" id="checkoutWrap">
+      <form class="panel" id="checkoutForm">
+        <h3>Delivery Details</h3>
+        <div class="two">
+          <div class="field"><label>Full Name *</label><input id="fName" required /></div>
+          <div class="field"><label>Phone Number *</label><input id="fPhone" type="tel" required placeholder="01XXXXXXXXX" /></div>
+        </div>
+        <div class="field"><label>Delivery Address *</label><textarea id="fAddress" required></textarea></div>
+        <div class="bkash">
+          <h4>bKash Payment</h4>
+          <div class="bkash-number">01632-319773</div>
+          <p style="font-size:0.8rem;color:var(--muted)">Send money to the number above and enter your details below:</p>
+        </div>
+        <div class="two">
+          <div class="field"><label>Your bKash Number *</label><input id="fSender" type="tel" required /></div>
+          <div class="field"><label>Transaction ID (TrxID) *</label><input id="fTrx" required /></div>
+        </div>
+        <button type="submit" class="btn btn-solid btn-block">Place Order</button>
+      </form>
+      <aside class="panel">
+        <h3>Order Summary</h3>
+        <div id="summaryItems"></div>
+        <div style="display:flex;justify-content:space-between;margin-top:1rem;">
+          <span>Total</span><strong id="summaryTotal" style="font-family:var(--serif);font-size:1.5rem;color:var(--burgundy)">৳0</strong>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© Rosa Fragrance. All rights reserved.</p>
+</footer>
+
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <h3>Shopping Bag</h3>
+    <button id="closeDrawer" style="font-size:1.4rem;">&times;</button>
+  </div>
+  <div class="drawer-items" id="drawerItems"></div>
+  <div class="drawer-foot">
+    <div style="display:flex;justify-content:space-between;margin-bottom:1rem;">
+      <span>Subtotal</span><strong id="subtotal" style="font-family:var(--serif);font-size:1.5rem;color:var(--burgundy)">৳0</strong>
+    </div>
+    <a href="#checkout" class="btn btn-solid btn-block" onclick="closeDrawer()">Checkout</a>
+  </div>
+</aside>
+<div class="toast" id="toast"></div>
+
+<script>
+const CURRENCY = '৳';
+const PRODUCTS = [
+  { 
+    id:'aurora', 
+    name:'Aurora', 
+    price:190, 
+    desc:'Aurora is a rich and woody but gentle fragrance that pairs well with your fresh elegant ensemble. It opens with top notes of tangy grapefruit with a dash of rosemary and cardamom. The heart is made up of soft floral notes of ylang-ylang and tuberose. Finally, the base notes are made up of the potent scents of cedar, leather, suede, and vetiver. The scent is pleasant but not overpowering, so you can feel confident wearing it whether you’re at work, at the gym, at a party, or on a date.', 
+    scene: 'public/Aurora.jpeg', 
+    bottle: 'public/bottle-aurora.png' 
+  },
+  { 
+    id:'elixir', 
+    name:'Elixir', 
+    price:190, 
+    desc:'Elixir is powerful and refined, reveals the essence of determination.\n\nAn aromatic freshness opens, lingering on the warm, addictive fullness of Cedar and Sandalwood from New Caledonia that sweeps throughout the intense, woody fragrance.\n\nTop notes are Grapefruit, Lemon, Mint and Pink Pepper; middle notes are Ginger, Nutmeg, Jasmine and Iso E Super; base notes are Incense, Vetiver, Cedar, Sandalwood, Patchouli, Labdanum and White Musk.', 
+    scene: 'public/Elixir.jpeg', 
+    bottle: 'public/bottle-elixir.png' 
+  },
+  { 
+    id:'cloud', 
+    name:'Cloud', 
+    price:190, 
+    desc:'Cloud brings to life the extensive and pristine beauty of Switzerland and their breath-taking Alpine region. The fragrance captures the essence of crystal clear Alpine streams descending over frosted rock face, whilst retaining the comfort of a warm and plush jacket.\n\nA contemporary unisex scent, "Cloud" perfectly balances crisp & sharp citric notes with warming sweet blackcurrant and charming musk.', 
+    scene: 'public/Cloud.jpeg', 
+    bottle: 'public/bottle-cloud.png' 
+  },
+  { 
+    id:'moonlight', 
+    name:'Moonlight', 
+    price:190, 
+    desc:'Discover the Intense freshness from the sea. The scent unfolds into oriental notes of coconut water blended with the sensuality of amber accord. Your ultimate call of freshness, hedonism and seduction.\n\nTop notes are Sea water, Lavender, Mint, Green Notes, Rosemary, Calone and Coriander; middle notes are Sandalwood, Neroli, Geranium and Jasmine; base notes are Musk, Tobacco, Oakmoss, Cedar and Amber.', 
+    scene: 'public/moonlight.jpeg', 
+    bottle: 'public/bottle-moonlight.png' 
+  },
+  { 
+    id:'white-sand', 
+    name:'White Sand', 
+    price:190, 
+    desc:'Mixed with the coolness of the night, the burning desert air exudes profound scents. White Sand is thus the olfactory interpretation of a moment tinted with a thick blue that unleashes the wildest instincts. In the hour when the wolves come out and the sky is set ablaze, a new magic unfolds.\n\nWhite Sand has a juicy, spicy Calabrian Bergamot note with the sensuality of a mysterious and enveloping Papua New Guinean Vanilla absolute accord. The fragrance unfurls a powerful and noble trail.\n\nTop notes are Calabrian bergamot and Pepper; middle notes are Sichuan Pepper, Lavender, Pink Pepper, Vetiver, Patchouli, Geranium and elemi; base notes are Ambroxan, Cedar and Labdanum.', 
+    scene: 'public/whitesand.jpeg', 
+    bottle: 'public/bottle-white-sand.png' 
+  },
+  { 
+    id:'sea-sage', 
+    name:'Sea Sage', 
+    price:190, 
+    desc:'Sea Sage is the fragrance that interprets the sublime elegance through a luminous aura with an intense, vibrant and glowing freshness obtained from the combination of mint leaves, Italian lemon zest and green apple. An addictive sensuality delivered by Oriental, intriguing and enveloping notes like Tonka Beans, Amber, Geranium Flower and Vanilla. A racy virility symbolized by woods such as Cedarwood from Atlas and Virginia, Vetiver and Oak Moss, providing intensity and power.', 
+    scene: 'public/sea-sage.jpeg', 
+    bottle: 'public/bottle-sea-sage.png' 
+  }
+];
+
+let currentIndex = 0;
+let cart = JSON.parse(localStorage.getItem('rosa_cart') || '[]');
+const $ = s => document.querySelector(s);
+const byId = id => PRODUCTS.find(p => p.id === id);
+
+function renderCarousel() {
+  const track = $('#stoneTrack');
+  track.innerHTML = PRODUCTS.map(item => `
+    <div class="stone-card">
+      <div class="scene-frame" onclick="openProductModal('${item.id}')">
+        <img src="${item.scene}" alt="${item.name} Fragrance" />
+      </div>
+      <div class="stone-info">
+        <h3>${item.name}</h3>
+        <p class="notes-preview">${item.desc}</p>
+        <div class="price">${CURRENCY}${item.price}</div>
+        <button class="btn btn-solid btn-block" onclick="openProductModal('${item.id}')">View Details</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateSlide() {
+  const track = $('#stoneTrack');
+  track.style.transform = `translateX(-${currentIndex * 100}%)`;
+}
+
+function nextSlide() {
+  currentIndex = (currentIndex + 1) % PRODUCTS.length;
+  updateSlide();
+}
+
+function prevSlide() {
+  currentIndex = (currentIndex - 1 + PRODUCTS.length) % PRODUCTS.length;
+  updateSlide();
+}
+
+// 2-Second Auto-Play Timer with smooth sliding
+let autoPlayTimer = setInterval(nextSlide, 2000);
+
+const wrapper = $('#carouselWrapper');
+wrapper.onmouseenter = () => clearInterval(autoPlayTimer);
+wrapper.onmouseleave = () => {
+  clearInterval(autoPlayTimer);
+  autoPlayTimer = setInterval(nextSlide, 2000);
+};
+
+$('#nextBtn').onclick = nextSlide;
+$('#prevBtn').onclick = prevSlide;
+
+function openProductModal(id) {
+  const item = byId(id);
+  $('#modalImg').src = item.bottle;
+  $('#modalImg').onerror = () => { $('#modalImg').src = item.scene; };
+  $('#modalTitle').textContent = item.name;
+  $('#modalPrice').textContent = CURRENCY + item.price;
+  $('#modalDesc').style.whiteSpace = 'pre-line';
+  $('#modalDesc').textContent = item.desc;
+  $('#modalAddToCart').onclick = () => {
+    addToCart(item.id);
+    closeProductModal();
+  };
+  $('#productModal').classList.add('show');
+  document.body.classList.add('locked');
+}
+
+function closeProductModal() {
+  $('#productModal').classList.remove('show');
+  document.body.classList.remove('locked');
+}
+
+$('#modalClose').onclick = closeProductModal;
+$('#productModal').onclick = (e) => { if (e.target === $('#productModal')) closeProductModal(); };
+
+function saveCart() {
+  localStorage.setItem('rosa_cart', JSON.stringify(cart));
+  updateCartUI();
+}
+
+function updateCartUI() {
+  $('#cartCount').textContent = cart.reduce((s, i) => s + i.qty, 0);
+  const total = cart.reduce((s, i) => s + byId(i.id).price * i.qty, 0);
+  $('#subtotal').textContent = CURRENCY + total;
+  $('#summaryTotal').textContent = CURRENCY + total;
+  $('#drawerItems').innerHTML = cart.map(i => {
+    const item = byId(i.id);
+    return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <div><h4>${item.name}</h4><small>${i.qty} x ${CURRENCY}${item.price}</small></div>
+      <button onclick="removeItem('${item.id}')" style="color:red;font-size:0.8rem;">Remove</button>
+    </div>`;
+  }).join('');
+  $('#summaryItems').innerHTML = cart.map(i => {
+    const item = byId(i.id);
+    return `<div style="display:flex;justify-content:space-between;padding:0.6rem 0;border-bottom:1px solid rgba(0,0,0,0.1)"><span>${item.name} x ${i.qty}</span><strong>${CURRENCY}${item.price * i.qty}</strong></div>`;
+  }).join('');
+}
+
+function addToCart(id) {
+  const item = cart.find(i => i.id === id);
+  if (item) item.qty++;
+  else cart.push({ id, qty: 1 });
+  saveCart();
+  showToast('Added to bag');
+  openDrawer();
+}
+
+function removeItem(id) {
+  cart = cart.filter(i => i.id !== id);
+  saveCart();
+}
+
+function showToast(msg) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function openDrawer() { $('#drawer').classList.add('show'); $('#overlay').classList.add('show'); }
+function closeDrawer() { $('#drawer').classList.remove('show'); $('#overlay').classList.remove('show'); }
+
+$('#cartBtn').onclick = openDrawer;
+$('#closeDrawer').onclick = closeDrawer;
+$('#overlay').onclick = closeDrawer;
+
+$('#checkoutForm').onsubmit = e => {
+  e.preventDefault();
+  if (!cart.length) return alert('Your cart is empty');
+  $('#checkoutWrap').innerHTML = `<div class="panel" style="text-align:center;grid-column:1/-1;"><h3>Order Placed!</h3><p>We will call you shortly to confirm delivery.</p></div>`;
+  cart = [];
+  saveCart();
+};
+
+renderCarousel();
+updateCartUI();
+</script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rosa Fragrance — The Essence of Elegance</title>
+<meta name="description" content="Rosa Fragrance — luxury oil-based perfumes in 6 ml bottles." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --ivory: #FAF6EF;
+  --ivory-deep: #F2E8D9;
+  --burgundy: #6B1E2E;
+  --burgundy-dark: #4A1320;
+  --rose-gold: #B76E79;
+  --rose-gold-light: #E8C4BC;
+  --ink: #1C1718;
+  --muted: #6E6264;
+  --line: rgba(107,30,46,0.15);
+  --shadow: 0 25px 50px -12px rgba(74,19,32,0.25);
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Montserrat', system-ui, sans-serif;
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
