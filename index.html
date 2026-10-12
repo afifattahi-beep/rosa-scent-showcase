@@ -397,6 +397,7 @@ const byId = id => PRODUCTS.find(p => p.id === id);
 
 function renderCarousel() {
   const track = $('#stoneTrack');
+  // Append a clone of the first slide to the end for a seamless infinite loop illusion
   track.innerHTML = PRODUCTS.map(item => `
     <div class="stone-card">
       <div class="scene-frame" onclick="openProductModal('${item.id}')">
@@ -409,25 +410,55 @@ function renderCarousel() {
         <button class="btn btn-solid btn-block" onclick="openProductModal('${item.id}')">View Details</button>
       </div>
     </div>
-  `).join('');
+  `).join('') + `
+    <div class="stone-card">
+      <div class="scene-frame" onclick="openProductModal('${PRODUCTS[0].id}')">
+        <img src="${PRODUCTS[0].scene}" alt="${PRODUCTS[0].name} Fragrance" />
+      </div>
+      <div class="stone-info">
+        <h3>${PRODUCTS[0].name}</h3>
+        <p class="notes-preview">${PRODUCTS[0].desc}</p>
+        <div class="price">${CURRENCY}${PRODUCTS[0].price}</div>
+        <button class="btn btn-solid btn-block" onclick="openProductModal('${PRODUCTS[0].id}')">View Details</button>
+      </div>
+    </div>
+  `;
 }
 
-function updateSlide() {
+function updateSlide(withTransition = true) {
   const track = $('#stoneTrack');
+  track.style.transition = withTransition ? 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)' : 'none';
   track.style.transform = `translateX(-${currentIndex * 100}%)`;
 }
 
 function nextSlide() {
-  currentIndex = (currentIndex + 1) % PRODUCTS.length;
-  updateSlide();
+  currentIndex++;
+  updateSlide(true);
+  
+  // If we reached the cloned first slide at index PRODUCTS.length, instantly snap back to index 0 without animation
+  if (currentIndex === PRODUCTS.length) {
+    setTimeout(() => {
+      currentIndex = 0;
+      updateSlide(false);
+    }, 600); // matches transition duration
+  }
 }
 
 function prevSlide() {
-  currentIndex = (currentIndex - 1 + PRODUCTS.length) % PRODUCTS.length;
-  updateSlide();
+  if (currentIndex === 0) {
+    currentIndex = PRODUCTS.length;
+    updateSlide(false);
+    setTimeout(() => {
+      currentIndex = PRODUCTS.length - 1;
+      updateSlide(true);
+    }, 20);
+  } else {
+    currentIndex--;
+    updateSlide(true);
+  }
 }
 
-// 2-Second Auto-Play Timer with smooth sliding
+// 2-Second Auto-Play Timer with infinite looping
 let autoPlayTimer = setInterval(nextSlide, 2000);
 
 const wrapper = $('#carouselWrapper');
