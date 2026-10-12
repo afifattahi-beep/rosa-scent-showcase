@@ -22,7 +22,7 @@
   --shadow: 0 25px 50px -12px rgba(74,19,32,0.25);
   --serif: 'Cormorant Garamond', Georgia, serif;
   --sans: 'Montserrat', system-ui, sans-serif;
-  --ease: cubic-bezier(.22, .61, .36, 1);
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -69,9 +69,9 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   position: absolute;
   width: 520px;
   max-width: 92vw;
-  transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
   opacity: 0;
-  transform: translateX(120%) scale(0.7);
+  transform: translateX(100%) scale(0.85);
   pointer-events: none;
 }
 .stone-card.active {
@@ -81,13 +81,13 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   z-index: 10;
 }
 .stone-card.prev {
-  opacity: 0.35;
-  transform: translateX(-85%) scale(0.8);
+  opacity: 0;
+  transform: translateX(-100%) scale(0.85);
   z-index: 5;
 }
 .stone-card.next {
-  opacity: 0.35;
-  transform: translateX(85%) scale(0.8);
+  opacity: 0;
+  transform: translateX(100%) scale(0.85);
   z-index: 5;
 }
 
@@ -444,7 +444,7 @@ function prevSlide() {
   render3DCarousel();
 }
 
-// 2-Second Auto-Play Timer
+// 2-Second Auto-Play Timer with sliding animation
 let autoPlayTimer = setInterval(nextSlide, 2000);
 
 // Pause auto-play on hover so users can interact easily
