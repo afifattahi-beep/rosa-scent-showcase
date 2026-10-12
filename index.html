@@ -200,7 +200,11 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .field label { display: block; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 500; margin-bottom: 0.4rem; }
 .field input, .field textarea { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--line); background: var(--ivory); font: inherit; }
 .two { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-.bkash { border: 1px solid var(--rose-gold-light); background: #fff; padding: 1.4rem; margin: 1.2rem 0; }
+
+.payment-options { display: flex; gap: 1.5rem; margin: 1.2rem 0; }
+.payment-option { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; font-weight: 500; cursor: pointer; }
+
+.bkash-box { border: 1px solid var(--rose-gold-light); background: #fff; padding: 1.4rem; margin: 1.2rem 0; }
 .bkash-number { font-family: var(--serif); font-size: 1.6rem; color: var(--burgundy); margin: 0.4rem 0; }
 footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding: 4rem 0 2rem; text-align: center; font-size: 0.8rem; }
 .toast { position: fixed; bottom: 1.6rem; left: 50%; transform: translate(-50%,120%); background: var(--ink); color: var(--ivory); padding: 0.8rem 1.5rem; font-size: 0.8rem; z-index: 90; transition: transform 0.4s; }
@@ -295,16 +299,28 @@ footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding
           <div class="field"><label>Phone Number *</label><input id="fPhone" type="tel" required placeholder="01XXXXXXXXX" /></div>
         </div>
         <div class="field"><label>Delivery Address *</label><textarea id="fAddress" required></textarea></div>
-        <div class="bkash">
+        
+        <h3 style="margin-top:1.5rem;">Payment Method</h3>
+        <div class="payment-options">
+          <label class="payment-option">
+            <input type="radio" name="paymentMethod" value="cod" checked onchange="togglePaymentMethod()" /> Cash on Delivery
+          </label>
+          <label class="payment-option">
+            <input type="radio" name="paymentMethod" value="bkash" onchange="togglePaymentMethod()" /> bKash Payment
+          </label>
+        </div>
+
+        <div class="bkash-box" id="bkashContainer" style="display:none;">
           <h4>bKash Payment</h4>
           <div class="bkash-number">01632-319773</div>
           <p style="font-size:0.8rem;color:var(--muted)">Send money to the number above and enter your details below:</p>
+          <div class="two" style="margin-top:1rem;">
+            <div class="field"><label>Your bKash Number *</label><input id="fSender" type="tel" /></div>
+            <div class="field"><label>Transaction ID (TrxID) *</label><input id="fTrx" /></div>
+          </div>
         </div>
-        <div class="two">
-          <div class="field"><label>Your bKash Number *</label><input id="fSender" type="tel" required /></div>
-          <div class="field"><label>Transaction ID (TrxID) *</label><input id="fTrx" required /></div>
-        </div>
-        <button type="submit" class="btn btn-solid btn-block">Place Order</button>
+
+        <button type="submit" class="btn btn-solid btn-block" style="margin-top:1.5rem;">Place Order</button>
       </form>
       <aside class="panel">
         <h3>Order Summary</h3>
@@ -397,7 +413,6 @@ const byId = id => PRODUCTS.find(p => p.id === id);
 
 function renderCarousel() {
   const track = $('#stoneTrack');
-  // Append a clone of the first slide to the end for a seamless infinite loop illusion
   track.innerHTML = PRODUCTS.map(item => `
     <div class="stone-card">
       <div class="scene-frame" onclick="openProductModal('${item.id}')">
@@ -434,13 +449,11 @@ function updateSlide(withTransition = true) {
 function nextSlide() {
   currentIndex++;
   updateSlide(true);
-  
-  // If we reached the cloned first slide at index PRODUCTS.length, instantly snap back to index 0 without animation
   if (currentIndex === PRODUCTS.length) {
     setTimeout(() => {
       currentIndex = 0;
       updateSlide(false);
-    }, 600); // matches transition duration
+    }, 600);
   }
 }
 
@@ -458,7 +471,6 @@ function prevSlide() {
   }
 }
 
-// 2-Second Auto-Play Timer with infinite looping
 let autoPlayTimer = setInterval(nextSlide, 2000);
 
 const wrapper = $('#carouselWrapper');
@@ -470,6 +482,23 @@ wrapper.onmouseleave = () => {
 
 $('#nextBtn').onclick = nextSlide;
 $('#prevBtn').onclick = prevSlide;
+
+function togglePaymentMethod() {
+  const method = document.querySelector('input[name="paymentMethod"]:checked').value;
+  const bkashBox = $('#bkashContainer');
+  const fSender = $('#fSender');
+  const fTrx = $('#fTrx');
+  
+  if (method === 'bkash') {
+    bkashBox.style.display = 'block';
+    fSender.required = true;
+    fTrx.required = true;
+  } else {
+    bkashBox.style.display = 'none';
+    fSender.required = false;
+    fTrx.required = false;
+  }
+}
 
 function openProductModal(id) {
   const item = byId(id);
@@ -549,7 +578,7 @@ $('#overlay').onclick = closeDrawer;
 $('#checkoutForm').onsubmit = e => {
   e.preventDefault();
   if (!cart.length) return alert('Your cart is empty');
-  $('#checkoutWrap').innerHTML = `<div class="panel" style="text-align:center;grid-column:1/-1;"><h3>Order Placed!</h3><p>We will call you shortly to confirm delivery.</p></div>`;
+  $('#checkoutWrap').innerHTML = `<div class="panel" style="text-align:center;grid-column:1/-1;"><h3>Order Placed Successfully!</h3><p>Thank you for shopping with Rosa Fragrance. We will call you shortly to confirm your order.</p></div>`;
   cart = [];
   saveCart();
 };
