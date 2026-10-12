@@ -91,7 +91,6 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   z-index: 5;
 }
 
-/* Scene Card Container */
 .scene-frame {
   width: 100%;
   border-radius: 16px;
@@ -99,12 +98,12 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   box-shadow: 0 25px 45px rgba(0,0,0,0.25);
   border: 1px solid var(--line);
   background: #fff;
+  cursor: pointer;
   transition: transform 0.4s var(--ease);
 }
 .scene-frame:hover {
   transform: translateY(-4px);
 }
-
 .scene-frame img {
   width: 100%;
   height: auto;
@@ -124,6 +123,69 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 @media(max-width: 600px) {
   .carousel-btn.prev-btn { left: -10px; }
   .carousel-btn.next-btn { right: -10px; }
+}
+
+/* Full White Product Detail Interface */
+.product-modal {
+  position: fixed;
+  inset: 0;
+  background: #FFFFFF;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease);
+}
+.product-modal.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+.modal-content {
+  width: min(850px, 90%);
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 3rem;
+  align-items: center;
+  position: relative;
+}
+@media(max-width: 768px) {
+  .modal-content { grid-template-columns: 1fr; gap: 1.5rem; text-align: center; }
+}
+.modal-close {
+  position: absolute;
+  top: -60px;
+  right: 0;
+  font-size: 2.2rem;
+  color: var(--burgundy);
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+.modal-left img {
+  width: 100%;
+  max-height: 380px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 20px 30px rgba(0,0,0,0.15));
+}
+.modal-right h2 {
+  font-size: clamp(2.4rem, 4vw, 3.2rem);
+  color: var(--burgundy);
+  margin-bottom: 0.5rem;
+}
+.modal-right .price {
+  font-family: var(--serif);
+  font-size: 1.8rem;
+  color: var(--burgundy);
+  margin-bottom: 1rem;
+}
+.modal-right p {
+  color: var(--muted);
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  line-height: 1.8;
 }
 
 .overlay { position: fixed; inset: 0; background: rgba(28,23,24,0.45); backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity 0.4s; z-index: 60; }
@@ -184,7 +246,7 @@ footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding
       <span class="eyebrow">The Collection</span>
       <h2>Six Signatures, One Soul</h2>
       <div class="ornament">✦</div>
-      <p>Explore our luxury oil-based fragrances in their signature scenes.</p>
+      <p>Click any scene to view perfume details.</p>
     </div>
     <div class="stone-wrapper">
       <button class="carousel-btn prev-btn" id="prevBtn">&#10094;</button>
@@ -193,6 +255,22 @@ footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding
     </div>
   </div>
 </section>
+
+<!-- Product Detail Modal Interface -->
+<div class="product-modal" id="productModal">
+  <div class="modal-content">
+    <button class="modal-close" id="modalClose">&times;</button>
+    <div class="modal-left">
+      <img id="modalImg" src="" alt="Perfume Bottle" />
+    </div>
+    <div class="modal-right">
+      <h2 id="modalTitle"></h2>
+      <div class="price" id="modalPrice"></div>
+      <p id="modalDesc"></p>
+      <button class="btn btn-solid btn-block" id="modalAddToCart">Add to Cart</button>
+    </div>
+  </div>
+</div>
 
 <section class="section" id="about" style="text-align:center;">
   <div class="container" style="max-width:680px;">
@@ -264,12 +342,12 @@ footer { background: var(--burgundy-dark); color: rgba(250,246,239,0.8); padding
 <script>
 const CURRENCY = '৳';
 const PRODUCTS = [
-  { id:'aurora', name:'Aurora', price:190, desc:'Tender rose petals and ripe berries over soft musk.', img: 'public/Aurora.jpeg' },
-  { id:'elixir', name:'Elixir', price:190, desc:'Verdant potion of crushed leaves, citrus, and white florals.', img: 'public/Elixir.jpeg' },
-  { id:'cloud', name:'Cloud', price:190, desc:'Clean cotton, powdery iris, and gentle musk.', img: 'public/Cloud.jpeg' },
-  { id:'moonlight', name:'Moonlight', price:190, desc:'Night-blooming flowers and cool lavender under velvet sky.', img: 'public/moonlight.jpeg' },
-  { id:'white-sand', name:'White Sand', price:190, desc:'Salty ocean breeze and coconut blossom over driftwood.', img: 'public/whitesand.jpeg' },
-  { id:'sea-sage', name:'Sea Sage', price:190, desc:'Wild coastal sage with sea spray and cedarwood.', img: 'public/sea-sage.jpeg' }
+  { id:'aurora', name:'Aurora', price:190, desc:'Tender rose petals and ripe berries over soft musk.', scene: 'public/Aurora.jpeg', bottle: 'public/bottle-aurora.png' },
+  { id:'elixir', name:'Elixir', price:190, desc:'Verdant potion of crushed leaves, citrus, and white florals.', scene: 'public/Elixir.jpeg', bottle: 'public/bottle-elixir.png' },
+  { id:'cloud', name:'Cloud', price:190, desc:'Clean cotton, powdery iris, and gentle musk.', scene: 'public/Cloud.jpeg', bottle: 'public/bottle-cloud.png' },
+  { id:'moonlight', name:'Moonlight', price:190, desc:'Night-blooming flowers and cool lavender under velvet sky.', scene: 'public/moonlight.jpeg', bottle: 'public/bottle-moonlight.png' },
+  { id:'white-sand', name:'White Sand', price:190, desc:'Salty ocean breeze and coconut blossom over driftwood.', scene: 'public/whitesand.jpeg', bottle: 'public/bottle-white-sand.png' },
+  { id:'sea-sage', name:'Sea Sage', price:190, desc:'Wild coastal sage with sea spray and cedarwood.', scene: 'public/sea-sage.jpeg', bottle: 'public/bottle-sea-sage.png' }
 ];
 
 let currentIndex = 0;
@@ -286,18 +364,41 @@ function render3DCarousel() {
     else if (index === (currentIndex + 1) % PRODUCTS.length) pos = 'next';
     return `
       <div class="stone-card ${pos}">
-        <div class="scene-frame">
-          <img src="${item.img}" alt="${item.name} Fragrance" />
+        <div class="scene-frame" onclick="openProductModal('${item.id}')">
+          <img src="${item.scene}" alt="${item.name} Fragrance" />
         </div>
         <div class="stone-info">
           <h3>${item.name}</h3>
           <p class="notes-preview">${item.desc}</p>
           <div class="price">${CURRENCY}${item.price}</div>
-          <button class="btn btn-solid btn-block" onclick="addToCart('${item.id}')">Add to Cart</button>
+          <button class="btn btn-solid btn-block" onclick="openProductModal('${item.id}')">View Details</button>
         </div>
       </div>`;
   }).join('');
 }
+
+function openProductModal(id) {
+  const item = byId(id);
+  $('#modalImg').src = item.bottle;
+  $('#modalImg').onerror = () => { $('#modalImg').src = item.scene; };
+  $('#modalTitle').textContent = item.name;
+  $('#modalPrice').textContent = CURRENCY + item.price;
+  $('#modalDesc').textContent = item.desc;
+  $('#modalAddToCart').onclick = () => {
+    addToCart(item.id);
+    closeProductModal();
+  };
+  $('#productModal').classList.add('show');
+  document.body.classList.add('locked');
+}
+
+function closeProductModal() {
+  $('#productModal').classList.remove('show');
+  document.body.classList.remove('locked');
+}
+
+$('#modalClose').onclick = closeProductModal;
+$('#productModal').onclick = (e) => { if (e.target === $('#productModal')) closeProductModal(); };
 
 $('#nextBtn').onclick = () => { currentIndex = (currentIndex + 1) % PRODUCTS.length; render3DCarousel(); };
 $('#prevBtn').onclick = () => { currentIndex = (currentIndex - 1 + PRODUCTS.length) % PRODUCTS.length; render3DCarousel(); };
