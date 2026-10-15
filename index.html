@@ -130,9 +130,10 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   display: grid;
   grid-template-columns: 1fr 1.3fr;
   gap: 3.5rem;
-  align-items: start;
+  align-items: center;
   position: relative;
   margin: auto;
+  background: #FFFFFF;
 }
 @media(max-width: 768px) {
   .modal-content { grid-template-columns: 1fr; gap: 1.5rem; text-align: center; }
@@ -148,19 +149,41 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   background: none;
   border: none;
   line-height: 1;
+  z-index: 10;
 }
 .modal-left {
   display: flex;
   align-items: center;
   justify-content: center;
+  background: #FFFFFF;
+  padding: 2rem;
+  perspective: 1000px;
 }
 .modal-left img {
   width: 100%;
-  max-width: 280px;
-  max-height: 400px;
+  max-width: 250px;
+  max-height: 380px;
   object-fit: contain;
   display: block;
-  filter: drop-shadow(0 20px 30px rgba(0,0,0,0.12));
+  filter: drop-shadow(0 15px 25px rgba(0,0,0,0.08));
+  animation: rotate3D 12s linear infinite;
+  transform-style: preserve-3d;
+}
+
+@keyframes rotate3D {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+
+.modal-right {
+  text-align: left;
+}
+@media(max-width: 768px) {
+  .modal-right { text-align: center; }
 }
 .modal-right h2 {
   font-size: clamp(2.2rem, 4vw, 3rem);
@@ -178,10 +201,6 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   font-size: 0.95rem;
   margin-bottom: 2rem;
   line-height: 1.8;
-  text-align: left;
-}
-@media(max-width: 768px) {
-  .modal-right p { text-align: center; }
 }
 
 .overlay { position: fixed; inset: 0; background: rgba(28,23,24,0.45); backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity 0.4s; z-index: 60; }
@@ -491,8 +510,8 @@ function togglePaymentMethod() {
 
 function openProductModal(id) {
   const item = byId(id);
+  // Show standalone bottle image directly on pure white background
   $('#modalImg').src = item.bottle;
-  $('#modalImg').onerror = () => { $('#modalImg').src = item.scene; };
   $('#modalTitle').textContent = item.name;
   $('#modalPrice').textContent = CURRENCY + item.price;
   $('#modalDesc').style.whiteSpace = 'pre-line';
@@ -557,7 +576,7 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2000);
 }
 
-function openDrawer() { $('#drawer').classList.add('show'); $('#overlay').classList.add('shadow'); }
+function openDrawer() { $('#drawer').classList.add('show'); $('#overlay').classList.add('show'); }
 function closeDrawer() { $('#drawer').classList.remove('show'); $('#overlay').classList.remove('show'); }
 
 $('#cartBtn').onclick = openDrawer;
