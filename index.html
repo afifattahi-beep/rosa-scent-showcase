@@ -302,6 +302,7 @@ const EASE = 'cubic-bezier(0.25, 1, 0.5, 1)';
 
 let current = 0;
 let busy = false;
+let lastMove = Date.now();
 let cart = [];
 try {
   cart = JSON.parse(localStorage.getItem('rosa_cart') || '[]')
@@ -338,6 +339,7 @@ function renderCarousel() {
 function go(dir) {
   if (busy) return;
   busy = true;
+  lastMove = Date.now();
   const next = (current + dir + N) % N;
   const slides = [...document.querySelectorAll('.slide')];
   const out = slides[current], inn = slides[next];
@@ -410,6 +412,24 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft') go(-1);
   if (e.key === 'ArrowRight') go(1);
 });
+
+/* ---------- Autoplay: moves to the next perfume every 2 seconds ---------- */
+const AUTO_MS = 2000;
+let paused = false;
+let inView = true;
+const wrapEl = $('#carouselWrapper');
+wrapEl.addEventListener('mouseenter', () => { paused = true; });
+wrapEl.addEventListener('mouseleave', () => { paused = false; lastMove = Date.now(); });
+wrapEl.addEventListener('touchstart', () => { paused = true; }, { passive: true });
+['touchend', 'touchcancel'].forEach(ev => wrapEl.addEventListener(ev, () => { paused = false; lastMove = Date.now(); }));
+if ('IntersectionObserver' in window) {
+  new IntersectionObserver(en => { inView = en[0].isIntersecting; if (inView) lastMove = Date.now(); }, { threshold: 0.2 }).observe($('#collection'));
+}
+setInterval(() => {
+  if (REDUCED || busy || paused || !inView || document.hidden) return;
+  if ($('#productModal').classList.contains('show') || $('#drawer').classList.contains('show')) return;
+  if (Date.now() - lastMove >= AUTO_MS) go(1);
+}, 200);
 
 /* ---------- Product popup ---------- */
 let modalId = null;
