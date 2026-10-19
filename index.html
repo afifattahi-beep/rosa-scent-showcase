@@ -62,51 +62,87 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .hero .tagline { font-family: var(--serif); font-style: italic; font-size: clamp(1.3rem, 3vw, 1.9rem); color: var(--ink); margin-bottom: 2.6rem; }
 
 .catalog { background: var(--ivory-deep); padding: 6rem 0; overflow: hidden; }
-.stone-wrapper { position: relative; max-width: 520px; margin: 0 auto; padding: 2rem 0; }
-.stone-stage { overflow: hidden; width: 100%; border-radius: 16px; }
+.stone-wrapper { position: relative; max-width: 900px; margin: 0 auto; padding: 2rem 0; }
+.stone-stage { overflow: hidden; width: 100%; border-radius: 16px; position: relative; }
 .stone-track { display: flex; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); will-change: transform; width: 100%; }
 
 .stone-card {
   flex: 0 0 100%;
   width: 100%;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.scene-frame {
+/* Video-style Floating Bottle Layout */
+.video-scene-container {
+  position: relative;
   width: 100%;
-  border-radius: 16px;
+  max-width: 780px;
+  height: 440px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
+  border-radius: 16px;
   box-shadow: 0 25px 45px rgba(0,0,0,0.25);
   border: 1px solid var(--line);
-  background: #fff;
   cursor: pointer;
-  transition: transform 0.4s var(--ease);
 }
-.scene-frame:hover {
-  transform: translateY(-4px);
-}
-.scene-frame img {
+.video-scene-container img.bg-scene {
+  position: absolute;
+  inset: 0;
   width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+.huge-title {
+  position: absolute;
+  font-family: var(--serif);
+  font-size: clamp(5rem, 15vw, 12rem);
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  z-index: 2;
+  user-select: none;
+  pointer-events: none;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+.bottle-overlay {
+  position: relative;
+  z-index: 3;
+  width: 130px;
   height: auto;
-  display: block;
+  filter: drop-shadow(0 25px 35px rgba(0,0,0,0.35));
+  animation: floatBottle 4s ease-in-out infinite;
 }
 
-.stone-info { background: #fff; border: 1px solid var(--line); text-align: center; padding: 1.8rem; box-shadow: var(--shadow); margin-top: 1rem; border-radius: 12px; }
+@keyframes floatBottle {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+  100% { transform: translateY(0px); }
+}
+
+.stone-info { background: #fff; border: 1px solid var(--line); text-align: center; padding: 1.8rem; box-shadow: var(--shadow); margin-top: 1rem; border-radius: 12px; width: 100%; max-width: 520px; }
 .stone-info h3 { font-size: 2.2rem; color: var(--burgundy); }
 .stone-info .price { font-family: var(--serif); font-size: 1.6rem; color: var(--burgundy); margin: 0.4rem 0 1rem; }
 .stone-info p.notes-preview { font-size: 0.85rem; color: var(--muted); margin-bottom: 1rem; font-style: italic; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
-.carousel-btn { position: absolute; top: 42%; transform: translateY(-50%); width: 54px; height: 54px; border-radius: 50%; background: #fff; border: 1.5px solid var(--burgundy); color: var(--burgundy); font-size: 1.4rem; display: grid; place-items: center; z-index: 20; box-shadow: 0 10px 25px rgba(0,0,0,0.15); transition: all 0.3s; }
+.carousel-btn { position: absolute; top: 40%; transform: translateY(-50%); width: 54px; height: 54px; border-radius: 50%; background: #fff; border: 1.5px solid var(--burgundy); color: var(--burgundy); font-size: 1.4rem; display: grid; place-items: center; z-index: 20; box-shadow: 0 10px 25px rgba(0,0,0,0.15); transition: all 0.3s; }
 .carousel-btn:hover { background: var(--burgundy); color: #fff; transform: translateY(-50%) scale(1.08); }
-.carousel-btn.prev-btn { left: -65px; }
-.carousel-btn.next-btn { right: -65px; }
+.carousel-btn.prev-btn { left: -30px; }
+.carousel-btn.next-btn { right: -30px; }
 
-@media(max-width: 700px) {
-  .carousel-btn.prev-btn { left: -10px; }
-  .carousel-btn.next-btn { right: -10px; }
+@media(max-width: 850px) {
+  .carousel-btn.prev-btn { left: 10px; }
+  .carousel-btn.next-btn { right: 10px; }
+  .video-scene-container { height: 320px; }
 }
 
-/* Full White Product Detail Interface */
+/* Full White 360 Rotating Modal Interface */
 .product-modal {
   position: fixed;
   inset: 0;
@@ -171,37 +207,15 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 @keyframes rotate3D {
-  0% {
-    transform: rotateY(0deg);
-  }
-  100% {
-    transform: rotateY(360deg);
-  }
+  0% { transform: rotateY(0deg); }
+  100% { transform: rotateY(360deg); }
 }
 
-.modal-right {
-  text-align: left;
-}
-@media(max-width: 768px) {
-  .modal-right { text-align: center; }
-}
-.modal-right h2 {
-  font-size: clamp(2.2rem, 4vw, 3rem);
-  color: var(--burgundy);
-  margin-bottom: 0.3rem;
-}
-.modal-right .price {
-  font-family: var(--serif);
-  font-size: 1.6rem;
-  color: var(--burgundy);
-  margin-bottom: 1.2rem;
-}
-.modal-right p {
-  color: var(--muted);
-  font-size: 0.95rem;
-  margin-bottom: 2rem;
-  line-height: 1.8;
-}
+.modal-right { text-align: left; }
+@media(max-width: 768px) { .modal-right { text-align: center; } }
+.modal-right h2 { font-size: clamp(2.2rem, 4vw, 3rem); color: var(--burgundy); margin-bottom: 0.3rem; }
+.modal-right .price { font-family: var(--serif); font-size: 1.6rem; color: var(--burgundy); margin-bottom: 1.2rem; }
+.modal-right p { color: var(--muted); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.8; }
 
 .overlay { position: fixed; inset: 0; background: rgba(28,23,24,0.45); backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity 0.4s; z-index: 60; }
 .overlay.show { opacity: 1; pointer-events: auto; }
@@ -370,7 +384,7 @@ const PRODUCTS = [
     price:190, 
     desc:'Aurora is a rich and woody but gentle fragrance that pairs well with your fresh elegant ensemble. It opens with top notes of tangy grapefruit with a dash of rosemary and cardamom. The heart is made up of soft floral notes of ylang-ylang and tuberose. Finally, the base notes are made up of the potent scents of cedar, leather, suede, and vetiver. The scent is pleasant but not overpowering, so you can feel confident wearing it whether you’re at work, at the gym, at a party, or on a date.', 
     scene: 'public/Aurora.jpeg', 
-    bottle: 'public/bottle-aurora.png' 
+    bottle: 'public/bottle-aurora.jpeg' 
   },
   { 
     id:'elixir', 
@@ -378,7 +392,7 @@ const PRODUCTS = [
     price:190, 
     desc:'Elixir is powerful and refined, reveals the essence of determination.\n\nAn aromatic freshness opens, lingering on the warm, addictive fullness of Cedar and Sandalwood from New Caledonia that sweeps throughout the intense, woody fragrance.\n\nTop notes are Grapefruit, Lemon, Mint and Pink Pepper; middle notes are Ginger, Nutmeg, Jasmine and Iso E Super; base notes are Incense, Vetiver, Cedar, Sandalwood, Patchouli, Labdanum and White Musk.', 
     scene: 'public/Elixir.jpeg', 
-    bottle: 'public/bottle-elixir.png' 
+    bottle: 'public/bottle-elixir.jpeg' 
   },
   { 
     id:'cloud', 
@@ -386,7 +400,7 @@ const PRODUCTS = [
     price:190, 
     desc:'Cloud brings to life the extensive and pristine beauty of Switzerland and their breath-taking Alpine region. The fragrance captures the essence of crystal clear Alpine streams descending over frosted rock face, whilst retaining the comfort of a warm and plush jacket.\n\nA contemporary unisex scent, "Cloud" perfectly balances crisp & sharp citric notes with warming sweet blackcurrant and charming musk.', 
     scene: 'public/Cloud.jpeg', 
-    bottle: 'public/bottle-cloud.png' 
+    bottle: 'public/bottle-cloud.jpeg' 
   },
   { 
     id:'moonlight', 
@@ -394,7 +408,7 @@ const PRODUCTS = [
     price:190, 
     desc:'Discover the Intense freshness from the sea. The scent unfolds into oriental notes of coconut water blended with the sensuality of amber accord. Your ultimate call of freshness, hedonism and seduction.\n\nTop notes are Sea water, Lavender, Mint, Green Notes, Rosemary, Calone and Coriander; middle notes are Sandalwood, Neroli, Geranium and Jasmine; base notes are Musk, Tobacco, Oakmoss, Cedar and Amber.', 
     scene: 'public/moonlight.jpeg', 
-    bottle: 'public/bottle-moonlight.png' 
+    bottle: 'public/bottle-moonlight.jpeg' 
   },
   { 
     id:'white-sand', 
@@ -402,7 +416,7 @@ const PRODUCTS = [
     price:190, 
     desc:'Mixed with the coolness of the night, the burning desert air exudes profound scents. White Sand is thus the olfactory interpretation of a moment tinted with a thick blue that unleashes the wildest instincts. In the hour when the wolves come out and the sky is set ablaze, a new magic unfolds.\n\nWhite Sand has a juicy, spicy Calabrian Bergamot note with the sensuality of a mysterious and enveloping Papua New Guinean Vanilla absolute accord. The fragrance unfurls a powerful and noble trail.\n\nTop notes are Calabrian bergamot and Pepper; middle notes are Sichuan Pepper, Lavender, Pink Pepper, Vetiver, Patchouli, Geranium and elemi; base notes are Ambroxan, Cedar and Labdanum.', 
     scene: 'public/whitesand.jpeg', 
-    bottle: 'public/bottle-white-sand.png' 
+    bottle: 'public/bottle-white-sand.jpeg' 
   },
   { 
     id:'sea-sage', 
@@ -410,7 +424,7 @@ const PRODUCTS = [
     price:190, 
     desc:'Sea Sage is the fragrance that interprets the sublime elegance through a luminous aura with an intense, vibrant and glowing freshness obtained from the combination of mint leaves, Italian lemon zest and green apple. An addictive sensuality delivered by Oriental, intriguing and enveloping notes like Tonka Beans, Amber, Geranium Flower and Vanilla. A racy virility symbolized by woods such as Cedarwood from Atlas and Virginia, Vetiver and Oak Moss, providing intensity and power.', 
     scene: 'public/sea-sage.jpeg', 
-    bottle: 'public/bottle-sea-sage.png' 
+    bottle: 'public/bottle-sea-sage.jpeg' 
   }
 ];
 
@@ -423,8 +437,10 @@ function renderCarousel() {
   const track = $('#stoneTrack');
   track.innerHTML = PRODUCTS.map(item => `
     <div class="stone-card">
-      <div class="scene-frame" onclick="openProductModal('${item.id}')">
-        <img src="${item.scene}" alt="${item.name} Fragrance" />
+      <div class="video-scene-container" onclick="openProductModal('${item.id}')">
+        <span class="huge-title">${item.name}</span>
+        <img class="bg-scene" src="${item.scene}" alt="${item.name} Background" />
+        <img class="bottle-overlay" src="${item.bottle}" alt="${item.name} Bottle" onerror="this.style.display='none'" />
       </div>
       <div class="stone-info">
         <h3>${item.name}</h3>
@@ -435,8 +451,10 @@ function renderCarousel() {
     </div>
   `).join('') + `
     <div class="stone-card">
-      <div class="scene-frame" onclick="openProductModal('${PRODUCTS[0].id}')">
-        <img src="${PRODUCTS[0].scene}" alt="${PRODUCTS[0].name} Fragrance" />
+      <div class="video-scene-container" onclick="openProductModal('${PRODUCTS[0].id}')">
+        <span class="huge-title">${PRODUCTS[0].name}</span>
+        <img class="bg-scene" src="${PRODUCTS[0].scene}" alt="${PRODUCTS[0].name} Background" />
+        <img class="bottle-overlay" src="${PRODUCTS[0].bottle}" alt="${PRODUCTS[0].name} Bottle" onerror="this.style.display='none'" />
       </div>
       <div class="stone-info">
         <h3>${PRODUCTS[0].name}</h3>
@@ -510,7 +528,6 @@ function togglePaymentMethod() {
 
 function openProductModal(id) {
   const item = byId(id);
-  // Show standalone bottle image directly on pure white background
   $('#modalImg').src = item.bottle;
   $('#modalTitle').textContent = item.name;
   $('#modalPrice').textContent = CURRENCY + item.price;
