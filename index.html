@@ -48,15 +48,17 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .catalog{position:relative;background:#F2E8D9;padding:6rem 0;overflow:hidden}
 .catalog>.container{position:relative;z-index:1}
 .wipe{position:absolute;inset:0;z-index:0;clip-path:inset(0 0 0 100%);pointer-events:none}
-.big-name{position:relative;height:clamp(4.2rem,15vw,6.6rem);overflow:hidden;margin:0 auto .6rem;max-width:760px}
-.big-name span{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--serif);font-weight:600;font-size:clamp(3.6rem,14vw,6.2rem);line-height:1;letter-spacing:.04em;color:var(--burgundy);white-space:nowrap}
 .stone-wrapper{max-width:520px;margin:0 auto;padding:.5rem 0 2rem}
 .stage-wrap{position:relative}
 .stone-stage{position:relative;width:100%;height:clamp(330px,82vw,440px);cursor:pointer;touch-action:pan-y;perspective:1000px}
-.slide{position:absolute;inset:0;visibility:hidden;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6%;transform-origin:50% 80%}
-.slide.on{visibility:visible}
-.slide::after{content:"";position:absolute;bottom:3%;left:50%;width:42%;height:5%;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(40,10,18,.35),transparent 70%);filter:blur(5px)}
-.slide img{position:relative;z-index:1;height:88%;width:auto;display:block;filter:drop-shadow(0 18px 18px rgba(60,20,30,.25));animation:float 4s ease-in-out infinite}
+/* Scenes: the huge name sits BEHIND a bottle that stays put; a new scene wipes in over the old one */
+.scenes{position:absolute;top:0;bottom:0;left:50%;width:100vw;margin-left:-50vw;pointer-events:none;z-index:0}
+.scene{position:absolute;inset:0;overflow:hidden}
+.scene-name{position:absolute;left:0;right:0;top:0;bottom:12%;display:grid;place-items:center}
+.scene-name span{font-family:var(--serif);font-weight:600;font-size:clamp(5.5rem,22vw,17rem);line-height:1;letter-spacing:.02em;color:var(--name-color,#fff);white-space:nowrap}
+.scene-bottle{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6%}
+.scene-bottle::after{content:"";position:absolute;bottom:3%;left:50%;width:42%;max-width:220px;height:5%;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(40,10,18,.35),transparent 70%);filter:blur(5px)}
+.scene-bottle img{position:relative;z-index:1;height:88%;width:auto;display:block;filter:drop-shadow(0 18px 18px rgba(60,20,30,.25));animation:float 4s ease-in-out infinite}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 .stone-info{background:#fff;border:1px solid var(--line);text-align:center;padding:1.8rem;box-shadow:var(--shadow);margin-top:1rem;border-radius:12px}
 .stone-info h3{font-size:2.2rem;color:var(--burgundy)}
@@ -151,9 +153,12 @@ footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0
       <div class="ornament">✦</div>
       <p>Tap the bottle to explore perfume details.</p>
     </div>
-    <div class="big-name" id="bigName"><span></span></div>
     <div class="stone-wrapper" id="carouselWrapper">
       <div class="stage-wrap">
+        <div class="scenes" id="scenes">
+          <div class="scene" id="sceneA"></div>
+          <div class="scene" id="sceneB" style="display:none"></div>
+        </div>
         <button class="carousel-btn prev-btn" id="prevBtn" aria-label="Previous perfume">&#10094;</button>
         <div class="stone-stage" id="stage"></div>
         <button class="carousel-btn next-btn" id="nextBtn" aria-label="Next perfume">&#10095;</button>
@@ -326,12 +331,24 @@ function renderDots() {
   $('#dots').innerHTML = PRODUCTS.map((_, i) => `<i class="${i === current ? 'on' : ''}"></i>`).join('');
 }
 
+/* One "scene" = the huge name + the bottle in front of it */
+function sceneHTML(p) {
+  // same float phase for every bottle, so old and new line up while the wipe passes
+  const delay = '-' + Math.round(performance.now() % 4000) + 'ms';
+  return `<div class="scene-name"><span>${p.name}</span></div>
+    <div class="scene-bottle"><img src="${p.bottle}" alt="${p.name} Fragrance" draggable="false" style="animation-delay:${delay}" /></div>`;
+}
+
+const layers = [$('#sceneA'), $('#sceneB')];
+let activeLayer = 0;
+
 function renderCarousel() {
-  const stage = $('#stage');
-  stage.innerHTML = PRODUCTS.map((p, i) =>
-    `<div class="slide${i === current ? ' on' : ''}"><img src="${p.bottle}" alt="${p.name} Fragrance" draggable="false" /></div>`
-  ).join('');
-  $('#bigName span').textContent = PRODUCTS[current].name;
+  layers[0].innerHTML = sceneHTML(PRODUCTS[current]);
+  layers[0].style.display = 'block';
+  layers[0].style.zIndex = 1;
+  layers[1].innerHTML = '';
+  layers[1].style.display = 'none';
+  activeLayer = 0;
   $('#info').innerHTML = infoHTML(PRODUCTS[current]);
   $('#collection').style.background = PRODUCTS[current].tint;
   renderDots();
@@ -342,37 +359,22 @@ function go(dir) {
   busy = true;
   lastMove = Date.now();
   const next = (current + dir + N) % N;
-  const slides = [...document.querySelectorAll('.slide')];
-  const out = slides[current], inn = slides[next];
-  const opts = { duration: DUR, easing: EASE, fill: 'forwards' };
+  const curL = layers[activeLayer], nxtL = layers[1 - activeLayer];
 
-  // 1) each bottle spins a full turn while it slides out / in
-  const rest = 'translateX(0) rotateY(0deg)';
-  const away = d => `translateX(${d * 360}px) rotateY(${d * 360}deg)`;
-  inn.classList.add('on');
-  inn.style.zIndex = 2;
-  const bOpts = { duration: DUR * 1.5, easing: 'cubic-bezier(0.45, 0, 0.25, 1)', fill: 'forwards' };
-  const a1 = inn.animate([
-    { transform: away(dir), opacity: 0, offset: 0 },
-    { opacity: 1, offset: 0.25 },
-    { transform: rest, opacity: 1, offset: 1 }
-  ], bOpts);
-  const a2 = out.animate([
-    { transform: rest, opacity: 1, offset: 0 },
-    { opacity: 1, offset: 0.7 },
-    { transform: away(-dir), opacity: 0, offset: 1 }
-  ], bOpts);
+  // 1) the new scene (new name + new bottle) wipes in over the old one; the bottle stays in the middle
+  nxtL.innerHTML = sceneHTML(PRODUCTS[next]);
+  nxtL.style.display = 'block';
+  nxtL.style.zIndex = 2;
+  curL.style.zIndex = 1;
+  const sOpts = { duration: DUR * 1.1, easing: EASE, fill: 'forwards' };
+  const from = dir > 0 ? 'inset(0 0 0 100%)' : 'inset(0 100% 0 0)';
+  const a1 = nxtL.animate([{ clipPath: from }, { clipPath: 'inset(0 0 0 0)' }], sOpts);
 
-  // 2) the big perfume name slides at a different speed
-  const bn = $('#bigName');
-  const oldName = bn.firstElementChild;
-  const newName = document.createElement('span');
-  newName.textContent = PRODUCTS[next].name;
-  bn.appendChild(newName);
-  const nOpts = { duration: DUR * 1.15, easing: EASE, fill: 'forwards' };
-  newName.animate([{ transform: `translateX(${dir * 115}%)` }, { transform: 'translateX(0)' }], nOpts);
-  oldName.animate([{ transform: 'translateX(0)' }, { transform: `translateX(${-dir * 115}%)` }], nOpts)
-    .onfinish = () => { oldName.remove(); newName.getAnimations().forEach(a => a.cancel()); };
+  // 2) the big names drift a little as the wipe passes
+  const a2 = nxtL.querySelector('.scene-name').animate(
+    [{ transform: `translateX(${dir * 14}%)` }, { transform: 'translateX(0)' }], sOpts);
+  const a3 = curL.querySelector('.scene-name').animate(
+    [{ transform: 'translateX(0)' }, { transform: `translateX(${-dir * 8}%)` }], sOpts);
 
   // 3) the background color wipes across to the new perfume's color
   const wipe = $('#wipe');
@@ -397,9 +399,11 @@ function go(dir) {
   renderDots();
 
   a1.onfinish = () => {
-    out.classList.remove('on');
-    inn.style.zIndex = '';
-    [a1, a2].forEach(a => a.cancel());
+    curL.style.display = 'none';
+    curL.innerHTML = '';
+    [a1, a2, a3].forEach(a => a.cancel());
+    nxtL.style.zIndex = 1;
+    activeLayer = 1 - activeLayer;
     busy = false;
   };
 }
