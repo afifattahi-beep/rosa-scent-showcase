@@ -52,10 +52,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .big-name span{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--serif);font-weight:600;font-size:clamp(3.6rem,14vw,6.2rem);line-height:1;letter-spacing:.04em;color:var(--burgundy);white-space:nowrap}
 .stone-wrapper{max-width:520px;margin:0 auto;padding:.5rem 0 2rem}
 .stage-wrap{position:relative}
-.stone-stage{position:relative;overflow:hidden;width:100%;aspect-ratio:4/3;border-radius:16px;box-shadow:0 25px 45px rgba(0,0,0,.25);border:1px solid var(--line);background:#fff;cursor:pointer;touch-action:pan-y}
-.slide{position:absolute;inset:0;visibility:hidden;overflow:hidden}
+.stone-stage{position:relative;width:100%;height:clamp(330px,82vw,440px);cursor:pointer;touch-action:pan-y;perspective:1000px}
+.slide{position:absolute;inset:0;visibility:hidden;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6%;transform-origin:50% 80%}
 .slide.on{visibility:visible}
-.slide img{width:100%;height:100%;object-fit:cover;display:block}
+.slide::after{content:"";position:absolute;bottom:3%;left:50%;width:42%;height:5%;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(40,10,18,.35),transparent 70%);filter:blur(5px)}
+.slide img{position:relative;z-index:1;height:88%;width:auto;display:block;filter:drop-shadow(0 18px 18px rgba(60,20,30,.25));animation:float 4s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 .stone-info{background:#fff;border:1px solid var(--line);text-align:center;padding:1.8rem;box-shadow:var(--shadow);margin-top:1rem;border-radius:12px}
 .stone-info h3{font-size:2.2rem;color:var(--burgundy)}
 .stone-info .price{font-family:var(--serif);font-size:1.6rem;color:var(--burgundy);margin:.4rem 0 1rem}
@@ -147,7 +149,7 @@ footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0
       <span class="eyebrow">The Collection</span>
       <h2>Six Signatures, One Soul</h2>
       <div class="ornament">✦</div>
-      <p>Tap a scene to explore perfume details.</p>
+      <p>Tap the bottle to explore perfume details.</p>
     </div>
     <div class="big-name" id="bigName"><span></span></div>
     <div class="stone-wrapper" id="carouselWrapper">
@@ -253,32 +255,32 @@ const PRODUCTS = [
   {
     id:'aurora', name:'Aurora', price:190, tint:'#EBC3B1',
     desc:'Aurora is a rich and woody but gentle fragrance that pairs well with your fresh elegant ensemble. It opens with top notes of tangy grapefruit with a dash of rosemary and cardamom. The heart is made up of soft floral notes of ylang-ylang and tuberose. Finally, the base notes are made up of the potent scents of cedar, leather, suede, and vetiver. The scent is pleasant but not overpowering, so you can feel confident wearing it whether you’re at work, at the gym, at a party, or on a date.',
-    scene:'/bottle-aurora.jpeg'
+    scene:'/bottle-aurora.jpeg', bottle:'/cutout-aurora.png'
   },
   {
     id:'elixir', name:'Elixir', price:190, tint:'#CFE0C4',
     desc:'Elixir is powerful and refined, reveals the essence of determination.\n\nAn aromatic freshness opens, lingering on the warm, addictive fullness of Cedar and Sandalwood from New Caledonia that sweeps throughout the intense, woody fragrance.\n\nTop notes are Grapefruit, Lemon, Mint and Pink Pepper; middle notes are Ginger, Nutmeg, Jasmine and Iso E Super; base notes are Incense, Vetiver, Cedar, Sandalwood, Patchouli, Labdanum and White Musk.',
-    scene:'/bottle-elixir.jpeg'
+    scene:'/bottle-elixir.jpeg', bottle:'/cutout-elixir.png'
   },
   {
     id:'cloud', name:'Cloud', price:190, tint:'#C5E3E0',
     desc:'Cloud brings to life the extensive and pristine beauty of Switzerland and their breath-taking Alpine region. The fragrance captures the essence of crystal clear Alpine streams descending over frosted rock face, whilst retaining the comfort of a warm and plush jacket.\n\nA contemporary unisex scent, "Cloud" perfectly balances crisp & sharp citric notes with warming sweet blackcurrant and charming musk.',
-    scene:'/bottle-cloud.jpeg'
+    scene:'/bottle-cloud.jpeg', bottle:'/cutout-cloud.png'
   },
   {
     id:'moonlight', name:'Moonlight', price:190, tint:'#BBD3EA',
     desc:'Discover the Intense freshness from the sea. The scent unfolds into oriental notes of coconut water blended with the sensuality of amber accord. Your ultimate call of freshness, hedonism and seduction.\n\nTop notes are Sea water, Lavender, Mint, Green Notes, Rosemary, Calone and Coriander; middle notes are Sandalwood, Neroli, Geranium and Jasmine; base notes are Musk, Tobacco, Oakmoss, Cedar and Amber.',
-    scene:'/bottle-moonlight.jpeg'
+    scene:'/bottle-moonlight.jpeg', bottle:'/cutout-moonlight.png'
   },
   {
     id:'white-sand', name:'White Sand', price:190, tint:'#C6DDF0',
     desc:'Mixed with the coolness of the night, the burning desert air exudes profound scents. White Sand is thus the olfactory interpretation of a moment tinted with a thick blue that unleashes the wildest instincts. In the hour when the wolves come out and the sky is set ablaze, a new magic unfolds.\n\nWhite Sand has a juicy, spicy Calabrian Bergamot note with the sensuality of a mysterious and enveloping Papua New Guinean Vanilla absolute accord. The fragrance unfurls a powerful and noble trail.\n\nTop notes are Calabrian bergamot and Pepper; middle notes are Sichuan Pepper, Lavender, Pink Pepper, Vetiver, Patchouli, Geranium and elemi; base notes are Ambroxan, Cedar and Labdanum.',
-    scene:'/bottle-white-sand.jpeg'
+    scene:'/bottle-white-sand.jpeg', bottle:'/cutout-white-sand.png'
   },
   {
     id:'sea-sage', name:'Sea Sage', price:190, tint:'#BFE0BC',
     desc:'Sea Sage is the fragrance that interprets the sublime elegance through a luminous aura with an intense, vibrant and glowing freshness obtained from the combination of mint leaves, Italian lemon zest and green apple. An addictive sensuality delivered by Oriental, intriguing and enveloping notes like Tonka Beans, Amber, Geranium Flower and Vanilla. A racy virility symbolized by woods such as Cedarwood from Atlas and Virginia, Vetiver and Oak Moss, providing intensity and power.',
-    scene:'/bottle-sea-sage.jpeg'
+    scene:'/bottle-sea-sage.jpeg', bottle:'/cutout-sea-sage.png'
   }
 ];
 
@@ -296,12 +298,12 @@ document.addEventListener('error', e => {
 const $ = s => document.querySelector(s);
 const byId = id => PRODUCTS.find(p => p.id === id);
 const N = PRODUCTS.length;
-const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const DUR = REDUCED ? 1 : 750;
+const DUR = 750;
 const EASE = 'cubic-bezier(0.25, 1, 0.5, 1)';
 
 let current = 0;
 let busy = false;
+let lastMove = Date.now();
 let cart = [];
 try {
   cart = JSON.parse(localStorage.getItem('rosa_cart') || '[]')
@@ -327,7 +329,7 @@ function renderDots() {
 function renderCarousel() {
   const stage = $('#stage');
   stage.innerHTML = PRODUCTS.map((p, i) =>
-    `<div class="slide${i === current ? ' on' : ''}"><img src="${p.scene}" alt="${p.name} Fragrance" draggable="false" /></div>`
+    `<div class="slide${i === current ? ' on' : ''}"><img src="${p.bottle}" alt="${p.name} Fragrance" draggable="false" /></div>`
   ).join('');
   $('#bigName span').textContent = PRODUCTS[current].name;
   $('#info').innerHTML = infoHTML(PRODUCTS[current]);
@@ -338,17 +340,28 @@ function renderCarousel() {
 function go(dir) {
   if (busy) return;
   busy = true;
+  lastMove = Date.now();
   const next = (current + dir + N) % N;
   const slides = [...document.querySelectorAll('.slide')];
   const out = slides[current], inn = slides[next];
   const opts = { duration: DUR, easing: EASE, fill: 'forwards' };
 
-  // 1) the scene slides across, the old one drifts away more slowly
+  // 1) each bottle spins a full turn while it slides out / in
+  const rest = 'translateX(0) rotateY(0deg)';
+  const away = d => `translateX(${d * 360}px) rotateY(${d * 360}deg)`;
   inn.classList.add('on');
   inn.style.zIndex = 2;
-  const a1 = inn.animate([{ transform: `translateX(${dir * 100}%)` }, { transform: 'translateX(0)' }], opts);
-  const a2 = out.animate([{ transform: 'translateX(0)', opacity: 1 }, { transform: `translateX(${-dir * 30}%)`, opacity: .55 }], opts);
-  const a3 = inn.firstElementChild.animate([{ transform: `scale(1.2) translateX(${dir * 14}%)` }, { transform: 'scale(1) translateX(0)' }], opts);
+  const bOpts = { duration: DUR * 1.5, easing: 'cubic-bezier(0.45, 0, 0.25, 1)', fill: 'forwards' };
+  const a1 = inn.animate([
+    { transform: away(dir), opacity: 0, offset: 0 },
+    { opacity: 1, offset: 0.25 },
+    { transform: rest, opacity: 1, offset: 1 }
+  ], bOpts);
+  const a2 = out.animate([
+    { transform: rest, opacity: 1, offset: 0 },
+    { opacity: 1, offset: 0.7 },
+    { transform: away(-dir), opacity: 0, offset: 1 }
+  ], bOpts);
 
   // 2) the big perfume name slides at a different speed
   const bn = $('#bigName');
@@ -386,7 +399,7 @@ function go(dir) {
   a1.onfinish = () => {
     out.classList.remove('on');
     inn.style.zIndex = '';
-    [a1, a2, a3].forEach(a => a.cancel());
+    [a1, a2].forEach(a => a.cancel());
     busy = false;
   };
 }
@@ -394,7 +407,7 @@ function go(dir) {
 $('#prevBtn').addEventListener('click', () => go(-1));
 $('#nextBtn').addEventListener('click', () => go(1));
 
-/* swipe + tap on the scene */
+/* swipe + tap on the bottle */
 let tx = 0, ty = 0, moved = false;
 const stageEl = $('#stage');
 stageEl.addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; moved = false; }, { passive: true });
@@ -410,6 +423,24 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft') go(-1);
   if (e.key === 'ArrowRight') go(1);
 });
+
+/* ---------- Autoplay: moves to the next perfume every 2 seconds ---------- */
+const AUTO_MS = 2000;
+let paused = false;
+let inView = true;
+const wrapEl = $('#carouselWrapper');
+wrapEl.addEventListener('mouseenter', () => { paused = true; });
+wrapEl.addEventListener('mouseleave', () => { paused = false; lastMove = Date.now(); });
+wrapEl.addEventListener('touchstart', () => { paused = true; }, { passive: true });
+['touchend', 'touchcancel'].forEach(ev => wrapEl.addEventListener(ev, () => { paused = false; lastMove = Date.now(); }));
+if ('IntersectionObserver' in window) {
+  new IntersectionObserver(en => { inView = en[0].isIntersecting; if (inView) lastMove = Date.now(); }, { threshold: 0.2 }).observe($('#collection'));
+}
+setInterval(() => {
+  if (busy || paused || !inView || document.hidden) return;
+  if ($('#productModal').classList.contains('show') || $('#drawer').classList.contains('show')) return;
+  if (Date.now() - lastMove >= AUTO_MS) go(1);
+}, 200);
 
 /* ---------- Product popup ---------- */
 let modalId = null;
