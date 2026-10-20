@@ -350,10 +350,13 @@ function fitNames() {
   });
 }
 
+/* background photo file name (.jpeg). Loaded from GitHub first, then from the site as a backup */
+const bgFile = p => p.bg.split('/').pop().replace('.jpg', '.jpeg');
+
 /* all six scenes are built once, so nothing pops in while the animation runs */
 function renderCarousel() {
   $('#scenes').innerHTML = PRODUCTS.map((p, i) => `
-    <div class="scene${i === current ? ' on' : ''}" style="background-color:${p.tint};background-image:url('${p.bg.replace('.jpg', '.jpeg')}')">
+    <div class="scene${i === current ? ' on' : ''}" style="background-color:${p.tint};background-image:url('${RAW}${bgFile(p)}'),url('/${bgFile(p)}')">
       <div class="scene-name"><span>${p.name}</span></div>
       <div class="scene-bottle"><div class="bt"><img src="${p.bottle}" alt="${p.name} Fragrance" draggable="false" /></div></div>
     </div>`).join('');
