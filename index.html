@@ -7,7 +7,7 @@
 <meta name="description" content="Rosa Fragrance — luxury oil-based perfumes in 6 ml bottles." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 <style>
 :root{--ivory:#FAF6EF;--ivory-deep:#F2E8D9;--burgundy:#6B1E2E;--burgundy-dark:#4A1320;--rose-gold:#B76E79;--rose-gold-light:#E8C4BC;--ink:#1C1718;--muted:#6E6264;--line:rgba(107,30,46,0.15);--shadow:0 25px 50px -12px rgba(74,19,32,0.25);--serif:'Cormorant Garamond',Georgia,serif;--sans:'Montserrat',system-ui,sans-serif;--ease:cubic-bezier(0.25,1,0.5,1)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -44,21 +44,23 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .hero h1 em{color:var(--rose-gold);font-style:normal}
 .hero .tagline{font-family:var(--serif);font-style:italic;font-size:clamp(1.3rem,3vw,1.9rem);color:var(--ink);margin-bottom:2.6rem}
 
-/* Collection: color wipe + sliding scenes */
+/* Collection: full-width colour band, the giant name sits BEHIND the bottle */
 .catalog{position:relative;background:#F2E8D9;padding:6rem 0;overflow:hidden}
 .catalog>.container{position:relative;z-index:1}
 .wipe{position:absolute;inset:0;z-index:0;clip-path:inset(0 0 0 100%);pointer-events:none}
 .stone-wrapper{max-width:520px;margin:0 auto;padding:.5rem 0 2rem}
 .stage-wrap{position:relative}
-.stone-stage{position:relative;width:100%;height:clamp(330px,82vw,440px);cursor:pointer;touch-action:pan-y;perspective:1000px}
-/* Scenes: the huge name sits BEHIND a bottle that stays put; a new scene wipes in over the old one */
+.stone-stage{position:relative;z-index:1;width:100%;height:clamp(330px,82vw,440px);cursor:pointer;touch-action:pan-y}
 .scenes{position:absolute;top:0;bottom:0;left:50%;width:100vw;margin-left:-50vw;pointer-events:none;z-index:0}
-.scene{position:absolute;inset:0;overflow:hidden}
+.scene{position:absolute;inset:0;overflow:hidden;visibility:hidden}
+.scene.on{visibility:visible}
+.scene::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,rgba(255,255,255,.28),rgba(255,255,255,0) 65%)}
 .scene-name{position:absolute;left:0;right:0;top:0;bottom:12%;display:grid;place-items:center}
-.scene-name span{font-family:var(--serif);font-weight:600;font-size:clamp(5.5rem,22vw,17rem);line-height:1;letter-spacing:.02em;color:var(--name-color,#fff);white-space:nowrap}
-.scene-bottle{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6%}
+.scene-name span{display:inline-block;font-family:var(--sans);font-weight:700;color:#fff;line-height:1;white-space:nowrap;letter-spacing:-.01em;will-change:transform,filter}
+.scene-bottle{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6%;perspective:900px}
 .scene-bottle::after{content:"";position:absolute;bottom:3%;left:50%;width:42%;max-width:220px;height:5%;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(40,10,18,.35),transparent 70%);filter:blur(5px)}
-.scene-bottle img{position:relative;z-index:1;height:88%;width:auto;display:block;filter:drop-shadow(0 18px 18px rgba(60,20,30,.25));animation:float 4s ease-in-out infinite}
+.bt{position:relative;z-index:1;height:88%;will-change:transform}
+.bt img{height:100%;width:auto;display:block;filter:drop-shadow(0 18px 18px rgba(60,20,30,.25));animation:float 4s ease-in-out infinite}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 .stone-info{background:#fff;border:1px solid var(--line);text-align:center;padding:1.8rem;box-shadow:var(--shadow);margin-top:1rem;border-radius:12px}
 .stone-info h3{font-size:2.2rem;color:var(--burgundy)}
@@ -155,10 +157,7 @@ footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0
     </div>
     <div class="stone-wrapper" id="carouselWrapper">
       <div class="stage-wrap">
-        <div class="scenes" id="scenes">
-          <div class="scene" id="sceneA"></div>
-          <div class="scene" id="sceneB" style="display:none"></div>
-        </div>
+        <div class="scenes" id="scenes"></div>
         <button class="carousel-btn prev-btn" id="prevBtn" aria-label="Previous perfume">&#10094;</button>
         <div class="stone-stage" id="stage"></div>
         <button class="carousel-btn next-btn" id="nextBtn" aria-label="Next perfume">&#10095;</button>
@@ -258,32 +257,32 @@ const WHATSAPP_NUMBER = '8801632319773';
 
 const PRODUCTS = [
   {
-    id:'aurora', name:'Aurora', price:190, tint:'#EBC3B1',
+    id:'aurora', name:'Aurora', price:190, tint:'#F2A596',
     desc:'Aurora is a rich and woody but gentle fragrance that pairs well with your fresh elegant ensemble. It opens with top notes of tangy grapefruit with a dash of rosemary and cardamom. The heart is made up of soft floral notes of ylang-ylang and tuberose. Finally, the base notes are made up of the potent scents of cedar, leather, suede, and vetiver. The scent is pleasant but not overpowering, so you can feel confident wearing it whether you’re at work, at the gym, at a party, or on a date.',
     scene:'/bottle-aurora.jpeg', bottle:'/cutout-aurora.png'
   },
   {
-    id:'elixir', name:'Elixir', price:190, tint:'#CFE0C4',
+    id:'elixir', name:'Elixir', price:190, tint:'#A9D06B',
     desc:'Elixir is powerful and refined, reveals the essence of determination.\n\nAn aromatic freshness opens, lingering on the warm, addictive fullness of Cedar and Sandalwood from New Caledonia that sweeps throughout the intense, woody fragrance.\n\nTop notes are Grapefruit, Lemon, Mint and Pink Pepper; middle notes are Ginger, Nutmeg, Jasmine and Iso E Super; base notes are Incense, Vetiver, Cedar, Sandalwood, Patchouli, Labdanum and White Musk.',
     scene:'/bottle-elixir.jpeg', bottle:'/cutout-elixir.png'
   },
   {
-    id:'cloud', name:'Cloud', price:190, tint:'#C5E3E0',
+    id:'cloud', name:'Cloud', price:190, tint:'#5CC4BD',
     desc:'Cloud brings to life the extensive and pristine beauty of Switzerland and their breath-taking Alpine region. The fragrance captures the essence of crystal clear Alpine streams descending over frosted rock face, whilst retaining the comfort of a warm and plush jacket.\n\nA contemporary unisex scent, "Cloud" perfectly balances crisp & sharp citric notes with warming sweet blackcurrant and charming musk.',
     scene:'/bottle-cloud.jpeg', bottle:'/cutout-cloud.png'
   },
   {
-    id:'moonlight', name:'Moonlight', price:190, tint:'#BBD3EA',
+    id:'moonlight', name:'Moonlight', price:190, tint:'#5EA9E8',
     desc:'Discover the Intense freshness from the sea. The scent unfolds into oriental notes of coconut water blended with the sensuality of amber accord. Your ultimate call of freshness, hedonism and seduction.\n\nTop notes are Sea water, Lavender, Mint, Green Notes, Rosemary, Calone and Coriander; middle notes are Sandalwood, Neroli, Geranium and Jasmine; base notes are Musk, Tobacco, Oakmoss, Cedar and Amber.',
     scene:'/bottle-moonlight.jpeg', bottle:'/cutout-moonlight.png'
   },
   {
-    id:'white-sand', name:'White Sand', price:190, tint:'#C6DDF0',
+    id:'white-sand', name:'White Sand', price:190, tint:'#9DC4F2',
     desc:'Mixed with the coolness of the night, the burning desert air exudes profound scents. White Sand is thus the olfactory interpretation of a moment tinted with a thick blue that unleashes the wildest instincts. In the hour when the wolves come out and the sky is set ablaze, a new magic unfolds.\n\nWhite Sand has a juicy, spicy Calabrian Bergamot note with the sensuality of a mysterious and enveloping Papua New Guinean Vanilla absolute accord. The fragrance unfurls a powerful and noble trail.\n\nTop notes are Calabrian bergamot and Pepper; middle notes are Sichuan Pepper, Lavender, Pink Pepper, Vetiver, Patchouli, Geranium and elemi; base notes are Ambroxan, Cedar and Labdanum.',
     scene:'/bottle-white-sand.jpeg', bottle:'/cutout-white-sand.png'
   },
   {
-    id:'sea-sage', name:'Sea Sage', price:190, tint:'#BFE0BC',
+    id:'sea-sage', name:'Sea Sage', price:190, tint:'#74C874',
     desc:'Sea Sage is the fragrance that interprets the sublime elegance through a luminous aura with an intense, vibrant and glowing freshness obtained from the combination of mint leaves, Italian lemon zest and green apple. An addictive sensuality delivered by Oriental, intriguing and enveloping notes like Tonka Beans, Amber, Geranium Flower and Vanilla. A racy virility symbolized by woods such as Cedarwood from Atlas and Virginia, Vetiver and Oak Moss, providing intensity and power.',
     scene:'/bottle-sea-sage.jpeg', bottle:'/cutout-sea-sage.png'
   }
@@ -331,79 +330,113 @@ function renderDots() {
   $('#dots').innerHTML = PRODUCTS.map((_, i) => `<i class="${i === current ? 'on' : ''}"></i>`).join('');
 }
 
-/* One "scene" = the huge name + the bottle in front of it */
-function sceneHTML(p) {
-  // same float phase for every bottle, so old and new line up while the wipe passes
-  const delay = '-' + Math.round(performance.now() % 4000) + 'ms';
-  return `<div class="scene-name"><span>${p.name}</span></div>
-    <div class="scene-bottle"><img src="${p.bottle}" alt="${p.name} Fragrance" draggable="false" style="animation-delay:${delay}" /></div>`;
+/* soft version of the perfume colour for the page behind the band */
+function soften(hex) {
+  const m = (a, b) => Math.round(a + (b - a) * 0.3);
+  const c = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+  const [r1, g1, b1] = c(hex), [r2, g2, b2] = c('#F2E8D9');
+  return `rgb(${m(r2, r1)}, ${m(g2, g1)}, ${m(b2, b1)})`;
 }
 
-const layers = [$('#sceneA'), $('#sceneB')];
-let activeLayer = 0;
+/* every giant name is sized to fit inside the band (never cut, never over the arrows' edge) */
+function fitNames() {
+  const box = $('#scenes');
+  const W = box.clientWidth, H = box.clientHeight;
+  if (!W) return;
+  document.querySelectorAll('.scene-name span').forEach(el => {
+    el.style.fontSize = '100px';
+    const w = el.getBoundingClientRect().width || 1;
+    el.style.fontSize = Math.min(100 * (W * 0.9) / w, H * 0.5) + 'px';
+  });
+}
 
+/* all six scenes are built once, so nothing pops in while the animation runs */
 function renderCarousel() {
-  layers[0].innerHTML = sceneHTML(PRODUCTS[current]);
-  layers[0].style.display = 'block';
-  layers[0].style.zIndex = 1;
-  layers[1].innerHTML = '';
-  layers[1].style.display = 'none';
-  activeLayer = 0;
+  $('#scenes').innerHTML = PRODUCTS.map((p, i) => `
+    <div class="scene${i === current ? ' on' : ''}" style="background-color:${p.tint}">
+      <div class="scene-name"><span>${p.name}</span></div>
+      <div class="scene-bottle"><div class="bt"><img src="${p.bottle}" alt="${p.name} Fragrance" draggable="false" /></div></div>
+    </div>`).join('');
   $('#info').innerHTML = infoHTML(PRODUCTS[current]);
-  $('#collection').style.background = PRODUCTS[current].tint;
+  $('#collection').style.background = soften(PRODUCTS[current].tint);
   renderDots();
+  fitNames();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitNames);
 }
+window.addEventListener('resize', fitNames);
 
 function go(dir) {
   if (busy) return;
   busy = true;
   lastMove = Date.now();
   const next = (current + dir + N) % N;
-  const curL = layers[activeLayer], nxtL = layers[1 - activeLayer];
+  const scenes = [...document.querySelectorAll('.scene')];
+  const out = scenes[current], inn = scenes[next];
+  const D = 1150;                                   // slower = smoother
+  const SMOOTH = 'cubic-bezier(0.65, 0, 0.35, 1)';  // gentle start, gentle stop
+  const q = (el, c) => el.querySelector(c);
+  const anims = [];
 
-  // 1) the new scene (new name + new bottle) wipes in over the old one; the bottle stays in the middle
-  nxtL.innerHTML = sceneHTML(PRODUCTS[next]);
-  nxtL.style.display = 'block';
-  nxtL.style.zIndex = 2;
-  curL.style.zIndex = 1;
-  const sOpts = { duration: DUR * 1.1, easing: EASE, fill: 'forwards' };
-  const from = dir > 0 ? 'inset(0 0 0 100%)' : 'inset(0 100% 0 0)';
-  const a1 = nxtL.animate([{ clipPath: from }, { clipPath: 'inset(0 0 0 0)' }], sOpts);
+  inn.classList.add('on');
+  inn.style.zIndex = 2;
+  out.style.zIndex = 1;
 
-  // 2) the big names drift a little as the wipe passes
-  const a2 = nxtL.querySelector('.scene-name').animate(
-    [{ transform: `translateX(${dir * 14}%)` }, { transform: 'translateX(0)' }], sOpts);
-  const a3 = curL.querySelector('.scene-name').animate(
-    [{ transform: 'translateX(0)' }, { transform: `translateX(${-dir * 8}%)` }], sOpts);
+  // 1) the new scene (colour + name + bottle) wipes across; the old one stays underneath
+  const wipeScene = inn.animate([
+    { clipPath: dir > 0 ? 'inset(0 0 0 100%)' : 'inset(0 100% 0 0)' },
+    { clipPath: 'inset(0 0 0 0)' }
+  ], { duration: D, easing: SMOOTH, fill: 'forwards' });
+  anims.push(wipeScene);
 
-  // 3) the background color wipes across to the new perfume's color
+  // 2) names slide with a little motion blur, each one inside its own scene (so they never mix)
+  anims.push(q(inn, '.scene-name span').animate([
+    { transform: `translateX(${dir * 45}%)`, filter: 'blur(8px)', offset: 0 },
+    { filter: 'blur(3px)', offset: 0.5 },
+    { transform: 'translateX(0)', filter: 'blur(0px)', offset: 1 }
+  ], { duration: D, easing: SMOOTH, fill: 'forwards' }));
+  anims.push(q(out, '.scene-name span').animate([
+    { transform: 'translateX(0)', filter: 'blur(0px)', offset: 0 },
+    { filter: 'blur(3px)', offset: 0.5 },
+    { transform: `translateX(${-dir * 45}%)`, filter: 'blur(8px)', offset: 1 }
+  ], { duration: D, easing: SMOOTH, fill: 'forwards' }));
+
+  // 3) the bottle stays in the middle and turns on its own axis, like the can
+  anims.push(q(inn, '.bt').animate([
+    { transform: `rotateY(${-dir * 80}deg)` },
+    { transform: 'rotateY(0deg)' }
+  ], { duration: D, easing: SMOOTH, fill: 'forwards' }));
+  anims.push(q(out, '.bt').animate([
+    { transform: 'rotateY(0deg)' },
+    { transform: `rotateY(${dir * 80}deg)` }
+  ], { duration: D, easing: SMOOTH, fill: 'forwards' }));
+
+  // 4) the page colour behind the band wipes with it
   const wipe = $('#wipe');
-  wipe.style.background = PRODUCTS[next].tint;
+  wipe.style.background = soften(PRODUCTS[next].tint);
   wipe.animate([
     { clipPath: dir > 0 ? 'inset(0 0 0 100%)' : 'inset(0 100% 0 0)' },
     { clipPath: 'inset(0 0 0 0)' }
-  ], { duration: DUR * 1.1, easing: EASE, fill: 'forwards' }).onfinish = () => {
-    $('#collection').style.background = PRODUCTS[next].tint;
+  ], { duration: D, easing: SMOOTH, fill: 'forwards' }).onfinish = () => {
+    $('#collection').style.background = soften(PRODUCTS[next].tint);
     wipe.getAnimations().forEach(a => a.cancel());
   };
 
-  // 4) info card fades to the new perfume
+  // 5) info card fades to the new perfume
   const info = $('#info');
-  info.animate([{ opacity: 1 }, { opacity: 0 }], { duration: DUR * .3, fill: 'forwards' }).onfinish = () => {
+  info.animate([{ opacity: 1 }, { opacity: 0 }], { duration: D * .3, fill: 'forwards' }).onfinish = () => {
     info.innerHTML = infoHTML(PRODUCTS[next]);
     info.getAnimations().forEach(a => a.cancel());
-    info.animate([{ opacity: 0 }, { opacity: 1 }], { duration: DUR * .4 });
+    info.animate([{ opacity: 0 }, { opacity: 1 }], { duration: D * .4 });
   };
 
   current = next;
   renderDots();
 
-  a1.onfinish = () => {
-    curL.style.display = 'none';
-    curL.innerHTML = '';
-    [a1, a2, a3].forEach(a => a.cancel());
-    nxtL.style.zIndex = 1;
-    activeLayer = 1 - activeLayer;
+  wipeScene.onfinish = () => {
+    anims.forEach(a => a.cancel());
+    out.classList.remove('on');
+    out.style.zIndex = '';
+    inn.style.zIndex = '';
     busy = false;
   };
 }
