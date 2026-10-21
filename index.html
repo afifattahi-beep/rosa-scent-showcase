@@ -11,7 +11,7 @@
 <style>
 :root{--ivory:#FAF6EF;--ivory-deep:#F2E8D9;--burgundy:#6B1E2E;--burgundy-dark:#4A1320;--rose-gold:#B76E79;--rose-gold-light:#E8C4BC;--ink:#1C1718;--muted:#6E6264;--line:rgba(107,30,46,0.15);--shadow:0 25px 50px -12px rgba(74,19,32,0.25);--serif:'Cormorant Garamond',Georgia,serif;--sans:'Montserrat',system-ui,sans-serif;--ease:cubic-bezier(0.25,1,0.5,1)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scrollbar-gutter:stable}
 body{font-family:var(--sans);font-weight:300;color:var(--ink);background:var(--ivory);line-height:1.7;overflow-x:hidden}
 body.locked{overflow:hidden}
 h1,h2,h3,h4{font-family:var(--serif);font-weight:500}
@@ -86,6 +86,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .modal-right h2{font-size:clamp(2.2rem,4vw,3rem);color:var(--burgundy);margin-bottom:.3rem}
 .modal-right .price{font-family:var(--serif);font-size:1.6rem;color:var(--burgundy);margin-bottom:1.2rem}
 .modal-right p{color:var(--muted);font-size:.95rem;margin-bottom:2rem;line-height:1.8;text-align:left;white-space:pre-line}
+/* the bottle and the photo that fly between the carousel and the popup */
+.fly{position:fixed;z-index:120;margin:0;max-width:none;pointer-events:none;transform-origin:0 0;will-change:transform,opacity;filter:drop-shadow(0 18px 18px rgba(60,20,30,.25))}
+.fly-photo{z-index:121;border-radius:14px;box-shadow:0 20px 30px rgba(0,0,0,.12);filter:none;object-fit:cover}
 
 .overlay{position:fixed;inset:0;background:rgba(28,23,24,.45);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .4s;z-index:60}
 .overlay.show{opacity:1;pointer-events:auto}
@@ -114,7 +117,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .bkash-box{border:1px solid var(--rose-gold-light);background:#fff;padding:1.4rem;margin:1.2rem 0}
 .bkash-number{font-family:var(--serif);font-size:1.6rem;color:var(--burgundy);margin:.4rem 0}
 footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0 2rem;text-align:center;font-size:.8rem}
-.toast{position:fixed;bottom:1.6rem;left:50%;transform:translate(-50%,120%);background:var(--ink);color:var(--ivory);padding:.8rem 1.5rem;font-size:.8rem;z-index:150;transition:transform .4s}
+.toast{position:fixed;bottom:1.6rem;left:50%;transform:translate(-50%,300%);background:var(--ink);color:var(--ivory);padding:.8rem 1.5rem;font-size:.8rem;z-index:150;transition:transform .4s}
 .toast.show{transform:translate(-50%,0)}
 </style>
 </head>
@@ -307,6 +310,7 @@ const EASE = 'cubic-bezier(0.25, 1, 0.5, 1)';
 
 let current = 0;
 let busy = false;
+let modalBusy = false;
 let lastMove = Date.now();
 let cart = [];
 try {
@@ -477,29 +481,170 @@ if ('IntersectionObserver' in window) {
   new IntersectionObserver(en => { inView = en[0].isIntersecting; if (inView) lastMove = Date.now(); }, { threshold: 0.2 }).observe($('#collection'));
 }
 setInterval(() => {
-  if (busy || paused || !inView || document.hidden) return;
+  if (busy || modalBusy || paused || !inView || document.hidden) return;
   if ($('#productModal').classList.contains('show') || $('#drawer').classList.contains('show')) return;
   if (Date.now() - lastMove >= AUTO_MS) go(1);
 }, 200);
 
-/* ---------- Product popup ---------- */
+/* ---------- Product popup: the photo grows out of the bottle, the details slide in ---------- */
 let modalId = null;
-function openProductModal(id) {
-  const p = byId(id);
-  if (!p) return;
-  modalId = id;
-  delete $('#modalImg').dataset.fb;
-  $('#modalImg').src = p.scene;
-  $('#modalImg').alt = p.name + ' Fragrance';
-  $('#modalTitle').textContent = p.name;
-  $('#modalPrice').textContent = CURRENCY + p.price;
-  $('#modalDesc').textContent = p.desc;
+let flySrcEl = null;                                   // the carousel bottle the photo grew out of
+const REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const FLY_MS = 900;
+const FLY_EASE = 'cubic-bezier(0.65, 0, 0.35, 1)';     // gentle start, gentle stop
+const SLIDE_EASE = 'cubic-bezier(0.25, 1, 0.5, 1)';
+
+/* load the popup photos quietly in the background so the animation never waits for them */
+function preloadScenes() {
+  PRODUCTS.forEach(p => {
+    const im = new Image();
+    im.onerror = () => { im.onerror = null; im.src = RAW + p.scene.split('/').pop(); };
+    im.src = p.scene;
+  });
+}
+
+/* the photo grows out of the bottle: it starts as a small window sitting right on the bottle,
+   then opens up and glides to its place on the left (and does the same backwards when closing) */
+function morphFrames(b, p) {
+  const k = b.height / (p.height * 0.5);                         // the photo starts this small
+  const insetY = (p.height - b.height / k) / 2;
+  const insetX = Math.max(0, (p.width - b.width / k) / 2);
+  const tx = (b.left + b.width / 2) - (p.left + p.width / 2);
+  const ty = (b.top + b.height / 2) - (p.top + p.height / 2);
+  return [
+    { transform: `translate(${tx}px, ${ty}px) scale(${k})`, clipPath: `inset(${insetY}px ${insetX}px ${insetY}px ${insetX}px round ${14 / k}px)` },
+    { transform: 'translate(0px, 0px) scale(1)', clipPath: 'inset(-60px -60px -80px -60px round 0px)' }
+  ];
+}
+
+/* a copy of the bottle, placed exactly on top of the real one */
+function makeFly(bottleEl, rect) {
+  const f = document.createElement('img');
+  f.className = 'fly';
+  f.alt = '';
+  f.src = bottleEl.currentSrc || bottleEl.src;
+  f.style.left = rect.left + 'px';
+  f.style.top = rect.top + 'px';
+  f.style.width = rect.width + 'px';
+  f.style.height = rect.height + 'px';
+  document.body.appendChild(f);
+  return f;
+}
+
+/* a copy of the popup photo, placed exactly on top of the real one */
+function makePhotoFly(photoEl, rect) {
+  const f = document.createElement('img');
+  f.className = 'fly fly-photo';
+  f.alt = '';
+  f.src = photoEl.currentSrc || photoEl.src;
+  f.style.left = rect.left + 'px';
+  f.style.top = rect.top + 'px';
+  f.style.width = rect.width + 'px';
+  f.style.height = rect.height + 'px';
+  f.style.transformOrigin = '50% 50%';
+  document.body.appendChild(f);
+  return f;
+}
+
+function showPlain() {
   $('#productModal').classList.add('show');
   document.body.classList.add('locked');
 }
-function closeProductModal() {
-  $('#productModal').classList.remove('show');
+
+async function openProductModal(id) {
+  const p = byId(id);
+  if (!p || modalBusy) return;
+  modalId = id;
+  const modal = $('#productModal'), photo = $('#modalImg');
+  delete photo.dataset.fb;
+  photo.src = p.scene;
+  photo.alt = p.name + ' Fragrance';
+  $('#modalTitle').textContent = p.name;
+  $('#modalPrice').textContent = CURRENCY + p.price;
+  $('#modalDesc').textContent = p.desc;
+
+  const bottle = (!busy && !REDUCED) ? document.querySelector('.scene.on .bt img') : null;
+  if (!bottle || !bottle.getBoundingClientRect().width) { flySrcEl = null; showPlain(); return; }
+
+  modalBusy = true;
+  /* wait until the photo is ready, so we know exactly where it lands */
+  if (!(photo.complete && photo.naturalWidth)) {
+    await new Promise(res => { photo.addEventListener('load', res, { once: true }); setTimeout(res, 1500); });
+  }
+  document.body.classList.add('locked');
+  const photoRect = photo.getBoundingClientRect();
+  const bottleRect = bottle.getBoundingClientRect();
+  if (!photoRect.width || !bottleRect.width) { flySrcEl = null; showPlain(); modalBusy = false; return; }
+
+  const fly = makeFly(bottle, bottleRect);
+  const pfly = makePhotoFly(photo, photoRect);
+  flySrcEl = bottle;
+  bottle.style.visibility = 'hidden';
+  modal.classList.add('show');                         // white page fades in
+
+  const anims = [];
+  const A = (el, kf, o) => { const a = el.animate(kf, Object.assign({ fill: 'both' }, o)); anims.push(a); return a; };
+  // 1) the photo grows out of the bottle and glides to the left
+  const morph = A(pfly, morphFrames(bottleRect, photoRect), { duration: FLY_MS, easing: FLY_EASE });
+  A(pfly, [{ opacity: 0 }, { opacity: 1 }], { duration: 320, easing: 'ease-out' });
+  A(fly, [{ opacity: 1 }, { opacity: 0 }], { duration: 380, easing: 'ease-in' });   // the bottle melts into it
+  A(photo, [{ opacity: 0 }, { opacity: 0 }], { duration: FLY_MS });                 // real photo waits for the landing
+  // 2) the details slide in from the right, one after another
+  [...modal.querySelectorAll('.modal-right > *')].forEach((el, i) =>
+    A(el, [{ opacity: 0, transform: 'translateX(56px)' }, { opacity: 1, transform: 'translateX(0)' }],
+      { duration: 650, delay: 260 + i * 90, easing: SLIDE_EASE }));
+  A($('#modalClose'), [{ opacity: 0 }, { opacity: 1 }], { duration: 400, delay: 600 });
+
+  await morph.finished.catch(() => {});
+  anims.forEach(a => a.cancel());
+  fly.remove();
+  pfly.remove();
+  modalBusy = false;
+}
+
+async function closeProductModal() {
+  const modal = $('#productModal');
+  if (!modal.classList.contains('show') || modalBusy) return;
+  const bottle = flySrcEl, photo = $('#modalImg');
+  const plain = () => {
+    modal.classList.remove('show');
+    document.body.classList.remove('locked');
+    if (bottle) bottle.style.visibility = '';
+    flySrcEl = null;
+    lastMove = Date.now();
+  };
+  if (!bottle || !bottle.isConnected) { plain(); return; }
+  const bottleRect = bottle.getBoundingClientRect();   // where it goes back to
+  const photoRect = photo.getBoundingClientRect();     // where it leaves from
+  if (!bottleRect.width || !photoRect.width) { plain(); return; }
+
+  modalBusy = true;
+  const CLOSE_MS = FLY_MS - 100;
+  const fly = makeFly(bottle, bottleRect);
+  const pfly = makePhotoFly(photo, photoRect);
+  const anims = [];
+  const A = (el, kf, o) => { const a = el.animate(kf, Object.assign({ fill: 'both' }, o)); anims.push(a); return a; };
+  // 1) the details slide away
+  [...modal.querySelectorAll('.modal-right > *')].forEach(el =>
+    A(el, [{ opacity: 1, transform: 'translateX(0)' }, { opacity: 0, transform: 'translateX(40px)' }], { duration: 300, easing: 'ease-in' }));
+  A($('#modalClose'), [{ opacity: 1 }, { opacity: 0 }], { duration: 200 });
+  A(photo, [{ opacity: 0 }, { opacity: 0 }], { duration: CLOSE_MS + 150 });          // the copy takes over from the real photo
+  // 2) the photo shrinks back into the bottle's place
+  const morph = A(pfly, morphFrames(bottleRect, photoRect).reverse(), { duration: CLOSE_MS, delay: 100, easing: FLY_EASE });
+  A(pfly, [{ opacity: 1 }, { opacity: 0 }], { duration: 380, delay: CLOSE_MS + 100 - 380, easing: 'ease-in' });
+  A(fly, [{ opacity: 0 }, { opacity: 1 }], { duration: 380, delay: CLOSE_MS + 100 - 380, easing: 'ease-out' });   // ...and turns back into the bottle
+  // 3) the white page fades away to show the collection again
+  setTimeout(() => modal.classList.remove('show'), 200);
+
+  await morph.finished.catch(() => {});
+  anims.forEach(a => a.cancel());
+  fly.remove();
+  pfly.remove();
+  bottle.style.visibility = '';
   document.body.classList.remove('locked');
+  flySrcEl = null;
+  lastMove = Date.now();
+  modalBusy = false;
 }
 $('#modalClose').addEventListener('click', closeProductModal);
 $('#modalAddToCart').addEventListener('click', () => { if (modalId) { addToCart(modalId); closeProductModal(); } });
@@ -585,6 +730,7 @@ $('#checkoutForm').addEventListener('submit', e => {
 
 renderCarousel();
 renderCart();
+setTimeout(preloadScenes, 1200);
 </script>
 </body>
 </html>
