@@ -228,7 +228,7 @@ footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0
           <button type="submit" class="btn btn-solid btn-block" data-channel="whatsapp">Order via WhatsApp</button>
           <button type="submit" class="btn btn-block" data-channel="messenger">Order via Messenger</button>
         </div>
-        <p class="order-note">Messenger: your order details are copied for you. Just paste them into the chat and send.</p>
+        <p class="order-note">Your order is filled into the chat for you. Just tap send. (For Messenger, a copy is also on your clipboard in case the text doesn't appear.)</p>
       </form>
       <aside class="panel">
         <h3>Order Summary</h3>
@@ -764,12 +764,12 @@ $('#checkoutForm').addEventListener('submit', e => {
       toast('Messenger ordering is not set up yet.');
       return;
     }
-    // Messenger cannot pre-fill a message, so the order is copied and the chat is opened
+    // The order text is filled into the Messenger chat (like WhatsApp).
+    // A copy also goes to the clipboard as a backup, in case the text does not appear.
     copyText(msg).then(ok => {
-      if (ok) toast('Order details copied. Paste them in Messenger and send.');
-      else window.prompt('Copy your order details, then paste them in Messenger:', msg);
+      if (ok) toast('Order opened in Messenger. If the text is missing, paste it (it is copied).');
     });
-    window.open('https://m.me/' + encodeURIComponent(MESSENGER_USERNAME), '_blank');
+    window.open('https://m.me/' + encodeURIComponent(MESSENGER_USERNAME) + '?text=' + encodeURIComponent(msg), '_blank');
   } else {
     window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
   }
