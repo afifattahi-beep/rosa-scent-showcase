@@ -116,6 +116,10 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .payment-option{display:flex;align-items:center;gap:.5rem;font-size:.85rem;font-weight:500;cursor:pointer}
 .bkash-box{border:1px solid var(--rose-gold-light);background:#fff;padding:1.4rem;margin:1.2rem 0}
 .bkash-number{font-family:var(--serif);font-size:1.6rem;color:var(--burgundy);margin:.4rem 0}
+.order-buttons{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-top:1.5rem}
+@media(max-width:520px){.order-buttons{grid-template-columns:1fr}}
+.order-buttons .btn{padding:1rem .8rem;letter-spacing:.2em}
+.order-note{font-size:.72rem;color:var(--muted);margin-top:.8rem;text-align:center;line-height:1.5}
 footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0 2rem;text-align:center;font-size:.8rem}
 .toast{position:fixed;bottom:1.6rem;left:50%;transform:translate(-50%,300%);background:var(--ink);color:var(--ivory);padding:.8rem 1.5rem;font-size:.8rem;z-index:150;transition:transform .4s}
 .toast.show{transform:translate(-50%,0)}
@@ -220,7 +224,11 @@ footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0
           </div>
         </div>
 
-        <button type="submit" class="btn btn-solid btn-block" style="margin-top:1.5rem;">Place Order via WhatsApp</button>
+        <div class="order-buttons">
+          <button type="submit" class="btn btn-solid btn-block" data-channel="whatsapp">Order via WhatsApp</button>
+          <button type="submit" class="btn btn-block" data-channel="messenger">Order via Messenger</button>
+        </div>
+        <p class="order-note">Messenger: your order details are copied for you. Just paste them into the chat and send.</p>
       </form>
       <aside class="panel">
         <h3>Order Summary</h3>
@@ -257,6 +265,8 @@ footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0
 const CURRENCY = '৳';
 /* WhatsApp number that receives orders (country code first, no + or spaces) */
 const WHATSAPP_NUMBER = '8801632319773';
+/* Your Messenger username: the part after facebook.com/ on your Facebook page */
+const MESSENGER_USERNAME = 'rozafragranceperfumes';
 
 const PRODUCTS = [
   {
@@ -705,15 +715,42 @@ $('#cartBtn').addEventListener('click', openDrawer);
 $('#closeDrawer').addEventListener('click', closeDrawer);
 $('#overlay').addEventListener('click', closeDrawer);
 
-/* ---------- Checkout ---------- */
+/* ---------- Checkout (WhatsApp or Messenger) ---------- */
 function togglePaymentMethod() {
   const bk = document.querySelector('input[name="paymentMethod"]:checked').value === 'bKash';
   $('#bkashContainer').style.display = bk ? 'block' : 'none';
 }
 
+/* remember which of the two order buttons was pressed */
+let orderChannel = 'whatsapp';
+document.querySelectorAll('#checkoutForm button[type="submit"]').forEach(b =>
+  b.addEventListener('click', () => { orderChannel = b.dataset.channel; }));
+
+/* copy text to the clipboard (works on most phones; resolves true / false) */
+function copyText(text) {
+  const fallback = () => {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand('copy');
+      ta.remove();
+      return ok;
+    } catch (err) { return false; }
+  };
+  if (navigator.clipboard && window.isSecureContext) {
+    return navigator.clipboard.writeText(text).then(() => true).catch(fallback);
+  }
+  return Promise.resolve(fallback());
+}
+
 $('#checkoutForm').addEventListener('submit', e => {
   e.preventDefault();
   if (!cart.length) { toast('Your bag is empty. Add a perfume first.'); return; }
+  const channel = (e.submitter && e.submitter.dataset.channel) || orderChannel;
   const method = document.querySelector('input[name="paymentMethod"]:checked').value;
   const sender = $('#fSender').value.trim(), trx = $('#fTrx').value.trim();
   if (method === 'bKash' && (!sender || !trx)) { toast('Enter your bKash number and TrxID.'); return; }
@@ -721,7 +758,22 @@ $('#checkoutForm').addEventListener('submit', e => {
   cart.forEach(i => { const p = byId(i.id); msg += `${p.name} × ${i.qty} = ${CURRENCY}${p.price * i.qty}\n`; });
   msg += `\nTotal: ${CURRENCY}${cartTotal()}\n\nName: ${$('#fName').value.trim()}\nPhone: ${$('#fPhone').value.trim()}\nAddress: ${$('#fAddress').value.trim()}\nPayment: ${method}`;
   if (method === 'bKash') msg += `\nbKash number: ${sender}\nTrxID: ${trx}`;
-  window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
+
+  if (channel === 'messenger') {
+    if (!MESSENGER_USERNAME || MESSENGER_USERNAME === 'YOUR_MESSENGER_USERNAME') {
+      toast('Messenger ordering is not set up yet.');
+      return;
+    }
+    // Messenger cannot pre-fill a message, so the order is copied and the chat is opened
+    copyText(msg).then(ok => {
+      if (ok) toast('Order details copied. Paste them in Messenger and send.');
+      else window.prompt('Copy your order details, then paste them in Messenger:', msg);
+    });
+    window.open('https://m.me/' + encodeURIComponent(MESSENGER_USERNAME), '_blank');
+  } else {
+    window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
+  }
+
   cart = [];
   renderCart();
   e.target.reset();
