@@ -57,6 +57,16 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .scene::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,rgba(255,255,255,.28),rgba(255,255,255,0) 65%)}
 .scene-name{position:absolute;left:0;right:0;top:0;bottom:12%;display:grid;place-items:center}
 .scene-name span{display:inline-block;font-family:var(--sans);font-weight:700;color:#fff;line-height:1;white-space:nowrap;letter-spacing:-.01em;text-shadow:0 4px 26px rgba(0,0,0,.38),0 1px 3px rgba(0,0,0,.18);will-change:transform,filter}
+/* the three floating fruits (1 = left bottom, 2 = right top, 3 = left top) */
+.fruits{position:absolute;top:0;bottom:0;left:0;right:0;margin:0 auto;width:min(100%,560px);pointer-events:none}
+.fr{position:absolute;will-change:transform,filter,opacity}
+.fr img{display:block;width:100%;height:auto;filter:drop-shadow(0 14px 12px rgba(30,20,10,.28));animation:fruitFloat 5s ease-in-out infinite}
+.fr1{left:-6%;bottom:1%;width:38%}
+.fr2{right:-3%;top:2%;width:27%}
+.fr3{left:2%;top:3%;width:25%}
+.fr2 img{animation-duration:6s;animation-delay:-1.5s}
+.fr3 img{animation-duration:4.5s;animation-delay:-3s}
+@keyframes fruitFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-9px) rotate(3deg)}}
 .scene-bottle{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6%;perspective:900px}
 .scene-bottle::after{content:"";position:absolute;bottom:3%;left:50%;width:42%;max-width:220px;height:5%;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(40,10,18,.35),transparent 70%);filter:blur(5px)}
 .bt{position:relative;z-index:1;height:88%;will-change:transform}
@@ -272,32 +282,38 @@ const PRODUCTS = [
   {
     id:'aurora', name:'Aurora', price:190, tint:'#F2A596',
     desc:'Aurora is a rich and woody but gentle fragrance that pairs well with your fresh elegant ensemble. It opens with top notes of tangy grapefruit with a dash of rosemary and cardamom. The heart is made up of soft floral notes of ylang-ylang and tuberose. Finally, the base notes are made up of the potent scents of cedar, leather, suede, and vetiver. The scent is pleasant but not overpowering, so you can feel confident wearing it whether you’re at work, at the gym, at a party, or on a date.',
-    scene:'/bottle-aurora.jpeg', bottle:'/cutout-aurora.png', bg:'/bg-aurora.jpg'
+    scene:'/bottle-aurora.jpeg', bottle:'/cutout-aurora.png', bg:'/bg-aurora.jpg',
+    fruits:['/fruit-aurora-1.webp','/fruit-aurora-2.webp','/fruit-aurora-3.webp']
   },
   {
     id:'elixir', name:'Elixir', price:190, tint:'#A9D06B',
     desc:'Elixir is powerful and refined, reveals the essence of determination.\n\nAn aromatic freshness opens, lingering on the warm, addictive fullness of Cedar and Sandalwood from New Caledonia that sweeps throughout the intense, woody fragrance.\n\nTop notes are Grapefruit, Lemon, Mint and Pink Pepper; middle notes are Ginger, Nutmeg, Jasmine and Iso E Super; base notes are Incense, Vetiver, Cedar, Sandalwood, Patchouli, Labdanum and White Musk.',
-    scene:'/bottle-elixir.jpeg', bottle:'/cutout-elixir.png', bg:'/bg-elixir.jpg'
+    scene:'/bottle-elixir.jpeg', bottle:'/cutout-elixir.png', bg:'/bg-elixir.jpg',
+    fruits:['/fruit-elixir-1.webp','/fruit-elixir-2.webp','/fruit-elixir-3.webp']
   },
   {
     id:'cloud', name:'Cloud', price:190, tint:'#5CC4BD',
     desc:'Cloud brings to life the extensive and pristine beauty of Switzerland and their breath-taking Alpine region. The fragrance captures the essence of crystal clear Alpine streams descending over frosted rock face, whilst retaining the comfort of a warm and plush jacket.\n\nA contemporary unisex scent, "Cloud" perfectly balances crisp & sharp citric notes with warming sweet blackcurrant and charming musk.',
-    scene:'/bottle-cloud.jpeg', bottle:'/cutout-cloud.png', bg:'/bg-cloud.jpg'
+    scene:'/bottle-cloud.jpeg', bottle:'/cutout-cloud.png', bg:'/bg-cloud.jpg',
+    fruits:['/fruit-cloud-1.webp','/fruit-cloud-2.webp','/fruit-cloud-3.webp']
   },
   {
     id:'moonlight', name:'Moonlight', price:190, tint:'#5EA9E8',
     desc:'Discover the Intense freshness from the sea. The scent unfolds into oriental notes of coconut water blended with the sensuality of amber accord. Your ultimate call of freshness, hedonism and seduction.\n\nTop notes are Sea water, Lavender, Mint, Green Notes, Rosemary, Calone and Coriander; middle notes are Sandalwood, Neroli, Geranium and Jasmine; base notes are Musk, Tobacco, Oakmoss, Cedar and Amber.',
-    scene:'/bottle-moonlight.jpeg', bottle:'/cutout-moonlight.png', bg:'/bg-moonlight.jpg'
+    scene:'/bottle-moonlight.jpeg', bottle:'/cutout-moonlight.png', bg:'/bg-moonlight.jpg',
+    fruits:['/fruit-moonlight-1.webp','/fruit-moonlight-2.webp','/fruit-moonlight-3.webp']
   },
   {
     id:'white-sand', name:'White Sand', price:190, tint:'#9DC4F2',
     desc:'Mixed with the coolness of the night, the burning desert air exudes profound scents. White Sand is thus the olfactory interpretation of a moment tinted with a thick blue that unleashes the wildest instincts. In the hour when the wolves come out and the sky is set ablaze, a new magic unfolds.\n\nWhite Sand has a juicy, spicy Calabrian Bergamot note with the sensuality of a mysterious and enveloping Papua New Guinean Vanilla absolute accord. The fragrance unfurls a powerful and noble trail.\n\nTop notes are Calabrian bergamot and Pepper; middle notes are Sichuan Pepper, Lavender, Pink Pepper, Vetiver, Patchouli, Geranium and elemi; base notes are Ambroxan, Cedar and Labdanum.',
-    scene:'/bottle-white-sand.jpeg', bottle:'/cutout-white-sand.png', bg:'/bg-white-sand.jpg'
+    scene:'/bottle-white-sand.jpeg', bottle:'/cutout-white-sand.png', bg:'/bg-white-sand.jpg',
+    fruits:['/fruit-white-sand-1.webp','/fruit-white-sand-2.webp','/fruit-white-sand-3.webp']
   },
   {
     id:'sea-sage', name:'Sea Sage', price:190, tint:'#74C874',
     desc:'Sea Sage is the fragrance that interprets the sublime elegance through a luminous aura with an intense, vibrant and glowing freshness obtained from the combination of mint leaves, Italian lemon zest and green apple. An addictive sensuality delivered by Oriental, intriguing and enveloping notes like Tonka Beans, Amber, Geranium Flower and Vanilla. A racy virility symbolized by woods such as Cedarwood from Atlas and Virginia, Vetiver and Oak Moss, providing intensity and power.',
-    scene:'/bottle-sea-sage.jpeg', bottle:'/cutout-sea-sage.png', bg:'/bg-sea-sage.jpg'
+    scene:'/bottle-sea-sage.jpeg', bottle:'/cutout-sea-sage.png', bg:'/bg-sea-sage.jpg',
+    fruits:['/fruit-sea-sage-1.webp','/fruit-sea-sage-2.webp','/fruit-sea-sage-3.webp']
   }
 ];
 
@@ -372,6 +388,7 @@ function renderCarousel() {
   $('#scenes').innerHTML = PRODUCTS.map((p, i) => `
     <div class="scene${i === current ? ' on' : ''}" style="background-color:${p.tint};background-image:url('${RAW}${bgFile(p)}'),url('/${bgFile(p)}')">
       <div class="scene-name"><span>${p.name}</span></div>
+      <div class="fruits">${p.fruits.map((f, k) => `<div class="fr fr${k + 1}"><img src="${f}" alt="" draggable="false" /></div>`).join('')}</div>
       <div class="scene-bottle"><div class="bt"><img src="${p.bottle}" alt="${p.name} Fragrance" draggable="false" /></div></div>
     </div>`).join('');
   $('#info').innerHTML = infoHTML(PRODUCTS[current]);
@@ -392,6 +409,7 @@ function go(dir) {
   const D = 1150;                                   // slower = smoother
   const SMOOTH = 'cubic-bezier(0.65, 0, 0.35, 1)';  // gentle start, gentle stop
   const q = (el, c) => el.querySelector(c);
+  const qa = (el, c) => [...el.querySelectorAll(c)];
   const anims = [];
 
   inn.classList.add('on');
@@ -427,7 +445,21 @@ function go(dir) {
     { transform: `rotateY(${dir * 80}deg)` }
   ], { duration: D, easing: SMOOTH, fill: 'forwards' }));
 
-  // 4) the page colour behind the band wipes with it
+  // 4) the three fruits fly in with the new scene (each one travels a different distance, so they
+  //    drift past each other and feel like they have depth), and the old fruits fly out
+  const REACH = [230, 170, 280], TURN = [28, -22, 20];
+  qa(inn, '.fr').forEach((el, k) => anims.push(el.animate([
+    { transform: `translate(${dir * REACH[k]}px, 36px) rotate(${dir * TURN[k]}deg) scale(.82)`, filter: 'blur(7px)', opacity: 0, offset: 0 },
+    { opacity: 1, offset: 0.35 },
+    { transform: 'translate(0px, 0px) rotate(0deg) scale(1)', filter: 'blur(0px)', opacity: 1, offset: 1 }
+  ], { duration: D * (1 + k * 0.08), easing: SMOOTH, fill: 'forwards' })));
+  qa(out, '.fr').forEach((el, k) => anims.push(el.animate([
+    { transform: 'translate(0px, 0px) rotate(0deg) scale(1)', filter: 'blur(0px)', opacity: 1, offset: 0 },
+    { opacity: 1, offset: 0.6 },
+    { transform: `translate(${-dir * REACH[k] * 1.1}px, -24px) rotate(${-dir * TURN[k]}deg) scale(.9)`, filter: 'blur(7px)', opacity: 0, offset: 1 }
+  ], { duration: D * (1 + k * 0.08), easing: SMOOTH, fill: 'forwards' })));
+
+  // 5) the page colour behind the band wipes with it
   const wipe = $('#wipe');
   wipe.style.background = soften(PRODUCTS[next].tint);
   wipe.animate([
@@ -438,7 +470,7 @@ function go(dir) {
     wipe.getAnimations().forEach(a => a.cancel());
   };
 
-  // 5) info card fades to the new perfume
+  // 6) info card fades to the new perfume
   const info = $('#info');
   info.animate([{ opacity: 1 }, { opacity: 0 }], { duration: D * .3, fill: 'forwards' }).onfinish = () => {
     info.innerHTML = infoHTML(PRODUCTS[next]);
