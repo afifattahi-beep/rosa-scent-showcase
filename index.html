@@ -56,11 +56,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .scene.on{visibility:visible}
 .scene::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,rgba(255,255,255,.28),rgba(255,255,255,0) 65%)}
 .scene-name{position:absolute;left:0;right:0;top:0;bottom:12%;display:grid;place-items:center}
-.scene-name span{display:inline-block;font-family:var(--sans);font-weight:700;color:#fff;line-height:1;white-space:nowrap;letter-spacing:-.01em;text-shadow:0 4px 26px rgba(0,0,0,.38),0 1px 3px rgba(0,0,0,.18);will-change:transform,filter}
+.scene-name span{display:inline-block;font-family:var(--sans);font-weight:700;color:#fff;line-height:1;white-space:nowrap;letter-spacing:-.01em;text-shadow:0 4px 26px rgba(0,0,0,.38),0 1px 3px rgba(0,0,0,.18)}
 /* the three floating fruits (1 = left bottom, 2 = right top, 3 = left top) */
 .fruits{position:absolute;top:0;bottom:0;left:0;right:0;margin:0 auto;width:min(100%,560px);pointer-events:none}
-.fr{position:absolute;will-change:transform,filter,opacity}
-.fr img{display:block;width:100%;height:auto;filter:drop-shadow(0 14px 12px rgba(30,20,10,.28));animation:fruitFloat 5s ease-in-out infinite}
+.fr{position:absolute}
+.fr img{display:block;width:100%;height:auto;filter:drop-shadow(0 10px 9px rgba(30,20,10,.28));animation:fruitFloat 5s ease-in-out infinite}
 .fr1{left:-6%;bottom:1%;width:38%}
 .fr2{right:-3%;top:2%;width:27%}
 .fr3{left:2%;top:3%;width:25%}
@@ -69,9 +69,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 @keyframes fruitFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-9px) rotate(3deg)}}
 .scene-bottle{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6%;perspective:900px}
 .scene-bottle::after{content:"";position:absolute;bottom:3%;left:50%;width:42%;max-width:220px;height:5%;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(40,10,18,.35),transparent 70%);filter:blur(5px)}
-.bt{position:relative;z-index:1;height:88%;will-change:transform}
+.bt{position:relative;z-index:1;height:88%}
 .bt img{height:100%;width:auto;display:block;filter:drop-shadow(0 18px 18px rgba(60,20,30,.25));animation:float 4s ease-in-out infinite}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+/* scenes you cannot see stop floating, so the phone only animates what is on screen */
+.scene:not(.on) .fr img,.scene:not(.on) .bt img{animation-play-state:paused}
 .stone-info{background:#fff;border:1px solid var(--line);text-align:center;padding:1.8rem;box-shadow:var(--shadow);margin-top:1rem;border-radius:12px}
 .stone-info h3{font-size:2.2rem;color:var(--burgundy)}
 .stone-info .price{font-family:var(--serif);font-size:1.6rem;color:var(--burgundy);margin:.4rem 0 1rem}
@@ -412,6 +414,10 @@ function go(dir) {
   const qa = (el, c) => [...el.querySelectorAll(c)];
   const anims = [];
 
+  // safety: clear anything left over from an earlier transition, and make sure only the current scene is showing
+  document.querySelectorAll('.fr, .bt, .scene-name span').forEach(el => el.getAnimations().forEach(a => a.cancel()));
+  scenes.forEach(sc => { if (sc !== out) { sc.classList.remove('on'); sc.style.zIndex = ''; } });
+
   inn.classList.add('on');
   inn.style.zIndex = 2;
   out.style.zIndex = 1;
@@ -447,14 +453,14 @@ function go(dir) {
 
   // 4) the three fruits rise up from the bottom edge once the new colour has swept past (like the video):
   //    the big one first, then the right-top one, then the left-top one
-  const RISE = [0.22, 0.30, 0.38], SPIN = [-16, 14, -12];
+  const RISE = [0.18, 0.26, 0.34], SPIN = [-14, 12, -10];
   qa(inn, '.fr').forEach((el, k) => {
     const startY = inn.clientHeight - el.offsetTop + 12;   // just below the bottom edge of the band
     anims.push(el.animate([
-      { transform: `translateY(${startY}px) rotate(${SPIN[k]}deg) scale(.9)`, filter: 'blur(6px)', opacity: 0, offset: 0 },
+      { transform: `translateY(${startY}px) rotate(${SPIN[k]}deg)`, opacity: 0, offset: 0 },
       { opacity: 1, offset: 0.12 },
-      { transform: 'translateY(0px) rotate(0deg) scale(1)', filter: 'blur(0px)', opacity: 1, offset: 1 }
-    ], { duration: D * 0.62, delay: D * RISE[k], easing: 'cubic-bezier(0.2, 0.85, 0.25, 1)', fill: 'both' }));
+      { transform: 'translateY(0px) rotate(0deg)', opacity: 1, offset: 1 }
+    ], { duration: D * 0.6, delay: D * RISE[k], easing: 'cubic-bezier(0.2, 0.85, 0.25, 1)', fill: 'both' }));
   });
 
   // 5) the page colour behind the band wipes with it
@@ -479,13 +485,19 @@ function go(dir) {
   current = next;
   renderDots();
 
-  wipeScene.onfinish = () => {
+  // finish: clean up (runs once, either when the wipe ends or from a safety timer)
+  let done = false;
+  const finish = () => {
+    if (done) return;
+    done = true;
     anims.forEach(a => a.cancel());
     out.classList.remove('on');
     out.style.zIndex = '';
     inn.style.zIndex = '';
     busy = false;
   };
+  wipeScene.onfinish = finish;
+  setTimeout(finish, D + 600);   // safety: the carousel can never get stuck
 }
 
 $('#prevBtn').addEventListener('click', () => go(-1));
