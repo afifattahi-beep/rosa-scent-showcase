@@ -52,28 +52,33 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .stage-wrap{position:relative}
 .stone-stage{position:relative;z-index:1;width:100%;height:clamp(330px,82vw,440px);cursor:pointer;touch-action:pan-y}
 .scenes{position:absolute;top:0;bottom:0;left:50%;width:100vw;margin-left:-50vw;pointer-events:none;z-index:0}
-.scene{position:absolute;inset:0;overflow:hidden;visibility:hidden;background-size:cover;background-position:center;background-repeat:no-repeat}
-.scene.on{visibility:visible}
-.scene::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,rgba(255,255,255,.28),rgba(255,255,255,0) 65%)}
-.scene-name{position:absolute;left:0;right:0;top:0;bottom:12%;display:grid;place-items:center}
+/* only two scenes ever exist: the one on screen and the one arriving */
+.scene{position:absolute;inset:0;overflow:hidden}
+.scene-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.scene::before{content:"";position:absolute;inset:0;z-index:1;background:radial-gradient(ellipse at 50% 45%,rgba(255,255,255,.28),rgba(255,255,255,0) 65%)}
+.scene-name{position:absolute;left:0;right:0;top:0;bottom:12%;display:grid;place-items:center;z-index:2}
 .scene-name span{display:inline-block;font-family:var(--sans);font-weight:700;color:#fff;line-height:1;white-space:nowrap;letter-spacing:-.01em;text-shadow:0 4px 26px rgba(0,0,0,.38),0 1px 3px rgba(0,0,0,.18)}
 /* the three floating fruits (1 = left bottom, 2 = right top, 3 = left top) */
-.fruits{position:absolute;top:0;bottom:0;left:0;right:0;margin:0 auto;width:min(100%,560px);pointer-events:none}
-.fr{position:absolute}
-.fr img{display:block;width:100%;height:auto;filter:drop-shadow(0 10px 9px rgba(30,20,10,.28));animation:fruitFloat 5s ease-in-out infinite}
+.fruits{position:absolute;top:0;bottom:0;left:0;right:0;margin:0 auto;width:min(100%,560px);pointer-events:none;z-index:3}
+.fr{position:absolute;isolation:isolate}
+.fr::before{content:"";position:absolute;z-index:-1;left:12%;right:12%;bottom:-5%;height:14%;background:radial-gradient(ellipse at center,rgba(25,12,6,.32),transparent 70%)}
+.fr img{display:block;width:100%;height:auto;animation:fruitFloat 5s ease-in-out infinite}
 .fr1{left:-6%;bottom:1%;width:38%}
 .fr2{right:-3%;top:2%;width:27%}
 .fr3{left:2%;top:3%;width:25%}
 .fr2 img{animation-duration:6s;animation-delay:-1.5s}
 .fr3 img{animation-duration:4.5s;animation-delay:-3s}
 @keyframes fruitFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-9px) rotate(3deg)}}
-.scene-bottle{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6%;perspective:900px}
+.scene-bottle{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6%;perspective:900px;z-index:4}
 .scene-bottle::after{content:"";position:absolute;bottom:3%;left:50%;width:42%;max-width:220px;height:5%;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(40,10,18,.35),transparent 70%);filter:blur(5px)}
 .bt{position:relative;z-index:1;height:88%}
 .bt img{height:100%;width:auto;display:block;filter:drop-shadow(0 18px 18px rgba(60,20,30,.25));animation:float 4s ease-in-out infinite}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-/* scenes you cannot see stop floating, so the phone only animates what is on screen */
-.scene:not(.on) .fr img,.scene:not(.on) .bt img{animation-play-state:paused}
+/* lighter look: switched on automatically when a phone cannot keep up (no filters, no idle floating) */
+.lite .bt img{filter:none;animation:none}
+.lite .fr img{animation:none}
+.lite .scene-bottle::after{filter:none}
+.lite .scene-name span{text-shadow:0 2px 6px rgba(0,0,0,.35)}
 .stone-info{background:#fff;border:1px solid var(--line);text-align:center;padding:1.8rem;box-shadow:var(--shadow);margin-top:1rem;border-radius:12px}
 .stone-info h3{font-size:2.2rem;color:var(--burgundy)}
 .stone-info .price{font-family:var(--serif);font-size:1.6rem;color:var(--burgundy);margin:.4rem 0 1rem}
@@ -371,85 +376,122 @@ function soften(hex) {
 }
 
 /* every giant name is sized to fit inside the band (never cut, never over the arrows' edge) */
-function fitNames() {
+function fitName(scene) {
   const box = $('#scenes');
   const W = box.clientWidth, H = box.clientHeight;
-  if (!W) return;
-  document.querySelectorAll('.scene-name span').forEach(el => {
-    el.style.fontSize = '100px';
-    const w = el.getBoundingClientRect().width || 1;
-    el.style.fontSize = Math.min(100 * (W * 0.9) / w, H * 0.5) + 'px';
-  });
+  const el = scene && scene.querySelector('.scene-name span');
+  if (!W || !el) return;
+  el.style.fontSize = '100px';
+  const w = el.getBoundingClientRect().width || 1;
+  el.style.fontSize = Math.min(100 * (W * 0.9) / w, H * 0.5) + 'px';
 }
+function fitNames() { document.querySelectorAll('#scenes .scene').forEach(fitName); }
+window.addEventListener('resize', fitNames);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitNames);
 
-/* background photo file name (.jpeg). Loaded from GitHub first, then from the site as a backup */
+/* background photo file name (.jpeg) */
 const bgFile = p => p.bg.split('/').pop().replace('.jpg', '.jpeg');
 
-/* all six scenes are built once, so nothing pops in while the animation runs */
-function renderCarousel() {
-  $('#scenes').innerHTML = PRODUCTS.map((p, i) => `
-    <div class="scene${i === current ? ' on' : ''}" style="background-color:${p.tint};background-image:url('${RAW}${bgFile(p)}'),url('/${bgFile(p)}')">
-      <div class="scene-name"><span>${p.name}</span></div>
-      <div class="fruits">${p.fruits.map((f, k) => `<div class="fr fr${k + 1}"><img src="${f}" alt="" draggable="false" /></div>`).join('')}</div>
-      <div class="scene-bottle"><div class="bt"><img src="${p.bottle}" alt="${p.name} Fragrance" draggable="false" /></div></div>
-    </div>`).join('');
+/* ---- one scene = colour photo + giant name + 3 fruits + bottle. Built only when needed. ---- */
+function buildScene(i) {
+  const p = PRODUCTS[i];
+  const el = document.createElement('div');
+  el.className = 'scene';
+  el.style.backgroundColor = p.tint;
+  el.innerHTML = `
+    <img class="scene-bg" src="/${bgFile(p)}" alt="" draggable="false" />
+    <div class="scene-name"><span>${p.name}</span></div>
+    <div class="fruits">${p.fruits.map((f, k) => `<div class="fr fr${k + 1}"><img src="${f}" alt="" draggable="false" /></div>`).join('')}</div>
+    <div class="scene-bottle"><div class="bt"><img src="${p.bottle}" alt="${p.name} Fragrance" draggable="false" /></div></div>`;
+  return el;
+}
+/* wait until every picture of a scene is ready (never longer than 1.5 s, so a slow network cannot freeze it) */
+function sceneReady(el) {
+  const all = Promise.all([...el.querySelectorAll('img')].map(im => (im.decode ? im.decode() : Promise.resolve()).catch(() => {})));
+  return Promise.race([all, new Promise(r => setTimeout(r, 1500))]).then(() => el);
+}
+/* the next scene is prepared in the background while you look at the current one */
+let prepared = null;
+function prepare(i) { prepared = { i, p: sceneReady(buildScene(i)) }; }
+function getScene(i) {
+  if (prepared && prepared.i === i) { const p = prepared.p; prepared = null; return p; }
+  return sceneReady(buildScene(i));
+}
+
+/* ---- automatic lighter mode: if a phone cannot keep up, effects that need a lot of power are switched off ---- */
+let lite = false;
+function setLite(v) { lite = v; document.body.classList.toggle('lite', v); }
+if ((navigator.deviceMemory && navigator.deviceMemory <= 3) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 3)) setLite(true);
+function watchFrames(ms) {
+  let last = 0, n = 0, slow = 0, t0 = 0;
+  const f = t => {
+    if (!t0) { t0 = t; last = t; requestAnimationFrame(f); return; }
+    const d = t - last; last = t; n++; if (d > 50) slow++;
+    if (t - t0 < ms) requestAnimationFrame(f);
+    else if (n > 6 && slow / n > 0.2) setLite(true);
+  };
+  requestAnimationFrame(f);
+}
+
+async function renderCarousel() {
+  const el = await getScene(current);
+  el.classList.add('on');
+  $('#scenes').innerHTML = '';
+  $('#scenes').appendChild(el);
+  fitName(el);
   $('#info').innerHTML = infoHTML(PRODUCTS[current]);
   $('#collection').style.background = soften(PRODUCTS[current].tint);
   renderDots();
-  fitNames();
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitNames);
+  prepare((current + 1) % N);
 }
-window.addEventListener('resize', fitNames);
 
-function go(dir) {
+async function go(dir) {
   if (busy) return;
   busy = true;
   lastMove = Date.now();
   const next = (current + dir + N) % N;
-  const scenes = [...document.querySelectorAll('.scene')];
-  const out = scenes[current], inn = scenes[next];
+  const box = $('#scenes');
+  const out = box.querySelector('.scene');
+  let inn;
+  try { inn = await getScene(next); } catch (e) { busy = false; return; }
+  if (!out) { box.appendChild(inn); inn.classList.add('on'); current = next; busy = false; return; }
+  if (!lite) watchFrames(1400);
+
   const D = 1150;                                   // slower = smoother
   const SMOOTH = 'cubic-bezier(0.65, 0, 0.35, 1)';  // gentle start, gentle stop
   const q = (el, c) => el.querySelector(c);
   const qa = (el, c) => [...el.querySelectorAll(c)];
   const anims = [];
+  const hideFrom = dir > 0 ? 'inset(0 0 0 100%)' : 'inset(0 100% 0 0)';
 
-  // safety: clear anything left over from an earlier transition, and make sure only the current scene is showing
-  document.querySelectorAll('.fr, .bt, .scene-name span').forEach(el => el.getAnimations().forEach(a => a.cancel()));
-  scenes.forEach(sc => { if (sc !== out) { sc.classList.remove('on'); sc.style.zIndex = ''; } });
-
-  inn.classList.add('on');
+  // the new scene starts fully hidden, is added on top of the old one, and then wipes in
+  inn.style.clipPath = hideFrom;
   inn.style.zIndex = 2;
   out.style.zIndex = 1;
+  inn.classList.add('on');
+  box.appendChild(inn);
+  fitName(inn);
+  current = next;
+  renderDots();
 
-  // 1) the new scene (colour + name + bottle) wipes across; the old one stays underneath
-  const wipeScene = inn.animate([
-    { clipPath: dir > 0 ? 'inset(0 0 0 100%)' : 'inset(0 100% 0 0)' },
-    { clipPath: 'inset(0 0 0 0)' }
-  ], { duration: D, easing: SMOOTH, fill: 'forwards' });
+  // 1) the new scene (colour + name + fruits + bottle) wipes across; the old one stays underneath
+  const wipeScene = inn.animate([{ clipPath: hideFrom }, { clipPath: 'inset(0 0 0 0)' }],
+    { duration: D, easing: SMOOTH, fill: 'forwards' });
   anims.push(wipeScene);
 
-  // 2) names slide with a little motion blur, each one inside its own scene (so they never mix)
-  anims.push(q(inn, '.scene-name span').animate([
-    { transform: `translateX(${dir * 45}%)`, filter: 'blur(8px)', offset: 0 },
-    { filter: 'blur(3px)', offset: 0.5 },
-    { transform: 'translateX(0)', filter: 'blur(0px)', offset: 1 }
-  ], { duration: D, easing: SMOOTH, fill: 'forwards' }));
-  anims.push(q(out, '.scene-name span').animate([
-    { transform: 'translateX(0)', filter: 'blur(0px)', offset: 0 },
-    { filter: 'blur(3px)', offset: 0.5 },
-    { transform: `translateX(${-dir * 45}%)`, filter: 'blur(8px)', offset: 1 }
-  ], { duration: D, easing: SMOOTH, fill: 'forwards' }));
+  // 2) names slide, each one inside its own scene (so they never mix); blur only on phones that can afford it
+  const nIn = lite ? [{ transform: `translateX(${dir * 45}%)` }, { transform: 'translateX(0)' }]
+    : [{ transform: `translateX(${dir * 45}%)`, filter: 'blur(8px)', offset: 0 }, { filter: 'blur(3px)', offset: 0.5 }, { transform: 'translateX(0)', filter: 'blur(0px)', offset: 1 }];
+  const nOut = lite ? [{ transform: 'translateX(0)' }, { transform: `translateX(${-dir * 45}%)` }]
+    : [{ transform: 'translateX(0)', filter: 'blur(0px)', offset: 0 }, { filter: 'blur(3px)', offset: 0.5 }, { transform: `translateX(${-dir * 45}%)`, filter: 'blur(8px)', offset: 1 }];
+  anims.push(q(inn, '.scene-name span').animate(nIn, { duration: D, easing: SMOOTH, fill: 'forwards' }));
+  anims.push(q(out, '.scene-name span').animate(nOut, { duration: D, easing: SMOOTH, fill: 'forwards' }));
 
   // 3) the bottle stays in the middle and turns on its own axis, like the can
-  anims.push(q(inn, '.bt').animate([
-    { transform: `rotateY(${-dir * 80}deg)` },
-    { transform: 'rotateY(0deg)' }
-  ], { duration: D, easing: SMOOTH, fill: 'forwards' }));
-  anims.push(q(out, '.bt').animate([
-    { transform: 'rotateY(0deg)' },
-    { transform: `rotateY(${dir * 80}deg)` }
-  ], { duration: D, easing: SMOOTH, fill: 'forwards' }));
+  anims.push(q(inn, '.bt').animate([{ transform: `rotateY(${-dir * 80}deg)` }, { transform: 'rotateY(0deg)' }],
+    { duration: D, easing: SMOOTH, fill: 'forwards' }));
+  anims.push(q(out, '.bt').animate([{ transform: 'rotateY(0deg)' }, { transform: `rotateY(${dir * 80}deg)` }],
+    { duration: D, easing: SMOOTH, fill: 'forwards' }));
 
   // 4) the three fruits rise up from the bottom edge once the new colour has swept past (like the video):
   //    the big one first, then the right-top one, then the left-top one.
@@ -466,10 +508,8 @@ function go(dir) {
   // 5) the page colour behind the band wipes with it
   const wipe = $('#wipe');
   wipe.style.background = soften(PRODUCTS[next].tint);
-  wipe.animate([
-    { clipPath: dir > 0 ? 'inset(0 0 0 100%)' : 'inset(0 100% 0 0)' },
-    { clipPath: 'inset(0 0 0 0)' }
-  ], { duration: D, easing: SMOOTH, fill: 'forwards' }).onfinish = () => {
+  wipe.animate([{ clipPath: hideFrom }, { clipPath: 'inset(0 0 0 0)' }],
+    { duration: D, easing: SMOOTH, fill: 'forwards' }).onfinish = () => {
     $('#collection').style.background = soften(PRODUCTS[next].tint);
     wipe.getAnimations().forEach(a => a.cancel());
   };
@@ -482,21 +522,18 @@ function go(dir) {
     info.animate([{ opacity: 0 }, { opacity: 1 }], { duration: D * .4 });
   };
 
-  current = next;
-  renderDots();
-
   // finish: clean up (runs once, either when the wipe ends or from a safety timer)
   let done = false;
   const finish = () => {
     if (done) return;
     done = true;
     anims.forEach(a => a.cancel());
-    // make sure the new perfume's fruits are fully visible and resting in their place
-    inn.querySelectorAll('.fr').forEach(el => { el.style.opacity = '1'; el.style.transform = 'none'; });
-    out.classList.remove('on');
-    out.style.zIndex = '';
+    inn.style.clipPath = '';
     inn.style.zIndex = '';
+    qa(inn, '.fr').forEach(el => { el.style.opacity = '1'; el.style.transform = 'none'; });
+    if (out.parentNode) out.remove();            // the old scene is thrown away, so nothing piles up in memory
     busy = false;
+    prepare((current + 1) % N);                  // get the following scene ready in the background
   };
   wipeScene.onfinish = finish;
   setTimeout(finish, D + 600);   // safety: the carousel can never get stuck
