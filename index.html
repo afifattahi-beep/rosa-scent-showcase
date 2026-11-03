@@ -11,14 +11,16 @@
 <style>
 :root{--ivory:#FAF6EF;--ivory-deep:#F2E8D9;--burgundy:#6B1E2E;--burgundy-dark:#4A1320;--rose-gold:#B76E79;--rose-gold-light:#E8C4BC;--ink:#1C1718;--muted:#6E6264;--line:rgba(107,30,46,0.15);--shadow:0 25px 50px -12px rgba(74,19,32,0.25);--serif:'Cormorant Garamond',Georgia,serif;--sans:'Montserrat',system-ui,sans-serif;--ease:cubic-bezier(0.25,1,0.5,1)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;scrollbar-gutter:stable}
+html{scroll-behavior:smooth}
 body{font-family:var(--sans);font-weight:300;color:var(--ink);background:var(--ivory);line-height:1.7;overflow-x:hidden}
 body.locked{overflow:hidden}
+section,header{scroll-margin-top:70px}
 h1,h2,h3,h4{font-family:var(--serif);font-weight:500}
 a{color:inherit;text-decoration:none}
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+img{-webkit-user-drag:none;user-select:none}
 .container{width:min(1180px,90%);margin:auto}
-.btn{display:inline-block;padding:1rem 2.4rem;font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;font-weight:500;border:1px solid var(--burgundy);color:var(--burgundy);transition:all .4s var(--ease);background:transparent}
+.btn{display:inline-block;padding:1rem 2.4rem;font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;font-weight:500;border:1px solid var(--burgundy);color:var(--burgundy);transition:all .4s var(--ease);background:transparent;text-align:center}
 .btn:hover{background:var(--burgundy);color:var(--ivory)}
 .btn-solid{background:var(--burgundy);color:var(--ivory)}
 .btn-solid:hover{background:var(--burgundy-dark);border-color:var(--burgundy-dark)}
@@ -30,35 +32,35 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .section{padding:6rem 0}
 .section-head{text-align:center;max-width:620px;margin:0 auto 2rem}
 .section-head h2{font-size:clamp(2.2rem,5vw,3.2rem);color:var(--burgundy);line-height:1.15;margin-top:.6rem}
-.nav{position:fixed;inset:0 0 auto;z-index:50;padding:1.4rem 0;background:rgba(250,246,239,.92);backdrop-filter:blur(10px);box-shadow:0 1px 0 var(--line)}
+.nav{position:fixed;inset:0 0 auto;z-index:50;padding:1.4rem 0;background:rgba(250,246,239,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 1px 0 var(--line)}
 .nav .container{display:flex;align-items:center;justify-content:space-between}
 .logo{font-family:var(--serif);font-size:1.6rem;letter-spacing:.12em;color:var(--burgundy);font-weight:600}
 .logo span{color:var(--rose-gold);font-style:italic;font-weight:400}
 .nav-links{display:flex;gap:2.4rem;list-style:none}
 .nav-links a{font-size:.72rem;letter-spacing:.25em;text-transform:uppercase;font-weight:500}
+@media(max-width:520px){.nav{padding:1rem 0}.logo{font-size:1.25rem}.nav-links{gap:1rem}.nav-links a{font-size:.6rem;letter-spacing:.15em}}
 .cart-btn{position:relative;padding:.4rem;color:var(--burgundy)}
 .cart-count{position:absolute;top:-2px;right:-4px;background:var(--rose-gold);color:#fff;font-size:.62rem;font-weight:600;min-width:18px;height:18px;border-radius:9px;display:grid;place-items:center;padding:0 4px}
-.hero{min-height:100vh;display:grid;place-items:center;text-align:center;position:relative;overflow:hidden;background:radial-gradient(ellipse 60% 50% at 20% 30%,rgba(232,196,188,.55),transparent 70%),var(--ivory)}
+.hero{min-height:100vh;min-height:100svh;display:grid;place-items:center;text-align:center;position:relative;overflow:hidden;background:radial-gradient(ellipse 60% 50% at 20% 30%,rgba(232,196,188,.55),transparent 70%),var(--ivory)}
 .hero-inner{position:relative;padding:6rem 1rem 3rem}
 .hero h1{font-size:clamp(3.4rem,11vw,8rem);line-height:1;color:var(--burgundy);font-weight:400;letter-spacing:.06em}
 .hero h1 em{color:var(--rose-gold);font-style:normal}
 .hero .tagline{font-family:var(--serif);font-style:italic;font-size:clamp(1.3rem,3vw,1.9rem);color:var(--ink);margin-bottom:2.6rem}
 
-/* Collection: full-width colour band, the giant name sits BEHIND the bottle */
+/* Collection */
 .catalog{position:relative;background:#F2E8D9;padding:6rem 0;overflow:hidden}
 .catalog>.container{position:relative;z-index:1}
 .wipe{position:absolute;inset:0;z-index:0;clip-path:inset(0 0 0 100%);pointer-events:none}
 .stone-wrapper{max-width:520px;margin:0 auto;padding:.5rem 0 2rem}
 .stage-wrap{position:relative}
-.stone-stage{position:relative;z-index:1;width:100%;height:clamp(330px,82vw,440px);cursor:pointer;touch-action:pan-y}
-.scenes{position:absolute;top:0;bottom:0;left:50%;width:100vw;margin-left:-50vw;pointer-events:none;z-index:0}
-/* only two scenes ever exist: the one on screen and the one arriving */
-.scene{position:absolute;inset:0;overflow:hidden}
+.stone-stage{position:relative;z-index:1;width:100%;height:clamp(330px,82vw,440px);cursor:pointer;touch-action:pan-y;-webkit-tap-highlight-color:transparent}
+/* left + width are set by JS so the scene is always exactly the page width */
+.scenes{position:absolute;top:0;bottom:0;left:0;width:100%;pointer-events:none;z-index:0;overflow:hidden}
+.scene{position:absolute;inset:0;overflow:hidden;will-change:clip-path}
 .scene-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
 .scene::before{content:"";position:absolute;inset:0;z-index:1;background:radial-gradient(ellipse at 50% 45%,rgba(255,255,255,.28),rgba(255,255,255,0) 65%)}
 .scene-name{position:absolute;left:0;right:0;top:0;bottom:12%;display:grid;place-items:center;z-index:2}
 .scene-name span{display:inline-block;font-family:var(--sans);font-weight:700;color:#fff;line-height:1;white-space:nowrap;letter-spacing:-.01em;text-shadow:0 4px 26px rgba(0,0,0,.38),0 1px 3px rgba(0,0,0,.18)}
-/* the three floating fruits (1 = left bottom, 2 = right top, 3 = left top) */
 .fruits{position:absolute;top:0;bottom:0;left:0;right:0;margin:0 auto;width:min(100%,560px);pointer-events:none;z-index:3}
 .fr{position:absolute;isolation:isolate}
 .fr::before{content:"";position:absolute;z-index:-1;left:12%;right:12%;bottom:-5%;height:14%;background:radial-gradient(ellipse at center,rgba(25,12,6,.32),transparent 70%)}
@@ -69,45 +71,43 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .fr2 img{animation-duration:6s;animation-delay:-1.5s}
 .fr3 img{animation-duration:4.5s;animation-delay:-3s}
 @keyframes fruitFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-9px) rotate(3deg)}}
-.scene-bottle{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6%;perspective:900px;z-index:4}
+.scene-bottle{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6%;z-index:4}
 .scene-bottle::after{content:"";position:absolute;bottom:3%;left:50%;width:42%;max-width:220px;height:5%;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(40,10,18,.35),transparent 70%);filter:blur(5px)}
 .bt{position:relative;z-index:1;height:88%}
 .bt img{height:100%;width:auto;display:block;filter:drop-shadow(0 18px 18px rgba(60,20,30,.25));animation:float 4s ease-in-out infinite}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-/* lighter look: switched on automatically when a phone cannot keep up (no filters, no idle floating) */
 .lite .bt img{filter:none;animation:none}
 .lite .fr img{animation:none}
 .lite .scene-bottle::after{filter:none}
 .lite .scene-name span{text-shadow:0 2px 6px rgba(0,0,0,.35)}
-.stone-info{background:#fff;border:1px solid var(--line);text-align:center;padding:1.8rem;box-shadow:var(--shadow);margin-top:1rem;border-radius:12px}
-.stone-info h3{font-size:2.2rem;color:var(--burgundy)}
+@media(prefers-reduced-motion:reduce){.bt img,.fr img{animation:none}}
+.stone-info{background:#fff;border:1px solid var(--line);text-align:center;padding:1.8rem;box-shadow:var(--shadow);margin-top:1rem;border-radius:12px;transition:opacity .25s}
+.stone-info h3{font-size:2.2rem;color:var(--burgundy);line-height:1.2}
 .stone-info .price{font-family:var(--serif);font-size:1.6rem;color:var(--burgundy);margin:.4rem 0 1rem}
-.stone-info p.notes-preview{font-size:.85rem;color:var(--muted);margin-bottom:1.2rem;font-style:italic;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.stone-info p.notes-preview{font-size:.85rem;color:var(--muted);margin-bottom:1.2rem;font-style:italic;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .info-actions{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap}
 .info-actions .btn{padding:.9rem 1.6rem}
 .dots{display:flex;justify-content:center;gap:.5rem;margin-top:1.2rem}
-.dots i{width:8px;height:8px;border-radius:50%;background:rgba(107,30,46,.25);transition:all .4s var(--ease)}
+.dots i{width:8px;height:8px;border-radius:50%;background:rgba(107,30,46,.25);transition:all .4s var(--ease);cursor:pointer}
 .dots i.on{background:var(--burgundy);width:24px;border-radius:4px}
 .carousel-btn{position:absolute;top:50%;transform:translateY(-50%);width:54px;height:54px;border-radius:50%;background:#fff;border:1.5px solid var(--burgundy);color:var(--burgundy);font-size:1.4rem;display:grid;place-items:center;z-index:20;box-shadow:0 10px 25px rgba(0,0,0,.15);transition:all .3s}
 .carousel-btn:hover{background:var(--burgundy);color:#fff;transform:translateY(-50%) scale(1.08)}
 .prev-btn{left:-65px}.next-btn{right:-65px}
-@media(max-width:700px){.prev-btn{left:-10px}.next-btn{right:-10px}}
+@media(max-width:700px){.prev-btn{left:-10px}.next-btn{right:-10px}.carousel-btn{width:44px;height:44px;font-size:1.1rem}}
 
 .product-modal{position:fixed;inset:0;background:#fff;z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s var(--ease);overflow-y:auto;padding:2rem 1rem}
 .product-modal.show{opacity:1;pointer-events:auto}
 .modal-content{width:min(900px,92%);display:grid;grid-template-columns:1fr 1.3fr;gap:3.5rem;align-items:start;position:relative;margin:auto}
-@media(max-width:768px){.modal-content{grid-template-columns:1fr;gap:1.5rem;text-align:center}.modal-close{top:-40px!important;right:0!important}.modal-right p{text-align:center!important}}
-.modal-close{position:absolute;top:-20px;right:-20px;font-size:2.5rem;color:var(--burgundy);line-height:1}
+@media(max-width:768px){.modal-content{grid-template-columns:1fr;gap:1.5rem;text-align:center;padding-top:2.5rem}.modal-close{top:0!important;right:0!important}.modal-right p{text-align:center!important}}
+.modal-close{position:absolute;top:-20px;right:-20px;font-size:2.5rem;color:var(--burgundy);line-height:1;z-index:2;padding:.2rem .6rem}
 .modal-left{display:flex;align-items:center;justify-content:center}
 .modal-left img{width:100%;max-width:420px;border-radius:14px;display:block;box-shadow:0 20px 30px rgba(0,0,0,.12)}
 .modal-right h2{font-size:clamp(2.2rem,4vw,3rem);color:var(--burgundy);margin-bottom:.3rem}
 .modal-right .price{font-family:var(--serif);font-size:1.6rem;color:var(--burgundy);margin-bottom:1.2rem}
 .modal-right p{color:var(--muted);font-size:.95rem;margin-bottom:2rem;line-height:1.8;text-align:left;white-space:pre-line}
-/* the bottle and the photo that fly between the carousel and the popup */
-.fly{position:fixed;z-index:120;margin:0;max-width:none;pointer-events:none;transform-origin:0 0;will-change:transform,opacity;filter:drop-shadow(0 18px 18px rgba(60,20,30,.25))}
-.fly-photo{z-index:121;border-radius:14px;box-shadow:0 20px 30px rgba(0,0,0,.12);filter:none;object-fit:cover}
+.fly{position:fixed;z-index:120;margin:0;max-width:none;pointer-events:none;will-change:transform,opacity;filter:drop-shadow(0 18px 18px rgba(60,20,30,.25))}
 
-.overlay{position:fixed;inset:0;background:rgba(28,23,24,.45);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .4s;z-index:60}
+.overlay{position:fixed;inset:0;background:rgba(28,23,24,.45);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .4s;z-index:60}
 .overlay.show{opacity:1;pointer-events:auto}
 .drawer{position:fixed;top:0;right:0;height:100%;width:min(400px,100vw);background:var(--ivory);z-index:70;transform:translateX(100%);transition:transform .5s var(--ease);display:flex;flex-direction:column;box-shadow:-20px 0 50px -20px rgba(0,0,0,.25)}
 .drawer.show{transform:none}
@@ -125,11 +125,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .checkout-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:2.5rem}
 @media(max-width:850px){.checkout-grid{grid-template-columns:1fr}}
 .panel{background:#fff;border:1px solid var(--line);padding:2rem}
+@media(max-width:520px){.panel{padding:1.4rem}.two{grid-template-columns:1fr!important}}
 .field{margin-bottom:1rem}
 .field label{display:block;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;font-weight:500;margin-bottom:.4rem}
-.field input,.field textarea{width:100%;padding:.8rem 1rem;border:1px solid var(--line);background:var(--ivory);font:inherit}
+.field input,.field textarea{width:100%;padding:.8rem 1rem;border:1px solid var(--line);background:var(--ivory);font:inherit;font-size:16px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-.payment-options{display:flex;gap:1.5rem;margin:1.2rem 0}
+.payment-options{display:flex;gap:1.5rem;margin:1.2rem 0;flex-wrap:wrap}
 .payment-option{display:flex;align-items:center;gap:.5rem;font-size:.85rem;font-weight:500;cursor:pointer}
 .bkash-box{border:1px solid var(--rose-gold-light);background:#fff;padding:1.4rem;margin:1.2rem 0}
 .bkash-number{font-family:var(--serif);font-size:1.6rem;color:var(--burgundy);margin:.4rem 0}
@@ -137,8 +138,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 @media(max-width:520px){.order-buttons{grid-template-columns:1fr}}
 .order-buttons .btn{padding:1rem .8rem;letter-spacing:.2em}
 .order-note{font-size:.72rem;color:var(--muted);margin-top:.8rem;text-align:center;line-height:1.5}
+.sum-row{display:flex;justify-content:space-between;gap:1rem;padding:.5rem 0;border-bottom:1px solid var(--line);font-size:.9rem}
 footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0 2rem;text-align:center;font-size:.8rem}
-.toast{position:fixed;bottom:1.6rem;left:50%;transform:translate(-50%,300%);background:var(--ink);color:var(--ivory);padding:.8rem 1.5rem;font-size:.8rem;z-index:150;transition:transform .4s}
+.toast{position:fixed;bottom:1.6rem;left:50%;transform:translate(-50%,300%);background:var(--ink);color:var(--ivory);padding:.8rem 1.5rem;font-size:.8rem;z-index:150;transition:transform .4s;max-width:90vw;text-align:center}
 .toast.show{transform:translate(-50%,0)}
 </style>
 </head>
@@ -180,7 +182,7 @@ footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0
       <p>Tap the bottle to explore perfume details.</p>
     </div>
     <div class="stone-wrapper" id="carouselWrapper">
-      <div class="stage-wrap">
+      <div class="stage-wrap" id="stageWrap">
         <div class="scenes" id="scenes"></div>
         <button class="carousel-btn prev-btn" id="prevBtn" aria-label="Previous perfume">&#10094;</button>
         <div class="stone-stage" id="stage"></div>
@@ -216,18 +218,18 @@ footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0
       <form class="panel" id="checkoutForm">
         <h3>Delivery Details</h3>
         <div class="two">
-          <div class="field"><label>Full Name *</label><input id="fName" required /></div>
-          <div class="field"><label>Phone Number *</label><input id="fPhone" type="tel" required placeholder="01XXXXXXXXX" /></div>
+          <div class="field"><label for="fName">Full Name *</label><input id="fName" required autocomplete="name" /></div>
+          <div class="field"><label for="fPhone">Phone Number *</label><input id="fPhone" type="tel" required placeholder="01XXXXXXXXX" autocomplete="tel" /></div>
         </div>
-        <div class="field"><label>Delivery Address *</label><textarea id="fAddress" required></textarea></div>
+        <div class="field"><label for="fAddress">Delivery Address *</label><textarea id="fAddress" required rows="3" autocomplete="street-address"></textarea></div>
 
         <h3 style="margin-top:1.5rem;">Payment Method</h3>
         <div class="payment-options">
           <label class="payment-option">
-            <input type="radio" name="paymentMethod" value="Cash on Delivery" checked onchange="togglePaymentMethod()" /> Cash on Delivery
+            <input type="radio" name="paymentMethod" value="Cash on Delivery" checked /> Cash on Delivery
           </label>
           <label class="payment-option">
-            <input type="radio" name="paymentMethod" value="bKash" onchange="togglePaymentMethod()" /> bKash Payment
+            <input type="radio" name="paymentMethod" value="bKash" /> bKash Payment
           </label>
         </div>
 
@@ -236,8 +238,8 @@ footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0
           <div class="bkash-number">01632-319773</div>
           <p style="font-size:0.8rem;color:var(--muted)">Send money to the number above and enter your details below:</p>
           <div class="two" style="margin-top:1rem;">
-            <div class="field"><label>Your bKash Number *</label><input id="fSender" type="tel" /></div>
-            <div class="field"><label>Transaction ID (TrxID) *</label><input id="fTrx" /></div>
+            <div class="field"><label for="fSender">Your bKash Number *</label><input id="fSender" type="tel" /></div>
+            <div class="field"><label for="fTrx">Transaction ID (TrxID) *</label><input id="fTrx" /></div>
           </div>
         </div>
 
@@ -263,607 +265,403 @@ footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0
 </footer>
 
 <div class="overlay" id="overlay"></div>
-<aside class="drawer" id="drawer">
+<aside class="drawer" id="drawer" aria-label="Shopping bag">
   <div class="drawer-head">
     <h3>Shopping Bag</h3>
-    <button id="closeDrawer" style="font-size:1.4rem;" aria-label="Close bag">&times;</button>
+    <button id="closeDrawer" style="font-size:1.6rem;padding:.2rem .6rem" aria-label="Close bag">&times;</button>
   </div>
   <div class="drawer-items" id="drawerItems"></div>
   <div class="drawer-foot">
     <div style="display:flex;justify-content:space-between;margin-bottom:1rem;">
       <span>Subtotal</span><strong id="subtotal" style="font-family:var(--serif);font-size:1.5rem;color:var(--burgundy)">৳0</strong>
     </div>
-    <a href="#checkout" class="btn btn-solid btn-block" onclick="closeDrawer()">Checkout</a>
+    <a href="#checkout" class="btn btn-solid btn-block" id="drawerCheckout">Checkout</a>
   </div>
 </aside>
 <div class="toast" id="toast"></div>
 
 <script>
+(function(){
+'use strict';
+
+/* ================= SETTINGS ================= */
 const CURRENCY = '৳';
-/* WhatsApp number that receives orders (country code first, no + or spaces) */
-const WHATSAPP_NUMBER = '8801632319773';
-/* Your Messenger username: the part after facebook.com/ on your Facebook page */
-const MESSENGER_USERNAME = 'rozafragranceperfumes';
+const WHATSAPP_NUMBER = '8801632319773';          // country code first, no + or spaces
+const MESSENGER_USERNAME = 'rozafragranceperfumes'; // the part after facebook.com/
+/* Folder that holds your images, relative to THIS html file.
+   '' = same folder as the page,  'images/' = an images folder.
+   Do NOT start it with a slash. */
+const ASSET_DIR = '';
+const asset = f => ASSET_DIR + f;
+
+/* ================= PRODUCTS ================= */
+const mk = (id,name,tint,desc) => ({
+  id, name, price:190, tint, desc,
+  scene:  asset('bottle-'+id+'.jpeg'),
+  bottle: asset('cutout-'+id+'.png'),
+  bg:     asset('bg-'+id+'.jpg'),
+  fruits: [1,2,3].map(n => asset('fruit-'+id+'-'+n+'.webp'))
+});
 
 const PRODUCTS = [
-  {
-    id:'aurora', name:'Aurora', price:190, tint:'#F2A596',
-    desc:'Aurora is a rich and woody but gentle fragrance that pairs well with your fresh elegant ensemble. It opens with top notes of tangy grapefruit with a dash of rosemary and cardamom. The heart is made up of soft floral notes of ylang-ylang and tuberose. Finally, the base notes are made up of the potent scents of cedar, leather, suede, and vetiver. The scent is pleasant but not overpowering, so you can feel confident wearing it whether you’re at work, at the gym, at a party, or on a date.',
-    scene:'/bottle-aurora.jpeg', bottle:'/cutout-aurora.png', bg:'/bg-aurora.jpg',
-    fruits:['/fruit-aurora-1.webp','/fruit-aurora-2.webp','/fruit-aurora-3.webp']
-  },
-  {
-    id:'elixir', name:'Elixir', price:190, tint:'#A9D06B',
-    desc:'Elixir is powerful and refined, reveals the essence of determination.\n\nAn aromatic freshness opens, lingering on the warm, addictive fullness of Cedar and Sandalwood from New Caledonia that sweeps throughout the intense, woody fragrance.\n\nTop notes are Grapefruit, Lemon, Mint and Pink Pepper; middle notes are Ginger, Nutmeg, Jasmine and Iso E Super; base notes are Incense, Vetiver, Cedar, Sandalwood, Patchouli, Labdanum and White Musk.',
-    scene:'/bottle-elixir.jpeg', bottle:'/cutout-elixir.png', bg:'/bg-elixir.jpg',
-    fruits:['/fruit-elixir-1.webp','/fruit-elixir-2.webp','/fruit-elixir-3.webp']
-  },
-  {
-    id:'cloud', name:'Cloud', price:190, tint:'#5CC4BD',
-    desc:'Cloud brings to life the extensive and pristine beauty of Switzerland and their breath-taking Alpine region. The fragrance captures the essence of crystal clear Alpine streams descending over frosted rock face, whilst retaining the comfort of a warm and plush jacket.\n\nA contemporary unisex scent, "Cloud" perfectly balances crisp & sharp citric notes with warming sweet blackcurrant and charming musk.',
-    scene:'/bottle-cloud.jpeg', bottle:'/cutout-cloud.png', bg:'/bg-cloud.jpg',
-    fruits:['/fruit-cloud-1.webp','/fruit-cloud-2.webp','/fruit-cloud-3.webp']
-  },
-  {
-    id:'moonlight', name:'Moonlight', price:190, tint:'#5EA9E8',
-    desc:'Discover the Intense freshness from the sea. The scent unfolds into oriental notes of coconut water blended with the sensuality of amber accord. Your ultimate call of freshness, hedonism and seduction.\n\nTop notes are Sea water, Lavender, Mint, Green Notes, Rosemary, Calone and Coriander; middle notes are Sandalwood, Neroli, Geranium and Jasmine; base notes are Musk, Tobacco, Oakmoss, Cedar and Amber.',
-    scene:'/bottle-moonlight.jpeg', bottle:'/cutout-moonlight.png', bg:'/bg-moonlight.jpg',
-    fruits:['/fruit-moonlight-1.webp','/fruit-moonlight-2.webp','/fruit-moonlight-3.webp']
-  },
-  {
-    id:'white-sand', name:'White Sand', price:190, tint:'#9DC4F2',
-    desc:'Mixed with the coolness of the night, the burning desert air exudes profound scents. White Sand is thus the olfactory interpretation of a moment tinted with a thick blue that unleashes the wildest instincts. In the hour when the wolves come out and the sky is set ablaze, a new magic unfolds.\n\nWhite Sand has a juicy, spicy Calabrian Bergamot note with the sensuality of a mysterious and enveloping Papua New Guinean Vanilla absolute accord. The fragrance unfurls a powerful and noble trail.\n\nTop notes are Calabrian bergamot and Pepper; middle notes are Sichuan Pepper, Lavender, Pink Pepper, Vetiver, Patchouli, Geranium and elemi; base notes are Ambroxan, Cedar and Labdanum.',
-    scene:'/bottle-white-sand.jpeg', bottle:'/cutout-white-sand.png', bg:'/bg-white-sand.jpg',
-    fruits:['/fruit-white-sand-1.webp','/fruit-white-sand-2.webp','/fruit-white-sand-3.webp']
-  },
-  {
-    id:'sea-sage', name:'Sea Sage', price:190, tint:'#74C874',
-    desc:'Sea Sage is the fragrance that interprets the sublime elegance through a luminous aura with an intense, vibrant and glowing freshness obtained from the combination of mint leaves, Italian lemon zest and green apple. An addictive sensuality delivered by Oriental, intriguing and enveloping notes like Tonka Beans, Amber, Geranium Flower and Vanilla. A racy virility symbolized by woods such as Cedarwood from Atlas and Virginia, Vetiver and Oak Moss, providing intensity and power.',
-    scene:'/bottle-sea-sage.jpeg', bottle:'/cutout-sea-sage.png', bg:'/bg-sea-sage.jpg',
-    fruits:['/fruit-sea-sage-1.webp','/fruit-sea-sage-2.webp','/fruit-sea-sage-3.webp']
-  }
+  mk('aurora','Aurora','#F2A596',
+   'Aurora is a rich and woody but gentle fragrance that pairs well with your fresh elegant ensemble. It opens with top notes of tangy grapefruit with a dash of rosemary and cardamom. The heart is made up of soft floral notes of ylang-ylang and tuberose. Finally, the base notes are made up of the potent scents of cedar, leather, suede, and vetiver. The scent is pleasant but not overpowering, so you can feel confident wearing it whether you’re at work, at the gym, at a party, or on a date.'),
+  mk('elixir','Elixir','#A9D06B',
+   'Elixir is powerful and refined, reveals the essence of determination.\n\nAn aromatic freshness opens, lingering on the warm, addictive fullness of Cedar and Sandalwood from New Caledonia that sweeps throughout the intense, woody fragrance.\n\nTop notes are Grapefruit, Lemon, Mint and Pink Pepper; middle notes are Ginger, Nutmeg, Jasmine and Iso E Super; base notes are Incense, Vetiver, Cedar and Sandalwood.'),
+  mk('cloud','Cloud','#5BC4B5','PASTE YOUR CLOUD DESCRIPTION HERE.'),
+  mk('moonlight','Moonlight','#4FA3E0','PASTE YOUR MOONLIGHT DESCRIPTION HERE.'),
+  mk('white-sand','White Sand','#9CC3F0','PASTE YOUR WHITE SAND DESCRIPTION HERE.'),
+  mk('sea-sage','Sea Sage','#6CC26A','PASTE YOUR SEA SAGE DESCRIPTION HERE.')
 ];
 
-/* If a picture does not load from the site, load the same file straight from GitHub */
-const RAW = 'https://raw.githubusercontent.com/afifattahi-beep/rosa-scent-showcase/main/public/';
-document.addEventListener('error', e => {
-  const im = e.target;
-  if (!im || im.tagName !== 'IMG' || im.dataset.fb) return;
-  const src = im.getAttribute('src');
-  if (!src) return;
-  im.dataset.fb = '1';
-  im.src = RAW + src.split('/').pop();
-}, true);
+/* ================= HELPERS ================= */
+const $ = id => document.getElementById(id);
+const money = n => CURRENCY + n;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const canAnimate = typeof Element.prototype.animate === 'function';
+const EASE = 'cubic-bezier(0.25,1,0.5,1)';
+const soft = hex => { // light version of the tint for the page band
+  const n = parseInt(hex.slice(1),16), r=n>>16, g=n>>8&255, b=n&255, m=.72;
+  const f = c => Math.round(c+(255-c)*m);
+  return 'rgb('+f(r)+','+f(g)+','+f(b)+')';
+};
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function firstSentence(t){ return t.split('\n')[0]; }
 
-const $ = s => document.querySelector(s);
-const byId = id => PRODUCTS.find(p => p.id === id);
-const N = PRODUCTS.length;
-const DUR = 750;
-const EASE = 'cubic-bezier(0.25, 1, 0.5, 1)';
+/* lighter look on weak devices */
+(function(){
+  const weak = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) ||
+               (navigator.deviceMemory && navigator.deviceMemory <= 2) || reduce;
+  if (weak) document.documentElement.classList.add('lite');
+})();
 
-let current = 0;
-let busy = false;
-let modalBusy = false;
-let lastMove = Date.now();
-let cart = [];
-try {
-  cart = JSON.parse(localStorage.getItem('rosa_cart') || '[]')
-    .filter(i => i && byId(i.id) && i.qty > 0)
-    .map(i => ({ id: i.id, qty: Math.floor(i.qty) }));
-} catch (e) { cart = []; }
+/* ================= CAROUSEL ================= */
+const stage = $('stage'), scenesEl = $('scenes'), stageWrap = $('stageWrap');
+const catalog = $('collection'), wipe = $('wipe'), info = $('info'), dotsEl = $('dots');
+let cur = 0, busy = false;
 
-/* ---------- Carousel ---------- */
-function infoHTML(p) {
-  return `<h3>${p.name}</h3>
-    <div class="price">${CURRENCY}${p.price}</div>
-    <p class="notes-preview">${p.desc.split('\n')[0]}</p>
-    <div class="info-actions">
-      <button class="btn" onclick="openProductModal('${p.id}')">View Details</button>
-      <button class="btn btn-solid" onclick="addToCart('${p.id}')">Add to Cart</button>
-    </div>`;
+function makeImg(src, alt, onFail){
+  const im = new Image();
+  im.alt = alt || ''; im.decoding = 'async'; im.draggable = false;
+  im.onerror = () => { im.onerror = null; onFail ? onFail(im) : im.remove(); };
+  im.src = src;
+  return im;
 }
 
-function renderDots() {
-  $('#dots').innerHTML = PRODUCTS.map((_, i) => `<i class="${i === current ? 'on' : ''}"></i>`).join('');
-}
+function makeScene(p){
+  const s = document.createElement('div');
+  s.className = 'scene';
+  s.style.background = p.tint;
 
-/* soft version of the perfume colour for the page behind the band */
-function soften(hex) {
-  const m = (a, b) => Math.round(a + (b - a) * 0.3);
-  const c = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
-  const [r1, g1, b1] = c(hex), [r2, g2, b2] = c('#F2E8D9');
-  return `rgb(${m(r2, r1)}, ${m(g2, g1)}, ${m(b2, b1)})`;
-}
+  s.appendChild(makeImg(p.bg, '', im => im.remove())).className = 'scene-bg';
 
-/* every giant name is sized to fit inside the band (never cut, never over the arrows' edge) */
-function fitName(scene) {
-  const box = $('#scenes');
-  const W = box.clientWidth, H = box.clientHeight;
-  const el = scene && scene.querySelector('.scene-name span');
-  if (!W || !el) return;
-  el.style.fontSize = '100px';
-  const w = el.getBoundingClientRect().width || 1;
-  el.style.fontSize = Math.min(100 * (W * 0.9) / w, H * 0.5) + 'px';
-}
-function fitNames() { document.querySelectorAll('#scenes .scene').forEach(fitName); }
-window.addEventListener('resize', fitNames);
-if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitNames);
+  const nm = document.createElement('div');
+  nm.className = 'scene-name';
+  nm.innerHTML = '<span>'+esc(p.name)+'</span>';
+  s.appendChild(nm);
 
-/* background photo file name (.jpeg) */
-const bgFile = p => p.bg.split('/').pop().replace('.jpg', '.jpeg');
-
-/* ---- one scene = colour photo + giant name + 3 fruits + bottle. Built only when needed. ---- */
-function buildScene(i) {
-  const p = PRODUCTS[i];
-  const el = document.createElement('div');
-  el.className = 'scene';
-  el.style.backgroundColor = p.tint;
-  el.innerHTML = `
-    <img class="scene-bg" src="/${bgFile(p)}" alt="" draggable="false" />
-    <div class="scene-name"><span>${p.name}</span></div>
-    <div class="fruits">${p.fruits.map((f, k) => `<div class="fr fr${k + 1}"><img src="${f}" alt="" draggable="false" /></div>`).join('')}</div>
-    <div class="scene-bottle"><div class="bt"><img src="${p.bottle}" alt="${p.name} Fragrance" draggable="false" /></div></div>`;
-  return el;
-}
-/* wait until every picture of a scene is ready (never longer than 1.5 s, so a slow network cannot freeze it) */
-function sceneReady(el) {
-  const all = Promise.all([...el.querySelectorAll('img')].map(im => (im.decode ? im.decode() : Promise.resolve()).catch(() => {})));
-  return Promise.race([all, new Promise(r => setTimeout(r, 1500))]).then(() => el);
-}
-/* the next scene is prepared in the background while you look at the current one */
-let prepared = null;
-function prepare(i) { prepared = { i, p: sceneReady(buildScene(i)) }; }
-function getScene(i) {
-  if (prepared && prepared.i === i) { const p = prepared.p; prepared = null; return p; }
-  return sceneReady(buildScene(i));
-}
-
-/* ---- automatic lighter mode: if a phone cannot keep up, effects that need a lot of power are switched off ---- */
-let lite = false;
-function setLite(v) { lite = v; document.body.classList.toggle('lite', v); }
-if ((navigator.deviceMemory && navigator.deviceMemory <= 3) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 3)) setLite(true);
-function watchFrames(ms) {
-  let last = 0, n = 0, slow = 0, t0 = 0;
-  const f = t => {
-    if (!t0) { t0 = t; last = t; requestAnimationFrame(f); return; }
-    const d = t - last; last = t; n++; if (d > 50) slow++;
-    if (t - t0 < ms) requestAnimationFrame(f);
-    else if (n > 6 && slow / n > 0.2) setLite(true);
-  };
-  requestAnimationFrame(f);
-}
-
-async function renderCarousel() {
-  const el = await getScene(current);
-  el.classList.add('on');
-  $('#scenes').innerHTML = '';
-  $('#scenes').appendChild(el);
-  fitName(el);
-  $('#info').innerHTML = infoHTML(PRODUCTS[current]);
-  $('#collection').style.background = soften(PRODUCTS[current].tint);
-  renderDots();
-  prepare((current + 1) % N);
-}
-
-async function go(dir) {
-  if (busy) return;
-  busy = true;
-  lastMove = Date.now();
-  const next = (current + dir + N) % N;
-  const box = $('#scenes');
-  const out = box.querySelector('.scene');
-  let inn;
-  try { inn = await getScene(next); } catch (e) { busy = false; return; }
-  if (!out) { box.appendChild(inn); inn.classList.add('on'); current = next; busy = false; return; }
-  if (!lite) watchFrames(1400);
-
-  const D = 1150;                                   // slower = smoother
-  const SMOOTH = 'cubic-bezier(0.65, 0, 0.35, 1)';  // gentle start, gentle stop
-  const q = (el, c) => el.querySelector(c);
-  const qa = (el, c) => [...el.querySelectorAll(c)];
-  const anims = [];
-  const hideFrom = dir > 0 ? 'inset(0 0 0 100%)' : 'inset(0 100% 0 0)';
-
-  // the new scene starts fully hidden, is added on top of the old one, and then wipes in
-  inn.style.clipPath = hideFrom;
-  inn.style.zIndex = 2;
-  out.style.zIndex = 1;
-  inn.classList.add('on');
-  box.appendChild(inn);
-  fitName(inn);
-  current = next;
-  renderDots();
-
-  // 1) the new scene (colour + name + fruits + bottle) wipes across; the old one stays underneath
-  const wipeScene = inn.animate([{ clipPath: hideFrom }, { clipPath: 'inset(0 0 0 0)' }],
-    { duration: D, easing: SMOOTH, fill: 'forwards' });
-  anims.push(wipeScene);
-
-  // 2) names slide, each one inside its own scene (so they never mix); blur only on phones that can afford it
-  const nIn = lite ? [{ transform: `translateX(${dir * 45}%)` }, { transform: 'translateX(0)' }]
-    : [{ transform: `translateX(${dir * 45}%)`, filter: 'blur(8px)', offset: 0 }, { filter: 'blur(3px)', offset: 0.5 }, { transform: 'translateX(0)', filter: 'blur(0px)', offset: 1 }];
-  const nOut = lite ? [{ transform: 'translateX(0)' }, { transform: `translateX(${-dir * 45}%)` }]
-    : [{ transform: 'translateX(0)', filter: 'blur(0px)', offset: 0 }, { filter: 'blur(3px)', offset: 0.5 }, { transform: `translateX(${-dir * 45}%)`, filter: 'blur(8px)', offset: 1 }];
-  anims.push(q(inn, '.scene-name span').animate(nIn, { duration: D, easing: SMOOTH, fill: 'forwards' }));
-  anims.push(q(out, '.scene-name span').animate(nOut, { duration: D, easing: SMOOTH, fill: 'forwards' }));
-
-  // 3) the bottle stays in the middle and turns on its own axis, like the can
-  anims.push(q(inn, '.bt').animate([{ transform: `rotateY(${-dir * 80}deg)` }, { transform: 'rotateY(0deg)' }],
-    { duration: D, easing: SMOOTH, fill: 'forwards' }));
-  anims.push(q(out, '.bt').animate([{ transform: 'rotateY(0deg)' }, { transform: `rotateY(${dir * 80}deg)` }],
-    { duration: D, easing: SMOOTH, fill: 'forwards' }));
-
-  // 4) the three fruits rise up from the bottom edge once the new colour has swept past (like the video):
-  //    the big one first, then the right-top one, then the left-top one.
-  //    No fading is used: they start below the band (the band's edge hides them) and simply rise into place.
-  const RISE = [0.18, 0.26, 0.34], SPIN = [-14, 12, -10];
-  qa(inn, '.fr').forEach((el, k) => {
-    const startY = inn.clientHeight - el.offsetTop + 12;   // just below the bottom edge of the band
-    anims.push(el.animate([
-      { transform: `translateY(${startY}px) rotate(${SPIN[k]}deg)`, offset: 0 },
-      { transform: 'translateY(0px) rotate(0deg)', offset: 1 }
-    ], { duration: D * 0.6, delay: D * RISE[k], easing: 'cubic-bezier(0.2, 0.85, 0.25, 1)', fill: 'both' }));
+  const fr = document.createElement('div');
+  fr.className = 'fruits';
+  p.fruits.forEach((src,i) => {
+    const w = document.createElement('div');
+    w.className = 'fr fr'+(i+1);
+    w.appendChild(makeImg(src, '', im => w.remove()));
+    fr.appendChild(w);
   });
+  s.appendChild(fr);
 
-  // 5) the page colour behind the band wipes with it
-  const wipe = $('#wipe');
-  wipe.style.background = soften(PRODUCTS[next].tint);
-  wipe.animate([{ clipPath: hideFrom }, { clipPath: 'inset(0 0 0 0)' }],
-    { duration: D, easing: SMOOTH, fill: 'forwards' }).onfinish = () => {
-    $('#collection').style.background = soften(PRODUCTS[next].tint);
-    wipe.getAnimations().forEach(a => a.cancel());
-  };
-
-  // 6) info card fades to the new perfume
-  const info = $('#info');
-  info.animate([{ opacity: 1 }, { opacity: 0 }], { duration: D * .3, fill: 'forwards' }).onfinish = () => {
-    info.innerHTML = infoHTML(PRODUCTS[next]);
-    info.getAnimations().forEach(a => a.cancel());
-    info.animate([{ opacity: 0 }, { opacity: 1 }], { duration: D * .4 });
-  };
-
-  // finish: clean up (runs once, either when the wipe ends or from a safety timer)
-  let done = false;
-  const finish = () => {
-    if (done) return;
-    done = true;
-    anims.forEach(a => a.cancel());
-    inn.style.clipPath = '';
-    inn.style.zIndex = '';
-    qa(inn, '.fr').forEach(el => { el.style.opacity = '1'; el.style.transform = 'none'; });
-    if (out.parentNode) out.remove();            // the old scene is thrown away, so nothing piles up in memory
-    busy = false;
-    prepare((current + 1) % N);                  // get the following scene ready in the background
-  };
-  wipeScene.onfinish = finish;
-  setTimeout(finish, D + 600);   // safety: the carousel can never get stuck
+  const sb = document.createElement('div');
+  sb.className = 'scene-bottle';
+  const bt = document.createElement('div');
+  bt.className = 'bt';
+  /* cutout -> bottle photo -> nothing */
+  bt.appendChild(makeImg(p.bottle, p.name+' perfume', im => {
+    bt.appendChild(makeImg(p.scene, p.name+' perfume', im2 => im2.remove()));
+    im.remove();
+  }));
+  sb.appendChild(bt);
+  s.appendChild(sb);
+  return s;
 }
 
-$('#prevBtn').addEventListener('click', () => go(-1));
-$('#nextBtn').addEventListener('click', () => go(1));
+/* make the big name fill the screen width, like the reference video */
+function fitName(scene){
+  const span = scene.querySelector('.scene-name span');
+  if (!span) return;
+  const W = scenesEl.clientWidth, H = scenesEl.clientHeight;
+  span.style.fontSize = '100px';
+  const w = span.getBoundingClientRect().width || 1;
+  let size = 100 * (W * 0.92) / w;
+  size = Math.min(size, H * 0.5, 200);
+  span.style.fontSize = Math.max(size, 28) + 'px';
+}
 
-/* swipe + tap on the bottle */
-let tx = 0, ty = 0, moved = false;
-const stageEl = $('#stage');
-stageEl.addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; moved = false; }, { passive: true });
-stageEl.addEventListener('touchend', e => {
-  const dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
-  if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) { moved = true; go(dx < 0 ? 1 : -1); }
+function layout(){
+  const r = stageWrap.getBoundingClientRect();
+  const vw = document.documentElement.clientWidth;
+  scenesEl.style.left = (-r.left) + 'px';
+  scenesEl.style.width = vw + 'px';
+  scenesEl.querySelectorAll('.scene').forEach(fitName);
+}
+
+function renderInfo(i){
+  const p = PRODUCTS[i];
+  info.innerHTML =
+    '<h3>'+esc(p.name)+'</h3>'+
+    '<div class="price">'+money(p.price)+'</div>'+
+    '<p class="notes-preview">'+esc(firstSentence(p.desc))+'</p>'+
+    '<div class="info-actions">'+
+      '<button class="btn" data-act="details">View Details</button>'+
+      '<button class="btn btn-solid" data-act="add">Add to Cart</button>'+
+    '</div>';
+  [...dotsEl.children].forEach((d,k) => d.classList.toggle('on', k === i));
+}
+
+function preload(i){
+  const p = PRODUCTS[(i+PRODUCTS.length)%PRODUCTS.length];
+  [p.bg, p.bottle, p.scene].concat(p.fruits).forEach(src => { const im = new Image(); im.src = src; });
+}
+
+function go(dir){
+  if (busy) return;
+  const next = (cur + dir + PRODUCTS.length) % PRODUCTS.length;
+  show(next, dir);
+}
+function goTo(i){
+  if (busy || i === cur) return;
+  show(i, i > cur ? 1 : -1);
+}
+
+function show(next, dir){
+  busy = true;
+  const old = scenesEl.querySelector('.scene');
+  const p = PRODUCTS[next];
+  const incoming = makeScene(p);
+  /* arrives from the right when going forward, from the left when going back */
+  const from = dir > 0 ? 'inset(0 0 0 100%)' : 'inset(0 100% 0 0)';
+  incoming.style.clipPath = from;
+  scenesEl.appendChild(incoming);
+  fitName(incoming);
+
+  const finish = () => {
+    incoming.style.clipPath = '';
+    if (old) old.remove();
+    catalog.style.background = soft(p.tint);
+    wipe.style.clipPath = 'inset(0 0 0 100%)';
+    cur = next; busy = false;
+    preload(cur+1); preload(cur-1);
+  };
+
+  info.style.opacity = '0';
+  setTimeout(() => { renderInfo(next); info.style.opacity = '1'; }, 260);
+
+  wipe.style.background = soft(p.tint);
+  if (!canAnimate || reduce){
+    finish();
+    return;
+  }
+  const opts = { duration:750, easing:EASE, fill:'forwards' };
+  wipe.style.clipPath = from;
+  const a1 = wipe.animate([{clipPath:from},{clipPath:'inset(0 0 0 0)'}], opts);
+  const a2 = incoming.animate([{clipPath:from},{clipPath:'inset(0 0 0 0)'}], opts);
+  let done = false;
+  const end = () => { if (done) return; done = true; a1.cancel(); a2.cancel(); finish(); };
+  a2.onfinish = end;
+  setTimeout(end, 1000); // safety net
+}
+
+/* build */
+PRODUCTS.forEach((_,i) => {
+  const d = document.createElement('i');
+  d.addEventListener('click', () => goTo(i));
+  dotsEl.appendChild(d);
 });
-stageEl.addEventListener('click', () => { if (moved) { moved = false; return; } openProductModal(PRODUCTS[current].id); });
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeProductModal(); closeDrawer(); }
-  if ($('#productModal').classList.contains('show')) return;
-  if (e.target.matches('input,textarea')) return;
+scenesEl.appendChild(makeScene(PRODUCTS[0]));
+catalog.style.background = soft(PRODUCTS[0].tint);
+renderInfo(0);
+layout();
+preload(1); preload(-1);
+
+let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(layout, 80); });
+addEventListener('orientationchange', () => setTimeout(layout, 200));
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+addEventListener('load', layout);
+
+$('prevBtn').addEventListener('click', () => go(-1));
+$('nextBtn').addEventListener('click', () => go(1));
+
+/* swipe on touch + mouse, tap to open details */
+let sx=0, sy=0, down=false;
+stage.addEventListener('pointerdown', e => { down = true; sx = e.clientX; sy = e.clientY; });
+stage.addEventListener('pointercancel', () => { down = false; });
+stage.addEventListener('pointerup', e => {
+  if (!down) return; down = false;
+  const dx = e.clientX - sx, dy = e.clientY - sy;
+  if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) go(dx < 0 ? 1 : -1);
+  else if (Math.abs(dx) < 10 && Math.abs(dy) < 10) openModal();
+});
+info.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  if (b.dataset.act === 'details') openModal();
+  else addToCart(PRODUCTS[cur].id);
+});
+addEventListener('keydown', e => {
+  if (e.key === 'Escape'){ closeModal(); closeDrawer(); return; }
+  if (modal.classList.contains('show') || drawer.classList.contains('show')) return;
   if (e.key === 'ArrowLeft') go(-1);
   if (e.key === 'ArrowRight') go(1);
 });
 
-/* ---------- Autoplay: moves to the next perfume every 2 seconds ---------- */
-const AUTO_MS = 2000;
-let paused = false;
-let inView = true;
-const wrapEl = $('#carouselWrapper');
-wrapEl.addEventListener('mouseenter', () => { paused = true; });
-wrapEl.addEventListener('mouseleave', () => { paused = false; lastMove = Date.now(); });
-wrapEl.addEventListener('touchstart', () => { paused = true; }, { passive: true });
-['touchend', 'touchcancel'].forEach(ev => wrapEl.addEventListener(ev, () => { paused = false; lastMove = Date.now(); }));
-if ('IntersectionObserver' in window) {
-  new IntersectionObserver(en => { inView = en[0].isIntersecting; if (inView) lastMove = Date.now(); }, { threshold: 0.2 }).observe($('#collection'));
-}
-setInterval(() => {
-  if (busy || modalBusy || paused || !inView || document.hidden) return;
-  if ($('#productModal').classList.contains('show') || $('#drawer').classList.contains('show')) return;
-  if (Date.now() - lastMove >= AUTO_MS) go(1);
-}, 200);
+/* ================= PRODUCT POPUP ================= */
+const modal = $('productModal'), modalImg = $('modalImg');
+let flying = null;
 
-/* ---------- Product popup: the photo grows out of the bottle, the details slide in ---------- */
-let modalId = null;
-let flySrcEl = null;                                   // the carousel bottle the photo grew out of
-const REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const FLY_MS = 900;
-const FLY_EASE = 'cubic-bezier(0.65, 0, 0.35, 1)';     // gentle start, gentle stop
-const SLIDE_EASE = 'cubic-bezier(0.25, 1, 0.5, 1)';
-
-/* load the popup photos quietly in the background so the animation never waits for them */
-function preloadScenes() {
-  PRODUCTS.forEach(p => {
-    const im = new Image();
-    im.onerror = () => { im.onerror = null; im.src = RAW + p.scene.split('/').pop(); };
-    im.src = p.scene;
-  });
-}
-
-/* the photo grows out of the bottle: it starts as a small window sitting right on the bottle,
-   then opens up and glides to its place on the left (and does the same backwards when closing) */
-function morphFrames(b, p) {
-  const k = b.height / (p.height * 0.5);                         // the photo starts this small
-  const insetY = (p.height - b.height / k) / 2;
-  const insetX = Math.max(0, (p.width - b.width / k) / 2);
-  const tx = (b.left + b.width / 2) - (p.left + p.width / 2);
-  const ty = (b.top + b.height / 2) - (p.top + p.height / 2);
-  return [
-    { transform: `translate(${tx}px, ${ty}px) scale(${k})`, clipPath: `inset(${insetY}px ${insetX}px ${insetY}px ${insetX}px round ${14 / k}px)` },
-    { transform: 'translate(0px, 0px) scale(1)', clipPath: 'inset(-60px -60px -80px -60px round 0px)' }
-  ];
-}
-
-/* a copy of the bottle, placed exactly on top of the real one */
-function makeFly(bottleEl, rect) {
-  const f = document.createElement('img');
-  f.className = 'fly';
-  f.alt = '';
-  f.src = bottleEl.currentSrc || bottleEl.src;
-  f.style.left = rect.left + 'px';
-  f.style.top = rect.top + 'px';
-  f.style.width = rect.width + 'px';
-  f.style.height = rect.height + 'px';
-  document.body.appendChild(f);
-  return f;
-}
-
-/* a copy of the popup photo, placed exactly on top of the real one */
-function makePhotoFly(photoEl, rect) {
-  const f = document.createElement('img');
-  f.className = 'fly fly-photo';
-  f.alt = '';
-  f.src = photoEl.currentSrc || photoEl.src;
-  f.style.left = rect.left + 'px';
-  f.style.top = rect.top + 'px';
-  f.style.width = rect.width + 'px';
-  f.style.height = rect.height + 'px';
-  f.style.transformOrigin = '50% 50%';
-  document.body.appendChild(f);
-  return f;
-}
-
-function showPlain() {
-  $('#productModal').classList.add('show');
+function openModal(){
+  const p = PRODUCTS[cur];
+  $('modalTitle').textContent = p.name;
+  $('modalPrice').textContent = money(p.price);
+  $('modalDesc').textContent = p.desc;
+  modalImg.alt = p.name + ' perfume';
+  modalImg.onerror = () => { modalImg.onerror = null; modalImg.src = p.bottle; };
+  modalImg.src = p.scene;
+  modal.dataset.id = p.id;
+  modal.classList.add('show');
   document.body.classList.add('locked');
-}
 
-async function openProductModal(id) {
-  const p = byId(id);
-  if (!p || modalBusy) return;
-  modalId = id;
-  const modal = $('#productModal'), photo = $('#modalImg');
-  delete photo.dataset.fb;
-  photo.src = p.scene;
-  photo.alt = p.name + ' Fragrance';
-  $('#modalTitle').textContent = p.name;
-  $('#modalPrice').textContent = CURRENCY + p.price;
-  $('#modalDesc').textContent = p.desc;
+  const src = scenesEl.querySelector('.bt img');
+  if (!canAnimate || reduce || !src || !src.naturalWidth) return;
 
-  const bottle = (!busy && !REDUCED) ? document.querySelector('.scene.on .bt img') : null;
-  if (!bottle || !bottle.getBoundingClientRect().width) { flySrcEl = null; showPlain(); return; }
-
-  modalBusy = true;
-  /* wait until the photo is ready, so we know exactly where it lands */
-  if (!(photo.complete && photo.naturalWidth)) {
-    await new Promise(res => { photo.addEventListener('load', res, { once: true }); setTimeout(res, 1500); });
-  }
-  document.body.classList.add('locked');
-  const photoRect = photo.getBoundingClientRect();
-  const bottleRect = bottle.getBoundingClientRect();
-  if (!photoRect.width || !bottleRect.width) { flySrcEl = null; showPlain(); modalBusy = false; return; }
-
-  const fly = makeFly(bottle, bottleRect);
-  const pfly = makePhotoFly(photo, photoRect);
-  flySrcEl = bottle;
-  bottle.style.visibility = 'hidden';
-  modal.classList.add('show');                         // white page fades in
-
-  const anims = [];
-  const A = (el, kf, o) => { const a = el.animate(kf, Object.assign({ fill: 'both' }, o)); anims.push(a); return a; };
-  // 1) the photo grows out of the bottle and glides to the left
-  const morph = A(pfly, morphFrames(bottleRect, photoRect), { duration: FLY_MS, easing: FLY_EASE });
-  A(pfly, [{ opacity: 0 }, { opacity: 1 }], { duration: 320, easing: 'ease-out' });
-  A(fly, [{ opacity: 1 }, { opacity: 0 }], { duration: 380, easing: 'ease-in' });   // the bottle melts into it
-  A(photo, [{ opacity: 0 }, { opacity: 0 }], { duration: FLY_MS });                 // real photo waits for the landing
-  // 2) the details slide in from the right, one after another
-  [...modal.querySelectorAll('.modal-right > *')].forEach((el, i) =>
-    A(el, [{ opacity: 0, transform: 'translateX(56px)' }, { opacity: 1, transform: 'translateX(0)' }],
-      { duration: 650, delay: 260 + i * 90, easing: SLIDE_EASE }));
-  A($('#modalClose'), [{ opacity: 0 }, { opacity: 1 }], { duration: 400, delay: 600 });
-
-  await morph.finished.catch(() => {});
-  anims.forEach(a => a.cancel());
-  fly.remove();
-  pfly.remove();
-  modalBusy = false;
-}
-
-async function closeProductModal() {
-  const modal = $('#productModal');
-  if (!modal.classList.contains('show') || modalBusy) return;
-  const bottle = flySrcEl, photo = $('#modalImg');
-  const plain = () => {
-    modal.classList.remove('show');
-    document.body.classList.remove('locked');
-    if (bottle) bottle.style.visibility = '';
-    flySrcEl = null;
-    lastMove = Date.now();
+  const a = src.getBoundingClientRect();
+  const run = () => {
+    const b = modalImg.getBoundingClientRect();
+    if (!b.width || !b.height) return;
+    cleanupFly();
+    const c = src.cloneNode();
+    c.className = 'fly';
+    c.style.cssText = 'left:'+a.left+'px;top:'+a.top+'px;width:'+a.width+'px;height:'+a.height+'px;transform-origin:50% 50%;animation:none;';
+    document.body.appendChild(c);
+    flying = c;
+    const dx = (b.left + b.width/2) - (a.left + a.width/2);
+    const dy = (b.top + b.height/2) - (a.top + a.height/2);
+    const s = Math.min(b.width/a.width, b.height/a.height);
+    modalImg.style.opacity = '0';
+    const anim = c.animate([
+      {transform:'translate(0,0) scale(1)', opacity:1},
+      {transform:'translate('+dx+'px,'+dy+'px) scale('+s+')', opacity:1, offset:.7},
+      {transform:'translate('+dx+'px,'+dy+'px) scale('+s+')', opacity:0}
+    ], {duration:650, easing:EASE});
+    modalImg.animate([{opacity:0},{opacity:0,offset:.55},{opacity:1}], {duration:650, easing:'ease-out'});
+    anim.onfinish = cleanupFly;
+    setTimeout(cleanupFly, 900);
   };
-  if (!bottle || !bottle.isConnected) { plain(); return; }
-  const bottleRect = bottle.getBoundingClientRect();   // where it goes back to
-  const photoRect = photo.getBoundingClientRect();     // where it leaves from
-  if (!bottleRect.width || !photoRect.width) { plain(); return; }
-
-  modalBusy = true;
-  const CLOSE_MS = FLY_MS - 100;
-  const fly = makeFly(bottle, bottleRect);
-  const pfly = makePhotoFly(photo, photoRect);
-  const anims = [];
-  const A = (el, kf, o) => { const a = el.animate(kf, Object.assign({ fill: 'both' }, o)); anims.push(a); return a; };
-  // 1) the details slide away
-  [...modal.querySelectorAll('.modal-right > *')].forEach(el =>
-    A(el, [{ opacity: 1, transform: 'translateX(0)' }, { opacity: 0, transform: 'translateX(40px)' }], { duration: 300, easing: 'ease-in' }));
-  A($('#modalClose'), [{ opacity: 1 }, { opacity: 0 }], { duration: 200 });
-  A(photo, [{ opacity: 0 }, { opacity: 0 }], { duration: CLOSE_MS + 150 });          // the copy takes over from the real photo
-  // 2) the photo shrinks back into the bottle's place
-  const morph = A(pfly, morphFrames(bottleRect, photoRect).reverse(), { duration: CLOSE_MS, delay: 100, easing: FLY_EASE });
-  A(pfly, [{ opacity: 1 }, { opacity: 0 }], { duration: 380, delay: CLOSE_MS + 100 - 380, easing: 'ease-in' });
-  A(fly, [{ opacity: 0 }, { opacity: 1 }], { duration: 380, delay: CLOSE_MS + 100 - 380, easing: 'ease-out' });   // ...and turns back into the bottle
-  // 3) the white page fades away to show the collection again
-  setTimeout(() => modal.classList.remove('show'), 200);
-
-  await morph.finished.catch(() => {});
-  anims.forEach(a => a.cancel());
-  fly.remove();
-  pfly.remove();
-  bottle.style.visibility = '';
-  document.body.classList.remove('locked');
-  flySrcEl = null;
-  lastMove = Date.now();
-  modalBusy = false;
+  const ready = modalImg.decode ? modalImg.decode().catch(()=>{}) : Promise.resolve();
+  Promise.race([ready, new Promise(r => setTimeout(r, 500))]).then(run);
 }
-$('#modalClose').addEventListener('click', closeProductModal);
-$('#modalAddToCart').addEventListener('click', () => { if (modalId) { addToCart(modalId); closeProductModal(); } });
-
-/* ---------- Cart ---------- */
-function saveCart() { try { localStorage.setItem('rosa_cart', JSON.stringify(cart)); } catch (e) {} }
-
-function toast(msg) {
-  const t = $('#toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(toast.t);
-  toast.t = setTimeout(() => t.classList.remove('show'), 2200);
+function cleanupFly(){
+  if (flying){ flying.remove(); flying = null; }
+  modalImg.style.opacity = '';
 }
-
-function addToCart(id) {
-  const item = cart.find(i => i.id === id);
-  if (item) item.qty++; else cart.push({ id, qty: 1 });
-  renderCart();
-  toast(byId(id).name + ' added to cart');
+function closeModal(){
+  if (!modal.classList.contains('show')) return;
+  modal.classList.remove('show');
+  cleanupFly();
+  if (!drawer.classList.contains('show')) document.body.classList.remove('locked');
 }
-function changeQty(id, d) {
-  const item = cart.find(i => i.id === id);
-  if (!item) return;
-  item.qty += d;
-  if (item.qty <= 0) cart = cart.filter(i => i.id !== id);
-  renderCart();
+$('modalClose').addEventListener('click', closeModal);
+modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+$('modalAddToCart').addEventListener('click', () => { addToCart(modal.dataset.id); closeModal(); });
+
+/* ================= CART ================= */
+const drawer = $('drawer'), overlay = $('overlay');
+let cart = [];
+try { cart = JSON.parse(localStorage.getItem('rosa-cart') || '[]').filter(l => PRODUCTS.some(p => p.id === l.id) && l.qty > 0); } catch(e){ cart = []; }
+
+function saveCart(){ try { localStorage.setItem('rosa-cart', JSON.stringify(cart)); } catch(e){} }
+function total(){ return cart.reduce((s,l) => s + PRODUCTS.find(p => p.id === l.id).price * l.qty, 0); }
+function count(){ return cart.reduce((s,l) => s + l.qty, 0); }
+
+function toast(msg){
+  const t = $('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2200);
 }
-function removeItem(id) { cart = cart.filter(i => i.id !== id); renderCart(); }
-const cartTotal = () => cart.reduce((s, i) => s + byId(i.id).price * i.qty, 0);
-
-function renderCart() {
-  saveCart();
-  $('#cartCount').textContent = cart.reduce((s, i) => s + i.qty, 0);
-  $('#subtotal').textContent = CURRENCY + cartTotal();
-  $('#summaryTotal').textContent = CURRENCY + cartTotal();
-  $('#drawerItems').innerHTML = cart.length ? cart.map(i => {
-    const p = byId(i.id);
-    return `<div class="line-item">
-      <div><h4>${p.name}</h4><small>${CURRENCY}${p.price} each · 6 ml</small></div>
-      <div class="qty">
-        <button onclick="changeQty('${p.id}',-1)" aria-label="Fewer">−</button>
-        <span>${i.qty}</span>
-        <button onclick="changeQty('${p.id}',1)" aria-label="More">+</button>
-        <button onclick="removeItem('${p.id}')" aria-label="Remove" style="border:none;font-size:1.2rem">&times;</button>
-      </div>
-    </div>`;
-  }).join('') : '<p class="empty">Your bag is empty. Pick a perfume from the collection.</p>';
-  $('#summaryItems').innerHTML = cart.length ? cart.map(i => {
-    const p = byId(i.id);
-    return `<div style="display:flex;justify-content:space-between;padding:.4rem 0"><span>${p.name} × ${i.qty}</span><span>${CURRENCY}${p.price * i.qty}</span></div>`;
-  }).join('') : '<p class="empty">No items yet.</p>';
+function addToCart(id){
+  const l = cart.find(x => x.id === id);
+  if (l) l.qty++; else cart.push({id, qty:1});
+  saveCart(); renderCart();
+  toast(PRODUCTS.find(p => p.id === id).name + ' added to bag');
 }
-
-function openDrawer() { $('#drawer').classList.add('show'); $('#overlay').classList.add('show'); }
-function closeDrawer() { $('#drawer').classList.remove('show'); $('#overlay').classList.remove('show'); }
-$('#cartBtn').addEventListener('click', openDrawer);
-$('#closeDrawer').addEventListener('click', closeDrawer);
-$('#overlay').addEventListener('click', closeDrawer);
-
-/* ---------- Checkout (WhatsApp or Messenger) ---------- */
-function togglePaymentMethod() {
-  const bk = document.querySelector('input[name="paymentMethod"]:checked').value === 'bKash';
-  $('#bkashContainer').style.display = bk ? 'block' : 'none';
+function changeQty(id, d){
+  const l = cart.find(x => x.id === id); if (!l) return;
+  l.qty += d;
+  if (l.qty <= 0) cart = cart.filter(x => x !== l);
+  saveCart(); renderCart();
 }
-
-/* remember which of the two order buttons was pressed */
-let orderChannel = 'whatsapp';
-document.querySelectorAll('#checkoutForm button[type="submit"]').forEach(b =>
-  b.addEventListener('click', () => { orderChannel = b.dataset.channel; }));
-
-/* copy text to the clipboard (works on most phones; resolves true / false) */
-function copyText(text) {
-  const fallback = () => {
-    try {
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      const ok = document.execCommand('copy');
-      ta.remove();
-      return ok;
-    } catch (err) { return false; }
-  };
-  if (navigator.clipboard && window.isSecureContext) {
-    return navigator.clipboard.writeText(text).then(() => true).catch(fallback);
-  }
-  return Promise.resolve(fallback());
+function renderCart(){
+  $('cartCount').textContent = count();
+  $('subtotal').textContent = money(total());
+  $('summaryTotal').textContent = money(total());
+  $('drawerItems').innerHTML = cart.length ? cart.map(l => {
+    const p = PRODUCTS.find(x => x.id === l.id);
+    return '<div class="line-item"><div><h4>'+esc(p.name)+'</h4><small>'+money(p.price)+' · 6 ml</small></div>'+
+      '<div class="qty"><button data-q="-1" data-id="'+p.id+'" aria-label="Less">−</button><span>'+l.qty+'</span><button data-q="1" data-id="'+p.id+'" aria-label="More">+</button></div></div>';
+  }).join('') : '<p class="empty">Your bag is empty.</p>';
+  $('summaryItems').innerHTML = cart.length ? cart.map(l => {
+    const p = PRODUCTS.find(x => x.id === l.id);
+    return '<div class="sum-row"><span>'+esc(p.name)+' × '+l.qty+'</span><span>'+money(p.price*l.qty)+'</span></div>';
+  }).join('') : '<p class="empty">No items yet. Choose a perfume above.</p>';
 }
-
-$('#checkoutForm').addEventListener('submit', e => {
-  e.preventDefault();
-  if (!cart.length) { toast('Your bag is empty. Add a perfume first.'); return; }
-  const channel = (e.submitter && e.submitter.dataset.channel) || orderChannel;
-  const method = document.querySelector('input[name="paymentMethod"]:checked').value;
-  const sender = $('#fSender').value.trim(), trx = $('#fTrx').value.trim();
-  if (method === 'bKash' && (!sender || !trx)) { toast('Enter your bKash number and TrxID.'); return; }
-  let msg = 'New order — Rosa Fragrance\n\n';
-  cart.forEach(i => { const p = byId(i.id); msg += `${p.name} × ${i.qty} = ${CURRENCY}${p.price * i.qty}\n`; });
-  msg += `\nTotal: ${CURRENCY}${cartTotal()}\n\nName: ${$('#fName').value.trim()}\nPhone: ${$('#fPhone').value.trim()}\nAddress: ${$('#fAddress').value.trim()}\nPayment: ${method}`;
-  if (method === 'bKash') msg += `\nbKash number: ${sender}\nTrxID: ${trx}`;
-
-  if (channel === 'messenger') {
-    if (!MESSENGER_USERNAME || MESSENGER_USERNAME === 'YOUR_MESSENGER_USERNAME') {
-      toast('Messenger ordering is not set up yet.');
-      return;
-    }
-    // The order text is filled into the Messenger chat (like WhatsApp).
-    // A copy also goes to the clipboard as a backup, in case the text does not appear.
-    copyText(msg).then(ok => {
-      if (ok) toast('Order opened in Messenger. If the text is missing, paste it (it is copied).');
-    });
-    window.open('https://m.me/' + encodeURIComponent(MESSENGER_USERNAME) + '?text=' + encodeURIComponent(msg), '_blank');
-  } else {
-    window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
-  }
-
-  cart = [];
-  renderCart();
-  e.target.reset();
-  togglePaymentMethod();
+$('drawerItems').addEventListener('click', e => {
+  const b = e.target.closest('[data-q]'); if (b) changeQty(b.dataset.id, +b.dataset.q);
 });
-
-renderCarousel();
+function openDrawer(){ drawer.classList.add('show'); overlay.classList.add('show'); document.body.classList.add('locked'); }
+function closeDrawer(){
+  drawer.classList.remove('show'); overlay.classList.remove('show');
+  if (!modal.classList.contains('show')) document.body.classList.remove('locked');
+}
+$('cartBtn').addEventListener('click', openDrawer);
+$('closeDrawer').addEventListener('click', closeDrawer);
+overlay.addEventListener('click', closeDrawer);
+$('drawerCheckout').addEventListener('click', closeDrawer);
 renderCart();
-setTimeout(preloadScenes, 1200);
+
+/* ================= CHECKOUT ================= */
+const bk = $('bkashContainer');
+function togglePaymentMethod(){
+  const isB = document.querySelector('input[name="paymentMethod"]:checked').value === 'bKash';
+  bk.style.display = isB ? 'block' : 'none';
+  $('fSender').required = isB; $('fTrx').required = isB;
+}
+document.querySelectorAll('input[name="paymentMethod"]').forEach(r => r.addEventListener('change', togglePaymentMethod));
+togglePaymentMethod();
+
+$('checkoutForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const channel = (e.submitter && e.submitter.dataset.channel) || 'whatsapp';
+  if (!cart.length){ toast('Your bag is empty. Please choose a perfume first.'); return; }
+
+  const phone = $('fPhone').value.replace(/[\s-]/g,'').replace(/^\+?88/,'');
+  if (!/^01\d{9}$/.test(phone)){ toast('Please enter a valid phone number (01XXXXXXXXX).'); $('fPhone').focus(); return; }
+
+  const pay = document.querySelector('input[name="paymentMethod"]:checked').value;
+  const lines = ['*New Order — Rosa Fragrance*', ''];
+  cart.forEach(l => { const p = PRODUCTS.find(x => x.id === l.id); lines.push('• '+p.name+' (6 ml) × '+l.qty+' = '+money(p.price*l.qty)); });
+  lines.push('', 'Total: '+money(total()), '',
+    'Name: '+$('fName').value.trim(),
+    'Phone: '+phone,
+    'Address: '+$('fAddress').value.trim(),
+    'Payment: '+pay);
+  if (pay === 'bKash') lines.push('bKash Number: '+$('fSender').value.trim(), 'TrxID: '+$('fTrx').value.trim());
+  const text = lines.join('\n');
+
+  if (channel === 'whatsapp'){
+    window.open('https://wa.me/'+WHATSAPP_NUMBER+'?text='+encodeURIComponent(text), '_blank', 'noopener');
+  } else {
+    try { navigator.clipboard && navigator.clipboard.writeText(text); } catch(err){}
+    window.open('https://m.me/'+MESSENGER_USERNAME+'?text='+encodeURIComponent(text), '_blank', 'noopener');
+    toast('Order copied. Paste it in Messenger if it does not appear.');
+  }
+});
+})();
 </script>
 </body>
 </html>
