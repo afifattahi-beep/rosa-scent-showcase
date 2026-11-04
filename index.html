@@ -149,6 +149,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .delivery-option.on{border-color:var(--burgundy);background:#fff;box-shadow:0 0 0 1px var(--burgundy)}
 @media(max-width:420px){.delivery-options{grid-template-columns:1fr}}
 
+/* bKash copy button */
+.bkash-row{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin:.4rem 0}
+.bkash-row .bkash-number{margin:0}
+.copy-btn{display:inline-flex;align-items:center;gap:.4rem;padding:.45rem .8rem;border:1px solid var(--burgundy);color:var(--burgundy);font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;font-weight:500;border-radius:4px;transition:all .3s var(--ease)}
+.copy-btn:hover,.copy-btn.done{background:var(--burgundy);color:var(--ivory)}
+
 /* order summary rows */
 .sum-row{display:flex;justify-content:space-between;gap:1rem;padding:.4rem 0}
 .sum-line{border-top:1px solid var(--line);margin-top:.8rem;padding-top:.8rem}
@@ -268,7 +274,13 @@ footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0
 
         <div class="bkash-box" id="bkashContainer" style="display:none;">
           <h4>bKash Payment</h4>
-          <div class="bkash-number">01710-629117</div>
+          <div class="bkash-row">
+            <div class="bkash-number">01710-629117</div>
+            <button type="button" class="copy-btn" id="copyBkash" aria-label="Copy bKash number">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>
+              <span>Copy</span>
+            </button>
+          </div>
           <p style="font-size:0.8rem;color:var(--muted)">Send <strong id="bkashAmount" style="color:var(--burgundy)">৳0</strong> (items + delivery) to the number above and enter your details below:</p>
           <div class="two" style="margin-top:1rem;">
             <div class="field"><label>Your bKash Number *</label><input id="fSender" type="tel" /></div>
@@ -948,6 +960,19 @@ function copyText(text) {
   }
   return Promise.resolve(fallback());
 }
+
+/* copy button next to the bKash number */
+$('#copyBkash').addEventListener('click', () => {
+  const btn = $('#copyBkash'), label = btn.querySelector('span');
+  copyText('01710629117').then(ok => {
+    toast(ok ? 'bKash number copied' : 'Could not copy. Please copy it by hand.');
+    if (!ok) return;
+    btn.classList.add('done');
+    label.textContent = 'Copied';
+    clearTimeout(btn._t);
+    btn._t = setTimeout(() => { btn.classList.remove('done'); label.textContent = 'Copy'; }, 2000);
+  });
+});
 
 $('#checkoutForm').addEventListener('submit', e => {
   e.preventDefault();
