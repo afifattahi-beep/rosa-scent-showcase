@@ -114,6 +114,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .drawer-head{padding:1.6rem;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
 .drawer-items{flex:1;overflow:auto;padding:1rem 1.6rem}
 .drawer-foot{padding:1.4rem 1.6rem;border-top:1px solid var(--line);background:#fff}
+.drawer-note{display:block;font-size:.7rem;color:var(--muted);margin:-.6rem 0 1rem;text-align:right}
 .line-item{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.9rem 0;border-bottom:1px solid var(--line)}
 .line-item h4{font-size:1.25rem;color:var(--burgundy)}
 .line-item small{color:var(--muted)}
@@ -137,6 +138,23 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 @media(max-width:520px){.order-buttons{grid-template-columns:1fr}}
 .order-buttons .btn{padding:1rem .8rem;letter-spacing:.2em}
 .order-note{font-size:.72rem;color:var(--muted);margin-top:.8rem;text-align:center;line-height:1.5}
+
+/* delivery area choice */
+.delivery-options{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin:1.2rem 0 .4rem}
+.delivery-option{display:flex;align-items:center;gap:.7rem;padding:.9rem 1rem;border:1px solid var(--line);background:var(--ivory);cursor:pointer;transition:all .3s var(--ease);border-radius:6px}
+.delivery-option input{accent-color:var(--burgundy);flex:none}
+.delivery-option span{display:flex;flex-direction:column;line-height:1.3}
+.delivery-option strong{font-size:.85rem;font-weight:500}
+.delivery-option small{font-family:var(--serif);font-size:1.15rem;color:var(--burgundy)}
+.delivery-option.on{border-color:var(--burgundy);background:#fff;box-shadow:0 0 0 1px var(--burgundy)}
+@media(max-width:420px){.delivery-options{grid-template-columns:1fr}}
+
+/* order summary rows */
+.sum-row{display:flex;justify-content:space-between;gap:1rem;padding:.4rem 0}
+.sum-line{border-top:1px solid var(--line);margin-top:.8rem;padding-top:.8rem}
+.sum-total{display:flex;justify-content:space-between;align-items:center;margin-top:.6rem;padding-top:.8rem;border-top:1px solid var(--line)}
+.sum-total strong{font-family:var(--serif);font-size:1.5rem;color:var(--burgundy)}
+
 footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0 2rem;text-align:center;font-size:.8rem}
 .toast{position:fixed;bottom:1.6rem;left:50%;transform:translate(-50%,300%);background:var(--ink);color:var(--ivory);padding:.8rem 1.5rem;font-size:.8rem;z-index:150;transition:transform .4s}
 .toast.show{transform:translate(-50%,0)}
@@ -226,6 +244,18 @@ footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0
         </div>
         <div class="field"><label>Delivery Address *</label><textarea id="fAddress" required></textarea></div>
 
+        <h3 style="margin-top:1.5rem;">Delivery Area</h3>
+        <div class="delivery-options">
+          <label class="delivery-option on">
+            <input type="radio" name="deliveryArea" value="inside" checked />
+            <span><strong>Inside Dhaka</strong><small id="feeInside">৳60</small></span>
+          </label>
+          <label class="delivery-option">
+            <input type="radio" name="deliveryArea" value="outside" />
+            <span><strong>Outside Dhaka</strong><small id="feeOutside">৳120</small></span>
+          </label>
+        </div>
+
         <h3 style="margin-top:1.5rem;">Payment Method</h3>
         <div class="payment-options">
           <label class="payment-option">
@@ -239,7 +269,7 @@ footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0
         <div class="bkash-box" id="bkashContainer" style="display:none;">
           <h4>bKash Payment</h4>
           <div class="bkash-number">01632-319773</div>
-          <p style="font-size:0.8rem;color:var(--muted)">Send money to the number above and enter your details below:</p>
+          <p style="font-size:0.8rem;color:var(--muted)">Send <strong id="bkashAmount" style="color:var(--burgundy)">৳0</strong> (items + delivery) to the number above and enter your details below:</p>
           <div class="two" style="margin-top:1rem;">
             <div class="field"><label>Your bKash Number *</label><input id="fSender" type="tel" /></div>
             <div class="field"><label>Transaction ID (TrxID) *</label><input id="fTrx" /></div>
@@ -255,8 +285,12 @@ footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0
       <aside class="panel">
         <h3>Order Summary</h3>
         <div id="summaryItems"></div>
-        <div style="display:flex;justify-content:space-between;margin-top:1rem;">
-          <span>Total</span><strong id="summaryTotal" style="font-family:var(--serif);font-size:1.5rem;color:var(--burgundy)">৳0</strong>
+        <div class="sum-line">
+          <div class="sum-row"><span>Subtotal</span><span id="summarySubtotal">৳0</span></div>
+          <div class="sum-row"><span id="summaryDeliveryLabel">Delivery</span><span id="summaryDelivery">৳0</span></div>
+        </div>
+        <div class="sum-total">
+          <span>Total</span><strong id="summaryTotal">৳0</strong>
         </div>
       </aside>
     </div>
@@ -278,6 +312,7 @@ footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0
     <div style="display:flex;justify-content:space-between;margin-bottom:1rem;">
       <span>Subtotal</span><strong id="subtotal" style="font-family:var(--serif);font-size:1.5rem;color:var(--burgundy)">৳0</strong>
     </div>
+    <small class="drawer-note">Delivery charge is added at checkout</small>
     <a href="#checkout" class="btn btn-solid btn-block" onclick="closeDrawer()">Checkout</a>
   </div>
 </aside>
@@ -289,6 +324,11 @@ const CURRENCY = '৳';
 const WHATSAPP_NUMBER = '8801632319773';
 /* Your Messenger username: the part after facebook.com/ on your Facebook page */
 const MESSENGER_USERNAME = 'rozafragranceperfumes';
+/* Delivery charges. Change the numbers here any time. */
+const DELIVERY = {
+  inside:  { label: 'Inside Dhaka',  fee: 60 },
+  outside: { label: 'Outside Dhaka', fee: 120 }
+};
 
 const PRODUCTS = [
   {
@@ -821,13 +861,35 @@ function changeQty(id, d) {
   renderCart();
 }
 function removeItem(id) { cart = cart.filter(i => i.id !== id); renderCart(); }
-const cartTotal = () => cart.reduce((s, i) => s + byId(i.id).price * i.qty, 0);
+
+/* ---------- Money: items + delivery ---------- */
+const cartTotal = () => cart.reduce((s, i) => s + byId(i.id).price * i.qty, 0);   // items only
+const deliveryKey = () => {
+  const r = document.querySelector('input[name="deliveryArea"]:checked');
+  return r && DELIVERY[r.value] ? r.value : 'inside';
+};
+const deliveryFee = () => cart.length ? DELIVERY[deliveryKey()].fee : 0;           // 0 when the bag is empty
+const grandTotal = () => cartTotal() + deliveryFee();
 
 function renderCart() {
   saveCart();
+  const key = deliveryKey();
   $('#cartCount').textContent = cart.reduce((s, i) => s + i.qty, 0);
   $('#subtotal').textContent = CURRENCY + cartTotal();
-  $('#summaryTotal').textContent = CURRENCY + cartTotal();
+
+  /* order summary */
+  $('#summarySubtotal').textContent = CURRENCY + cartTotal();
+  $('#summaryDeliveryLabel').textContent = 'Delivery (' + DELIVERY[key].label + ')';
+  $('#summaryDelivery').textContent = CURRENCY + deliveryFee();
+  $('#summaryTotal').textContent = CURRENCY + grandTotal();
+  $('#bkashAmount').textContent = CURRENCY + grandTotal();
+  $('#feeInside').textContent = CURRENCY + DELIVERY.inside.fee;
+  $('#feeOutside').textContent = CURRENCY + DELIVERY.outside.fee;
+  document.querySelectorAll('.delivery-option').forEach(l => {
+    const r = l.querySelector('input');
+    l.classList.toggle('on', r.checked);
+  });
+
   $('#drawerItems').innerHTML = cart.length ? cart.map(i => {
     const p = byId(i.id);
     return `<div class="line-item">
@@ -842,9 +904,12 @@ function renderCart() {
   }).join('') : '<p class="empty">Your bag is empty. Pick a perfume from the collection.</p>';
   $('#summaryItems').innerHTML = cart.length ? cart.map(i => {
     const p = byId(i.id);
-    return `<div style="display:flex;justify-content:space-between;padding:.4rem 0"><span>${p.name} × ${i.qty}</span><span>${CURRENCY}${p.price * i.qty}</span></div>`;
+    return `<div class="sum-row"><span>${p.name} × ${i.qty}</span><span>${CURRENCY}${p.price * i.qty}</span></div>`;
   }).join('') : '<p class="empty">No items yet.</p>';
 }
+
+/* update totals as soon as the customer changes the delivery area */
+document.querySelectorAll('input[name="deliveryArea"]').forEach(r => r.addEventListener('change', renderCart));
 
 function openDrawer() { $('#drawer').classList.add('show'); $('#overlay').classList.add('show'); }
 function closeDrawer() { $('#drawer').classList.remove('show'); $('#overlay').classList.remove('show'); }
@@ -891,9 +956,14 @@ $('#checkoutForm').addEventListener('submit', e => {
   const method = document.querySelector('input[name="paymentMethod"]:checked').value;
   const sender = $('#fSender').value.trim(), trx = $('#fTrx').value.trim();
   if (method === 'bKash' && (!sender || !trx)) { toast('Enter your bKash number and TrxID.'); return; }
+
+  const area = DELIVERY[deliveryKey()];
   let msg = 'New order — Rosa Fragrance\n\n';
   cart.forEach(i => { const p = byId(i.id); msg += `${p.name} × ${i.qty} = ${CURRENCY}${p.price * i.qty}\n`; });
-  msg += `\nTotal: ${CURRENCY}${cartTotal()}\n\nName: ${$('#fName').value.trim()}\nPhone: ${$('#fPhone').value.trim()}\nAddress: ${$('#fAddress').value.trim()}\nPayment: ${method}`;
+  msg += `\nSubtotal: ${CURRENCY}${cartTotal()}`;
+  msg += `\nDelivery (${area.label}): ${CURRENCY}${deliveryFee()}`;
+  msg += `\nTotal: ${CURRENCY}${grandTotal()}`;
+  msg += `\n\nName: ${$('#fName').value.trim()}\nPhone: ${$('#fPhone').value.trim()}\nAddress: ${$('#fAddress').value.trim()}\nDelivery area: ${area.label}\nPayment: ${method}`;
   if (method === 'bKash') msg += `\nbKash number: ${sender}\nTrxID: ${trx}`;
 
   if (channel === 'messenger') {
@@ -912,8 +982,8 @@ $('#checkoutForm').addEventListener('submit', e => {
   }
 
   cart = [];
-  renderCart();
-  e.target.reset();
+  e.target.reset();          // form goes back to defaults (Inside Dhaka, Cash on Delivery)
+  renderCart();              // after reset, so the summary matches the default area
   togglePaymentMethod();
 });
 
