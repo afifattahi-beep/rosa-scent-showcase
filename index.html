@@ -11,6 +11,7 @@
 <style>
 :root{--ivory:#FAF6EF;--ivory-deep:#F2E8D9;--burgundy:#6B1E2E;--burgundy-dark:#4A1320;--rose-gold:#B76E79;--rose-gold-light:#E8C4BC;--ink:#1C1718;--muted:#6E6264;--line:rgba(107,30,46,0.15);--shadow:0 25px 50px -12px rgba(74,19,32,0.25);--serif:'Cormorant Garamond',Georgia,serif;--sans:'Montserrat',system-ui,sans-serif;--ease:cubic-bezier(0.25,1,0.5,1)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
 html{scroll-behavior:smooth;scrollbar-gutter:stable}
 body{font-family:var(--sans);font-weight:300;color:var(--ink);background:var(--ivory);line-height:1.7;overflow-x:hidden}
 body.locked{overflow:hidden}
@@ -147,6 +148,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .delivery-option strong{font-size:.85rem;font-weight:500}
 .delivery-option small{font-family:var(--serif);font-size:1.15rem;color:var(--burgundy)}
 .delivery-option.on{border-color:var(--burgundy);background:#fff;box-shadow:0 0 0 1px var(--burgundy)}
+.delivery-options.is-free .delivery-option small{text-decoration:line-through;opacity:.45}
+.delivery-free{margin-top:.6rem;padding:.7rem 1rem;background:var(--ivory);border:1px dashed var(--rose-gold);border-radius:6px;font-size:.8rem;color:var(--burgundy)}
 @media(max-width:420px){.delivery-options{grid-template-columns:1fr}}
 
 /* bKash copy button */
@@ -154,6 +157,41 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .bkash-row .bkash-number{margin:0}
 .copy-btn{display:inline-flex;align-items:center;gap:.4rem;padding:.45rem .8rem;border:1px solid var(--burgundy);color:var(--burgundy);font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;font-weight:500;border-radius:4px;transition:all .3s var(--ease)}
 .copy-btn:hover,.copy-btn.done{background:var(--burgundy);color:var(--ivory)}
+
+/* Individual / Package tabs */
+.mode-tabs{display:flex;justify-content:center;gap:.4rem;margin:0 auto 1.8rem;padding:.35rem;background:#fff;border:1px solid var(--line);border-radius:999px;width:max-content;max-width:100%;box-shadow:0 10px 25px -12px rgba(74,19,32,.25);position:relative;z-index:2}
+.mode-tab{padding:.8rem 1.9rem;font-size:.72rem;letter-spacing:.25em;text-transform:uppercase;font-weight:500;color:var(--burgundy);border-radius:999px;transition:all .4s var(--ease)}
+.mode-tab:hover{background:rgba(107,30,46,.08)}
+.mode-tab.on{background:var(--burgundy);color:var(--ivory)}
+@media(max-width:420px){.mode-tab{padding:.75rem 1.3rem;font-size:.66rem;letter-spacing:.18em}}
+
+/* Package tab */
+.pkg-wrap{max-width:520px;margin:0 auto;padding:.5rem 0 2rem}
+.pkg-cover{display:block;position:relative;width:100%;aspect-ratio:1024/765;border-radius:14px;overflow:hidden;box-shadow:var(--shadow);background:var(--ivory)}
+.pkg-cover img{display:block;width:100%;height:auto}
+.pkg-hint{position:absolute;left:50%;bottom:.9rem;transform:translateX(-50%);background:rgba(74,19,32,.84);color:var(--ivory);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;padding:.55rem 1.1rem;border-radius:999px;white-space:nowrap;transition:opacity .2s}
+.pkg-cover.opening .pkg-hint{opacity:0}
+.pkg-badge{display:inline-block;padding:.3rem .9rem;margin-bottom:.6rem;border:1px solid var(--rose-gold);color:var(--rose-gold);font-size:.62rem;letter-spacing:.25em;text-transform:uppercase;font-weight:500;border-radius:999px}
+
+/* Package popup: the six perfumes with their descriptions */
+.pkg-modal{position:fixed;inset:0;background:#fff;z-index:100;opacity:0;pointer-events:none;transition:opacity .4s var(--ease);overflow-y:auto;-webkit-overflow-scrolling:touch;padding:3.5rem 1rem 3rem}
+.pkg-modal.show{opacity:1;pointer-events:auto}
+.pkg-content{width:min(820px,100%);margin:0 auto}
+.pkg-close{position:fixed;top:.8rem;right:1rem;z-index:3;font-size:2.4rem;line-height:1;color:var(--burgundy);padding:.2rem .7rem}
+.pkg-head{text-align:center;margin-bottom:2rem}
+.pkg-head h2{font-size:clamp(2.2rem,5vw,3.2rem);color:var(--burgundy);line-height:1.15;margin-top:.4rem}
+.pkg-head p{color:var(--muted);font-size:.9rem}
+.pkg-items{display:grid;gap:1.6rem}
+.pkg-item{display:grid;grid-template-columns:minmax(0,230px) 1fr;gap:1.6rem;align-items:start;padding-bottom:1.6rem;border-bottom:1px solid var(--line)}
+.pkg-item img{width:100%;aspect-ratio:8/9;object-fit:cover;border-radius:14px;display:block;box-shadow:0 20px 30px rgba(0,0,0,.12);background:var(--ivory-deep)}
+.pkg-item h3{font-size:2rem;color:var(--burgundy);line-height:1.1;margin-bottom:.6rem}
+.pkg-item p{color:var(--muted);font-size:.9rem;line-height:1.8;white-space:pre-line}
+@media(max-width:640px){.pkg-item{grid-template-columns:1fr;text-align:center}.pkg-item img{max-width:320px;margin:0 auto}}
+.pkg-foot{text-align:center;margin-top:2rem;padding:1.8rem;border:1px solid var(--line);background:var(--ivory);border-radius:12px}
+.pkg-foot .price{font-family:var(--serif);font-size:2.2rem;color:var(--burgundy);line-height:1.2}
+.pkg-foot small{display:block;color:var(--muted);margin:.2rem 0 1.2rem}
+/* the pieces of the photo that fly into the cards */
+.fly-tile{position:fixed;z-index:130;margin:0;pointer-events:none;transform-origin:0 0;will-change:transform,opacity;background-repeat:no-repeat}
 
 /* order summary rows */
 .sum-row{display:flex;justify-content:space-between;gap:1rem;padding:.4rem 0}
@@ -206,8 +244,15 @@ footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0
       <span class="eyebrow">The Collection</span>
       <h2>Six Signatures, One Soul</h2>
       <div class="ornament">✦</div>
-      <p>Tap the bottle to explore perfume details.</p>
+      <p>Choose one perfume, or get all six in the Package.</p>
     </div>
+
+    <div class="mode-tabs" role="tablist" aria-label="Shop by">
+      <button type="button" class="mode-tab on" role="tab" aria-selected="true" data-mode="individual">Individual</button>
+      <button type="button" class="mode-tab" role="tab" aria-selected="false" data-mode="package">Package</button>
+    </div>
+
+    <!-- INDIVIDUAL: the carousel, unchanged -->
     <div class="stone-wrapper" id="carouselWrapper">
       <div class="stage-wrap">
         <div class="scenes" id="scenes"></div>
@@ -217,6 +262,23 @@ footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0
       </div>
       <div class="stone-info" id="info"></div>
       <div class="dots" id="dots"></div>
+    </div>
+
+    <!-- PACKAGE: all six in one -->
+    <div class="pkg-wrap" id="packageWrapper" hidden>
+      <button type="button" class="pkg-cover" id="pkgOpen" aria-label="See what is inside the package">
+        <img id="pkgCover" alt="All six Roza perfumes" draggable="false" />
+        <span class="pkg-hint">Tap to see what's inside</span>
+      </button>
+      <div class="stone-info">
+        <span class="pkg-badge">Free Delivery</span>
+        <h3>Complete Package</h3>
+        <div class="price" id="pkgPrice"></div>
+        <p class="notes-preview">All six signatures in one set, 6 ml each. <span id="pkgSave"></span></p>
+        <div class="info-actions">
+          <button type="button" class="btn btn-solid" id="pkgSee">See What's Inside</button>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -230,6 +292,25 @@ footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0
       <div class="price" id="modalPrice"></div>
       <p id="modalDesc"></p>
       <button class="btn btn-solid btn-block" id="modalAddToCart">Add to Cart</button>
+    </div>
+  </div>
+</div>
+
+<!-- Package popup -->
+<div class="pkg-modal" id="pkgModal" aria-hidden="true">
+  <button type="button" class="pkg-close" id="pkgClose" aria-label="Close">&times;</button>
+  <div class="pkg-content">
+    <div class="pkg-head">
+      <span class="eyebrow">The Package</span>
+      <h2>Complete Package</h2>
+      <div class="ornament">✦</div>
+      <p>Six signatures · 6 ml each · Free delivery</p>
+    </div>
+    <div class="pkg-items" id="pkgItems"></div>
+    <div class="pkg-foot">
+      <div class="price" id="pkgFootPrice"></div>
+      <small>Free delivery included</small>
+      <button type="button" class="btn btn-solid btn-block" id="pkgAdd">Add Package to Cart</button>
     </div>
   </div>
 </div>
@@ -261,6 +342,7 @@ footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0
             <span><strong>Outside Dhaka</strong><small id="feeOutside">৳120</small></span>
           </label>
         </div>
+        <p class="delivery-free" id="deliveryFree" hidden>Free delivery is applied because your order includes the Package.</p>
 
         <h3 style="margin-top:1.5rem;">Payment Method</h3>
         <div class="payment-options">
@@ -381,6 +463,11 @@ const PRODUCTS = [
   }
 ];
 
+/* The package: all six perfumes in one. Free delivery. Change the price here. */
+const PACKAGE = { id:'package', name:'Complete Package', price:990, unit:'6 perfumes · Free delivery' };
+/* Order of the six pieces in all-perfume.jpeg (top row left to right, then bottom row) */
+const PKG_ORDER = ['aurora', 'elixir', 'cloud', 'white-sand', 'moonlight', 'sea-sage'];
+
 /* ================= PICTURE LOCATOR =================
    Before anything is drawn, the page tests the places below with one small picture
    and then loads EVERY picture from the first place that works.
@@ -436,12 +523,15 @@ document.addEventListener('error', e => {
 }, true);
 
 const $ = s => document.querySelector(s);
-const byId = id => PRODUCTS.find(p => p.id === id);
+/* finds a perfume, or the package */
+const byId = id => id === PACKAGE.id ? PACKAGE : PRODUCTS.find(p => p.id === id);
+const esc = s => String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 const N = PRODUCTS.length;
 const DUR = 750;
 const EASE = 'cubic-bezier(0.25, 1, 0.5, 1)';
 
 let current = 0;
+let mode = 'individual';        // 'individual' or 'package'
 let busy = false;
 let modalBusy = false;
 let lastMove = Date.now();
@@ -547,7 +637,7 @@ async function renderCarousel() {
   $('#scenes').appendChild(el);
   fitName(el);
   $('#info').innerHTML = infoHTML(PRODUCTS[current]);
-  $('#collection').style.background = soften(PRODUCTS[current].tint);
+  if (mode === 'individual') $('#collection').style.background = soften(PRODUCTS[current].tint);
   renderDots();
   prepare((current + 1) % N);
 }
@@ -617,7 +707,7 @@ async function go(dir) {
   wipe.style.background = soften(PRODUCTS[next].tint);
   wipe.animate([{ clipPath: hideFrom }, { clipPath: 'inset(0 0 0 0)' }],
     { duration: D, easing: SMOOTH, fill: 'forwards' }).onfinish = () => {
-    $('#collection').style.background = soften(PRODUCTS[next].tint);
+    if (mode === 'individual') $('#collection').style.background = soften(PRODUCTS[next].tint);
     wipe.getAnimations().forEach(a => a.cancel());
   };
 
@@ -659,7 +749,8 @@ stageEl.addEventListener('touchend', e => {
 });
 stageEl.addEventListener('click', () => { if (moved) { moved = false; return; } openProductModal(PRODUCTS[current].id); });
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeProductModal(); closeDrawer(); }
+  if (e.key === 'Escape') { closeProductModal(); closePackage(); closeDrawer(); }
+  if (mode !== 'individual') return;
   if ($('#productModal').classList.contains('show')) return;
   if (e.target.matches('input,textarea')) return;
   if (e.key === 'ArrowLeft') go(-1);
@@ -679,7 +770,7 @@ if ('IntersectionObserver' in window) {
   new IntersectionObserver(en => { inView = en[0].isIntersecting; if (inView) lastMove = Date.now(); }, { threshold: 0.2 }).observe($('#collection'));
 }
 setInterval(() => {
-  if (busy || modalBusy || paused || !inView || document.hidden) return;
+  if (mode !== 'individual' || busy || modalBusy || paused || !inView || document.hidden) return;
   if ($('#productModal').classList.contains('show') || $('#drawer').classList.contains('show')) return;
   if (Date.now() - lastMove >= AUTO_MS) go(1);
 }, 200);
@@ -848,6 +939,137 @@ async function closeProductModal() {
 $('#modalClose').addEventListener('click', closeProductModal);
 $('#modalAddToCart').addEventListener('click', () => { if (modalId) { addToCart(modalId); closeProductModal(); } });
 
+/* ---------- Individual / Package tabs ---------- */
+const CAN_ANIMATE = typeof Element.prototype.animate === 'function';
+
+function setMode(m) {
+  if (m === mode) return;
+  mode = m;
+  document.querySelectorAll('.mode-tab').forEach(b => {
+    const on = b.dataset.mode === m;
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  const ind = $('#carouselWrapper'), pkg = $('#packageWrapper');
+  ind.hidden = m !== 'individual';
+  pkg.hidden = m !== 'package';
+  if (m === 'individual') {
+    $('#collection').style.background = soften(PRODUCTS[current].tint);
+    fitNames();                       // sizes were 0 while the carousel was hidden
+    lastMove = Date.now();
+  } else {
+    $('#collection').style.background = '';   // back to the plain colour from the CSS
+  }
+  if (CAN_ANIMATE && !REDUCED) {
+    (m === 'individual' ? ind : pkg).animate(
+      [{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'translateY(0)' }],
+      { duration: 400, easing: EASE });
+  }
+}
+document.querySelectorAll('.mode-tab').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+
+/* ---------- Package: the photo breaks into six pieces that fly into the six perfume cards ---------- */
+const PKG_FLY_MS = 850;
+let pkgAnims = [], pkgTiles = [], pkgToken = 0;
+
+/* text parts (no pictures needed): price, saving */
+function fillPackageText() {
+  const sum = PRODUCTS.reduce((s, p) => s + p.price, 0);
+  const save = sum - PACKAGE.price;
+  $('#pkgPrice').textContent = CURRENCY + PACKAGE.price;
+  $('#pkgFootPrice').textContent = CURRENCY + PACKAGE.price;
+  $('#pkgSave').textContent = save > 0 ? 'You save ' + CURRENCY + save + ' compared to buying each one.' : '';
+}
+/* picture parts: run once the picture folder has been found */
+function initPackageImages() {
+  $('#pkgCover').src = u('all-perfume.jpeg');
+  $('#pkgItems').innerHTML = PKG_ORDER.map(id => {
+    const p = byId(id);
+    return `<article class="pkg-item">
+      <img src="${u(p.scene)}" alt="${p.name} Fragrance" draggable="false" />
+      <div class="pkg-text"><h3>${p.name}</h3><p>${esc(p.desc)}</p></div>
+    </article>`;
+  }).join('');
+}
+
+function pkgCleanup() {
+  pkgAnims.forEach(a => { try { a.cancel(); } catch (e) {} });
+  pkgTiles.forEach(t => t.remove());
+  pkgAnims = [];
+  pkgTiles = [];
+}
+
+async function openPackage() {
+  const modal = $('#pkgModal'), cover = $('#pkgCover'), btn = $('#pkgOpen');
+  if (modal.classList.contains('show')) return;
+  pkgCleanup();
+  const token = ++pkgToken;
+  const r = cover.getBoundingClientRect();
+  const animate = CAN_ANIMATE && !REDUCED && r.width > 0 && cover.naturalWidth > 0;
+
+  modal.scrollTop = 0;
+  btn.classList.add('opening');
+  document.body.classList.add('locked');
+  modal.classList.add('show');                         // white page fades in
+  modal.setAttribute('aria-hidden', 'false');
+  if (!animate) return;
+
+  const src = cover.currentSrc || cover.src;
+  const tw = r.width / 3, th = r.height / 2;           // the photo is 3 pieces wide and 2 pieces tall
+  const add = (el, kf, o) => { const a = el.animate(kf, Object.assign({ fill: 'both' }, o)); pkgAnims.push(a); return a; };
+
+  [...modal.querySelectorAll('.pkg-item')].forEach((card, i) => {
+    const col = i % 3, row = Math.floor(i / 3);
+    const left = r.left + col * tw, top = r.top + row * th;
+    const img = card.querySelector('img'), txt = card.querySelector('.pkg-text');
+    const t = img.getBoundingClientRect();             // where this piece has to land
+    const s = t.width / tw;
+    const delay = i * 90;
+
+    const tile = document.createElement('div');
+    tile.className = 'fly-tile';
+    tile.style.cssText = 'left:' + left + 'px;top:' + top + 'px;width:' + tw + 'px;height:' + th + 'px;' +
+      'background-image:url("' + src + '");background-size:300% 200%;background-position:' + (col * 50) + '% ' + (row * 100) + '%;';
+    document.body.appendChild(tile);
+    pkgTiles.push(tile);
+
+    // the piece flies from its place in the big photo to its card
+    add(tile, [
+      { transform: 'translate(0px, 0px) scale(1)', borderRadius: '0px' },
+      { transform: 'translate(' + (t.left - left) + 'px, ' + (t.top - top) + 'px) scale(' + s + ')', borderRadius: (14 / s) + 'px' }
+    ], { duration: PKG_FLY_MS, delay, easing: FLY_EASE });
+    // near the end it melts into the real photo of the perfume
+    add(tile, [{ opacity: 1 }, { opacity: 1, offset: 0.7 }, { opacity: 0 }], { duration: PKG_FLY_MS, delay, easing: 'linear' });
+    add(img, [{ opacity: 0 }, { opacity: 0, offset: 0.7 }, { opacity: 1 }], { duration: PKG_FLY_MS, delay, easing: 'linear' });
+    // then the name and description fade in
+    add(txt, [{ opacity: 0, transform: 'translateY(18px)' }, { opacity: 1, transform: 'translateY(0)' }],
+      { duration: 600, delay: delay + 400, easing: SLIDE_EASE });
+  });
+  add(modal.querySelector('.pkg-head'), [{ opacity: 0, transform: 'translateY(-12px)' }, { opacity: 1, transform: 'translateY(0)' }],
+    { duration: 600, delay: 150, easing: SLIDE_EASE });
+  add(modal.querySelector('.pkg-foot'), [{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: 900 });
+
+  await Promise.all(pkgAnims.map(a => a.finished.catch(() => {})));
+  if (token === pkgToken) pkgCleanup();                // only if it was not closed or reopened meanwhile
+}
+
+function closePackage() {
+  const modal = $('#pkgModal');
+  if (!modal.classList.contains('show')) return;
+  pkgToken++;
+  pkgCleanup();
+  modal.classList.remove('show');                      // fades away
+  modal.setAttribute('aria-hidden', 'true');
+  $('#pkgOpen').classList.remove('opening');
+  document.body.classList.remove('locked');
+  lastMove = Date.now();
+}
+
+$('#pkgOpen').addEventListener('click', openPackage);
+$('#pkgSee').addEventListener('click', openPackage);
+$('#pkgClose').addEventListener('click', closePackage);
+$('#pkgAdd').addEventListener('click', () => { addToCart(PACKAGE.id); closePackage(); });
+
 /* ---------- Cart ---------- */
 function saveCart() { try { localStorage.setItem('rosa_cart', JSON.stringify(cart)); } catch (e) {} }
 
@@ -876,27 +1098,32 @@ function removeItem(id) { cart = cart.filter(i => i.id !== id); renderCart(); }
 
 /* ---------- Money: items + delivery ---------- */
 const cartTotal = () => cart.reduce((s, i) => s + byId(i.id).price * i.qty, 0);   // items only
+const hasPackage = () => cart.some(i => i.id === PACKAGE.id);
 const deliveryKey = () => {
   const r = document.querySelector('input[name="deliveryArea"]:checked');
   return r && DELIVERY[r.value] ? r.value : 'inside';
 };
-const deliveryFee = () => cart.length ? DELIVERY[deliveryKey()].fee : 0;           // 0 when the bag is empty
+/* 0 when the bag is empty, and 0 when the order includes the Package (free delivery) */
+const deliveryFee = () => !cart.length ? 0 : hasPackage() ? 0 : DELIVERY[deliveryKey()].fee;
 const grandTotal = () => cartTotal() + deliveryFee();
 
 function renderCart() {
   saveCart();
   const key = deliveryKey();
+  const free = cart.length > 0 && hasPackage();
   $('#cartCount').textContent = cart.reduce((s, i) => s + i.qty, 0);
   $('#subtotal').textContent = CURRENCY + cartTotal();
 
   /* order summary */
   $('#summarySubtotal').textContent = CURRENCY + cartTotal();
-  $('#summaryDeliveryLabel').textContent = 'Delivery (' + DELIVERY[key].label + ')';
-  $('#summaryDelivery').textContent = CURRENCY + deliveryFee();
+  $('#summaryDeliveryLabel').textContent = free ? 'Delivery (Free with Package)' : 'Delivery (' + DELIVERY[key].label + ')';
+  $('#summaryDelivery').textContent = free ? 'Free' : CURRENCY + deliveryFee();
   $('#summaryTotal').textContent = CURRENCY + grandTotal();
   $('#bkashAmount').textContent = CURRENCY + grandTotal();
   $('#feeInside').textContent = CURRENCY + DELIVERY.inside.fee;
   $('#feeOutside').textContent = CURRENCY + DELIVERY.outside.fee;
+  $('#deliveryFree').hidden = !free;
+  document.querySelector('.delivery-options').classList.toggle('is-free', free);
   document.querySelectorAll('.delivery-option').forEach(l => {
     const r = l.querySelector('input');
     l.classList.toggle('on', r.checked);
@@ -905,7 +1132,7 @@ function renderCart() {
   $('#drawerItems').innerHTML = cart.length ? cart.map(i => {
     const p = byId(i.id);
     return `<div class="line-item">
-      <div><h4>${p.name}</h4><small>${CURRENCY}${p.price} each · 6 ml</small></div>
+      <div><h4>${p.name}</h4><small>${CURRENCY}${p.price} each · ${p.unit || '6 ml'}</small></div>
       <div class="qty">
         <button onclick="changeQty('${p.id}',-1)" aria-label="Fewer">−</button>
         <span>${i.qty}</span>
@@ -984,9 +1211,13 @@ $('#checkoutForm').addEventListener('submit', e => {
 
   const area = DELIVERY[deliveryKey()];
   let msg = 'New order — Rosa Fragrance\n\n';
-  cart.forEach(i => { const p = byId(i.id); msg += `${p.name} × ${i.qty} = ${CURRENCY}${p.price * i.qty}\n`; });
+  cart.forEach(i => {
+    const p = byId(i.id);
+    msg += `${p.name} × ${i.qty} = ${CURRENCY}${p.price * i.qty}\n`;
+    if (p.id === PACKAGE.id) msg += `   (${PKG_ORDER.map(id => byId(id).name).join(', ')})\n`;
+  });
   msg += `\nSubtotal: ${CURRENCY}${cartTotal()}`;
-  msg += `\nDelivery (${area.label}): ${CURRENCY}${deliveryFee()}`;
+  msg += `\nDelivery (${area.label}): ${hasPackage() ? 'Free (package)' : CURRENCY + deliveryFee()}`;
   msg += `\nTotal: ${CURRENCY}${grandTotal()}`;
   msg += `\n\nName: ${$('#fName').value.trim()}\nPhone: ${$('#fPhone').value.trim()}\nAddress: ${$('#fAddress').value.trim()}\nDelivery area: ${area.label}\nPayment: ${method}`;
   if (method === 'bKash') msg += `\nbKash number: ${sender}\nTrxID: ${trx}`;
@@ -1014,7 +1245,9 @@ $('#checkoutForm').addEventListener('submit', e => {
 
 /* ---------- Start: find the pictures first, then draw the carousel ---------- */
 renderCart();
+fillPackageText();
 probeBase().then(() => {
+  initPackageImages();
   renderCarousel();
   setTimeout(preloadScenes, 1200);
 });
