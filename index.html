@@ -417,7 +417,7 @@ footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0
       <span>Subtotal</span><strong id="subtotal" style="font-family:var(--serif);font-size:1.5rem;color:var(--burgundy)">৳0</strong>
     </div>
     <small class="drawer-note">Delivery charge is added at checkout</small>
-    <a href="#checkout" class="btn btn-solid btn-block" onclick="closeDrawer()">Checkout</a>
+    <a href="#checkout" class="btn btn-solid btn-block" id="drawerCheckout">Checkout</a>
   </div>
 </aside>
 <div class="toast" id="toast"></div>
@@ -552,6 +552,30 @@ try {
     .filter(i => i && byId(i.id) && i.qty > 0)
     .map(i => ({ id: i.id, qty: Math.floor(i.qty) }));
 } catch (e) { cart = []; }
+
+/* ---------- Back button: popups close first instead of leaving the site ---------- */
+let layerStack = [];          // popups that are open right now: 'product', 'package', 'drawer'
+let ignorePop = 0, afterPop = null;
+function pushLayer(name) {
+  if (layerStack.includes(name)) return;
+  try { history.pushState({ rosaLayer: name }, '', location.href); layerStack.push(name); } catch (e) {}
+}
+function popLayerUI(name, after) {          // popup closed with its own button: remove the extra history step
+  const i = layerStack.lastIndexOf(name);
+  if (i === -1) { if (after) after(); return; }
+  layerStack.splice(i, 1);
+  ignorePop++; afterPop = after || null;
+  try { history.back(); } catch (e) { ignorePop = 0; if (after) after(); return; }
+  setTimeout(() => { if (ignorePop > 0) { ignorePop = 0; const f = afterPop; afterPop = null; if (f) f(); } }, 1200);
+}
+window.addEventListener('popstate', () => {
+  if (ignorePop > 0) { ignorePop--; if (!ignorePop && afterPop) { const f = afterPop; afterPop = null; f(); } return; }
+  const name = layerStack.pop();
+  if (name === 'product') closeProductModal(true);
+  else if (name === 'package') closePackage(true);
+  else if (name === 'drawer') closeDrawer(true);
+});
+if (history.state && history.state.rosaLayer) { try { history.replaceState(null, '', location.href); } catch (e) {} }
 
 /* ---------- Carousel ---------- */
 function infoHTML(p) {
@@ -859,6 +883,7 @@ async function openProductModal(id) {
   const p = byId(id);
   if (!p || modalBusy) return;
   modalId = id;
+  pushLayer('product');
   const modal = $('#productModal'), photo = $('#modalImg');
   photo._c = null;
   photo.style.visibility = '';
@@ -907,9 +932,11 @@ async function openProductModal(id) {
   modalBusy = false;
 }
 
-async function closeProductModal() {
+async function closeProductModal(fromBack) {
   const modal = $('#productModal');
+  if (fromBack) { for (let i = 0; modalBusy && i < 40; i++) await new Promise(r => setTimeout(r, 50)); }
   if (!modal.classList.contains('show') || modalBusy) return;
+  if (!fromBack) popLayerUI('product');
   const bottle = flySrcEl, photo = $('#modalImg');
   const plain = () => {
     modal.classList.remove('show');
@@ -951,7 +978,7 @@ async function closeProductModal() {
   lastMove = Date.now();
   modalBusy = false;
 }
-$('#modalClose').addEventListener('click', closeProductModal);
+$('#modalClose').addEventListener('click', () => closeProductModal());
 $('#modalAddToCart').addEventListener('click', () => { if (modalId) { addToCart(modalId); closeProductModal(); } });
 
 /* ---------- Individual / Package tabs ---------- */
@@ -1076,6 +1103,7 @@ function pkgCleanup() {
 async function openPackage() {
   const modal = $('#pkgModal'), cover = $('#pkgCover'), btn = $('#pkgOpen');
   if (modal.classList.contains('show') || swiping) return;
+  pushLayer('package');
   pkgCleanup();
   const token = ++pkgToken;
   const r = cover.getBoundingClientRect();
@@ -1127,9 +1155,10 @@ async function openPackage() {
   if (token === pkgToken) pkgCleanup();                // only if it was not closed or reopened meanwhile
 }
 
-function closePackage() {
+function closePackage(fromBack) {
   const modal = $('#pkgModal');
   if (!modal.classList.contains('show')) return;
+  if (!fromBack) popLayerUI('package');
   pkgToken++;
   pkgCleanup();
   modal.classList.remove('show');                      // fades away
@@ -1141,7 +1170,7 @@ function closePackage() {
 
 $('#pkgOpen').addEventListener('click', openPackage);
 $('#pkgSee').addEventListener('click', openPackage);
-$('#pkgClose').addEventListener('click', closePackage);
+$('#pkgClose').addEventListener('click', () => closePackage());
 $('#pkgAdd').addEventListener('click', () => { addToCart(PACKAGE.id); closePackage(); });
 
 /* ---------- Cart ---------- */
@@ -1224,11 +1253,20 @@ function renderCart() {
 /* update totals as soon as the customer changes the delivery area */
 document.querySelectorAll('input[name="deliveryArea"]').forEach(r => r.addEventListener('change', renderCart));
 
-function openDrawer() { $('#drawer').classList.add('show'); $('#overlay').classList.add('show'); }
-function closeDrawer() { $('#drawer').classList.remove('show'); $('#overlay').classList.remove('show'); }
+function openDrawer() { pushLayer('drawer'); $('#drawer').classList.add('show'); $('#overlay').classList.add('show'); }
+function closeDrawer(fromBack, after) {
+  const open = $('#drawer').classList.contains('show');
+  $('#drawer').classList.remove('show'); $('#overlay').classList.remove('show');
+  if (open && !fromBack) popLayerUI('drawer', after);
+  else if (after) after();
+}
 $('#cartBtn').addEventListener('click', openDrawer);
-$('#closeDrawer').addEventListener('click', closeDrawer);
-$('#overlay').addEventListener('click', closeDrawer);
+$('#closeDrawer').addEventListener('click', () => closeDrawer());
+$('#overlay').addEventListener('click', () => closeDrawer());
+$('#drawerCheckout').addEventListener('click', e => {
+  e.preventDefault();
+  closeDrawer(false, () => $('#checkout').scrollIntoView({ behavior: 'smooth' }));
+});
 
 /* ---------- Checkout (WhatsApp or Messenger) ---------- */
 function togglePaymentMethod() {
