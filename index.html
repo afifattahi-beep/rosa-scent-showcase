@@ -48,6 +48,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 /* Collection: full-width colour band, the giant name sits BEHIND the bottle */
 .catalog{position:relative;background:#F2E8D9;padding:6rem 0;overflow:hidden}
 .catalog>.container{position:relative;z-index:1}
+.catalog.switching{transition:background-color .7s var(--ease)}
 .wipe{position:absolute;inset:0;z-index:0;clip-path:inset(0 0 0 100%);pointer-events:none}
 .stone-wrapper{max-width:520px;margin:0 auto;padding:.5rem 0 2rem}
 .stage-wrap{position:relative}
@@ -158,12 +159,18 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .copy-btn{display:inline-flex;align-items:center;gap:.4rem;padding:.45rem .8rem;border:1px solid var(--burgundy);color:var(--burgundy);font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;font-weight:500;border-radius:4px;transition:all .3s var(--ease)}
 .copy-btn:hover,.copy-btn.done{background:var(--burgundy);color:var(--ivory)}
 
-/* Individual / Package tabs */
+/* Individual / Package tabs (the burgundy pill slides from one tab to the other) */
 .mode-tabs{display:flex;justify-content:center;gap:.4rem;margin:0 auto 1.8rem;padding:.35rem;background:#fff;border:1px solid var(--line);border-radius:999px;width:max-content;max-width:100%;box-shadow:0 10px 25px -12px rgba(74,19,32,.25);position:relative;z-index:2}
-.mode-tab{padding:.8rem 1.9rem;font-size:.72rem;letter-spacing:.25em;text-transform:uppercase;font-weight:500;color:var(--burgundy);border-radius:999px;transition:all .4s var(--ease)}
-.mode-tab:hover{background:rgba(107,30,46,.08)}
-.mode-tab.on{background:var(--burgundy);color:var(--ivory)}
+.mode-pill{position:absolute;top:.35rem;bottom:.35rem;left:0;width:0;border-radius:999px;background:var(--burgundy);transition:transform .55s var(--ease),width .55s var(--ease);z-index:0;pointer-events:none}
+.mode-tab{position:relative;z-index:1;padding:.8rem 1.9rem;font-size:.72rem;letter-spacing:.25em;text-transform:uppercase;font-weight:500;color:var(--burgundy);border-radius:999px;transition:color .4s var(--ease),background-color .4s var(--ease)}
+.mode-tab:not(.on):hover{background:rgba(107,30,46,.08)}
+.mode-tab.on{color:var(--ivory)}
+.mode-tabs:not(.pill-ready) .mode-tab.on{background:var(--burgundy)}
 @media(max-width:420px){.mode-tab{padding:.75rem 1.3rem;font-size:.66rem;letter-spacing:.18em}}
+
+/* the swipe between Individual and Package */
+.mode-stage{position:relative}
+.swipe-out{position:absolute;top:0;left:0;right:0;pointer-events:none}
 
 /* Package tab */
 .pkg-wrap{max-width:520px;margin:0 auto;padding:.5rem 0 2rem}
@@ -247,36 +254,39 @@ footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0
       <p>Choose one perfume, or get all six in the Package.</p>
     </div>
 
-    <div class="mode-tabs" role="tablist" aria-label="Shop by">
+    <div class="mode-tabs" id="modeTabs" role="tablist" aria-label="Shop by">
+      <span class="mode-pill" id="modePill"></span>
       <button type="button" class="mode-tab on" role="tab" aria-selected="true" data-mode="individual">Individual</button>
       <button type="button" class="mode-tab" role="tab" aria-selected="false" data-mode="package">Package</button>
     </div>
 
-    <!-- INDIVIDUAL: the carousel, unchanged -->
-    <div class="stone-wrapper" id="carouselWrapper">
-      <div class="stage-wrap">
-        <div class="scenes" id="scenes"></div>
-        <button class="carousel-btn prev-btn" id="prevBtn" aria-label="Previous perfume">&#10094;</button>
-        <div class="stone-stage" id="stage"></div>
-        <button class="carousel-btn next-btn" id="nextBtn" aria-label="Next perfume">&#10095;</button>
+    <div class="mode-stage" id="modeStage">
+      <!-- INDIVIDUAL: the carousel, unchanged -->
+      <div class="stone-wrapper" id="carouselWrapper">
+        <div class="stage-wrap">
+          <div class="scenes" id="scenes"></div>
+          <button class="carousel-btn prev-btn" id="prevBtn" aria-label="Previous perfume">&#10094;</button>
+          <div class="stone-stage" id="stage"></div>
+          <button class="carousel-btn next-btn" id="nextBtn" aria-label="Next perfume">&#10095;</button>
+        </div>
+        <div class="stone-info" id="info"></div>
+        <div class="dots" id="dots"></div>
       </div>
-      <div class="stone-info" id="info"></div>
-      <div class="dots" id="dots"></div>
-    </div>
 
-    <!-- PACKAGE: all six in one -->
-    <div class="pkg-wrap" id="packageWrapper" hidden>
-      <button type="button" class="pkg-cover" id="pkgOpen" aria-label="See what is inside the package">
-        <img id="pkgCover" alt="All six Roza perfumes" draggable="false" />
-        <span class="pkg-hint">Tap to see what's inside</span>
-      </button>
-      <div class="stone-info">
-        <span class="pkg-badge">Free Delivery</span>
-        <h3>Complete Package</h3>
-        <div class="price" id="pkgPrice"></div>
-        <p class="notes-preview">All six signatures in one set, 6 ml each. <span id="pkgSave"></span></p>
-        <div class="info-actions">
-          <button type="button" class="btn btn-solid" id="pkgSee">See What's Inside</button>
+      <!-- PACKAGE: all six in one -->
+      <div class="pkg-wrap" id="packageWrapper" hidden>
+        <button type="button" class="pkg-cover" id="pkgOpen" aria-label="See what is inside the package">
+          <img id="pkgCover" alt="All six Roza perfumes" draggable="false" />
+          <span class="pkg-hint">Tap to see what's inside</span>
+        </button>
+        <div class="stone-info">
+          <span class="pkg-badge">Free Delivery</span>
+          <h3>Complete Package</h3>
+          <div class="price" id="pkgPrice"></div>
+          <p class="notes-preview">All six signatures in one set, 6 ml each. <span id="pkgSave"></span></p>
+          <div class="info-actions">
+            <button type="button" class="btn btn-solid" id="pkgSee">See What's Inside</button>
+          </div>
         </div>
       </div>
     </div>
@@ -532,6 +542,7 @@ const EASE = 'cubic-bezier(0.25, 1, 0.5, 1)';
 
 let current = 0;
 let mode = 'individual';        // 'individual' or 'package'
+let swiping = false;            // true while the tabs are swiping
 let busy = false;
 let modalBusy = false;
 let lastMove = Date.now();
@@ -643,7 +654,7 @@ async function renderCarousel() {
 }
 
 async function go(dir) {
-  if (busy) return;
+  if (busy || swiping) return;
   busy = true;
   lastMove = Date.now();
   const next = (current + dir + N) % N;
@@ -747,10 +758,14 @@ stageEl.addEventListener('touchend', e => {
   const dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
   if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) { moved = true; go(dx < 0 ? 1 : -1); }
 });
-stageEl.addEventListener('click', () => { if (moved) { moved = false; return; } openProductModal(PRODUCTS[current].id); });
+stageEl.addEventListener('click', () => {
+  if (moved) { moved = false; return; }
+  if (swiping) return;
+  openProductModal(PRODUCTS[current].id);
+});
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { closeProductModal(); closePackage(); closeDrawer(); }
-  if (mode !== 'individual') return;
+  if (mode !== 'individual' || swiping) return;
   if ($('#productModal').classList.contains('show')) return;
   if (e.target.matches('input,textarea')) return;
   if (e.key === 'ArrowLeft') go(-1);
@@ -770,7 +785,7 @@ if ('IntersectionObserver' in window) {
   new IntersectionObserver(en => { inView = en[0].isIntersecting; if (inView) lastMove = Date.now(); }, { threshold: 0.2 }).observe($('#collection'));
 }
 setInterval(() => {
-  if (mode !== 'individual' || busy || modalBusy || paused || !inView || document.hidden) return;
+  if (mode !== 'individual' || swiping || busy || modalBusy || paused || !inView || document.hidden) return;
   if ($('#productModal').classList.contains('show') || $('#drawer').classList.contains('show')) return;
   if (Date.now() - lastMove >= AUTO_MS) go(1);
 }, 200);
@@ -942,29 +957,88 @@ $('#modalAddToCart').addEventListener('click', () => { if (modalId) { addToCart(
 /* ---------- Individual / Package tabs ---------- */
 const CAN_ANIMATE = typeof Element.prototype.animate === 'function';
 
+/* the burgundy pill sits under the active tab (instant = no sliding, used for the first placement) */
+function placePill(instant) {
+  const tabs = $('#modeTabs'), pill = $('#modePill'), on = tabs.querySelector('.mode-tab.on');
+  if (!on || !on.offsetWidth) return;
+  if (instant) pill.style.transition = 'none';
+  pill.style.width = on.offsetWidth + 'px';
+  pill.style.transform = 'translateX(' + on.offsetLeft + 'px)';
+  tabs.classList.add('pill-ready');
+  if (instant) { void pill.offsetWidth; pill.style.transition = ''; }
+}
+placePill(true);
+window.addEventListener('resize', () => placePill(true));
+window.addEventListener('load', () => placePill(true));
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => placePill(true));
+
 function setMode(m) {
-  if (m === mode) return;
+  if (m === mode || swiping) return;
+  const dir = m === 'package' ? 1 : -1;               // 1 = swipe to the left, -1 = swipe to the right
+  const out = mode === 'individual' ? $('#carouselWrapper') : $('#packageWrapper');
+  const inn = m === 'individual' ? $('#carouselWrapper') : $('#packageWrapper');
+  const stage = $('#modeStage'), cat = $('#collection');
   mode = m;
+
   document.querySelectorAll('.mode-tab').forEach(b => {
     const on = b.dataset.mode === m;
     b.classList.toggle('on', on);
     b.setAttribute('aria-selected', on ? 'true' : 'false');
   });
-  const ind = $('#carouselWrapper'), pkg = $('#packageWrapper');
-  ind.hidden = m !== 'individual';
-  pkg.hidden = m !== 'package';
-  if (m === 'individual') {
-    $('#collection').style.background = soften(PRODUCTS[current].tint);
-    fitNames();                       // sizes were 0 while the carousel was hidden
-    lastMove = Date.now();
-  } else {
-    $('#collection').style.background = '';   // back to the plain colour from the CSS
+  placePill();
+
+  /* the page colour fades to the new one */
+  cat.classList.add('switching');
+  cat.style.background = m === 'individual' ? soften(PRODUCTS[current].tint) : '';
+  clearTimeout(setMode.t);
+  setMode.t = setTimeout(() => cat.classList.remove('switching'), 850);
+
+  lastMove = Date.now();
+
+  /* no animation support, or reduced motion: just swap */
+  if (!CAN_ANIMATE || REDUCED) {
+    out.hidden = true;
+    inn.hidden = false;
+    if (m === 'individual') fitNames();
+    return;
   }
-  if (CAN_ANIMATE && !REDUCED) {
-    (m === 'individual' ? ind : pkg).animate(
-      [{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'translateY(0)' }],
-      { duration: 400, easing: EASE });
+
+  swiping = true;
+  const W = document.documentElement.clientWidth;
+  const h0 = stage.offsetHeight;                      // height before
+  out.classList.add('swipe-out');                     // the old one leaves the flow, the new one takes its place
+  inn.hidden = false;
+  if (m === 'individual') fitNames();                 // measure the carousel before it is moved aside
+  const h1 = stage.offsetHeight;                      // height after
+
+  const opts = { duration: 700, easing: 'cubic-bezier(0.65, 0, 0.35, 1)' };
+  const list = [];
+  list.push(out.animate([
+    { transform: 'translateX(0)', opacity: 1 },
+    { transform: 'translateX(' + (-dir * W) + 'px)', opacity: 1, offset: 0.6 },
+    { transform: 'translateX(' + (-dir * W) + 'px)', opacity: 0 }
+  ], Object.assign({ fill: 'forwards' }, opts)));
+  list.push(inn.animate([
+    { transform: 'translateX(' + (dir * W) + 'px)', opacity: 0 },
+    { transform: 'translateX(' + (dir * W * 0.55) + 'px)', opacity: 1, offset: 0.4 },
+    { transform: 'translateX(0)', opacity: 1 }
+  ], opts));
+  if (Math.abs(h1 - h0) > 1) {                        // the page below glides up or down instead of jumping
+    list.push(stage.animate([{ height: h0 + 'px' }, { height: h1 + 'px' }], opts));
   }
+
+  let finished = false;
+  const done = () => {
+    if (finished) return;
+    finished = true;
+    out.hidden = true;                                // hide first so nothing flashes back
+    list.forEach(a => { try { a.cancel(); } catch (e) {} });
+    out.classList.remove('swipe-out');
+    if (m === 'individual') { fitNames(); lastMove = Date.now(); }
+    swiping = false;
+  };
+  Promise.all(list.map(a => a.finished.catch(() => {}))).then(done);
+  setTimeout(done, opts.duration + 400);              // safety: it can never get stuck
 }
 document.querySelectorAll('.mode-tab').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
 
@@ -1001,7 +1075,7 @@ function pkgCleanup() {
 
 async function openPackage() {
   const modal = $('#pkgModal'), cover = $('#pkgCover'), btn = $('#pkgOpen');
-  if (modal.classList.contains('show')) return;
+  if (modal.classList.contains('show') || swiping) return;
   pkgCleanup();
   const token = ++pkgToken;
   const r = cover.getBoundingClientRect();
