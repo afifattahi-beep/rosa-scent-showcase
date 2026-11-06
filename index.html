@@ -95,15 +95,6 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .prev-btn{left:-65px}.next-btn{right:-65px}
 @media(max-width:700px){.prev-btn{left:-10px}.next-btn{right:-10px}}
 
-/* bigger bottle on wide screens (desktop, tablet, or "Desktop site" mode on a phone) */
-@media(min-width:768px){
-  .stone-wrapper{max-width:760px}
-  .stone-wrapper .stone-info{max-width:520px;margin-left:auto;margin-right:auto}
-  .stone-stage{height:clamp(460px,44vw,680px)}
-  .fruits{width:min(100%,760px)}
-  .scene-bottle::after{max-width:320px}
-}
-
 .product-modal{position:fixed;inset:0;background:#fff;z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s var(--ease);overflow-y:auto;padding:2rem 1rem}
 .product-modal.show{opacity:1;pointer-events:auto}
 .modal-content{width:min(900px,92%);display:grid;grid-template-columns:1fr 1.3fr;gap:3.5rem;align-items:start;position:relative;margin:auto}
