@@ -95,6 +95,15 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .prev-btn{left:-65px}.next-btn{right:-65px}
 @media(max-width:700px){.prev-btn{left:-10px}.next-btn{right:-10px}}
 
+/* bigger bottle on wide screens (desktop, tablet, or "Desktop site" mode on a phone) */
+@media(min-width:768px){
+  .stone-wrapper{max-width:760px}
+  .stone-wrapper .stone-info{max-width:520px;margin-left:auto;margin-right:auto}
+  .stone-stage{height:clamp(460px,44vw,680px)}
+  .fruits{width:min(100%,760px)}
+  .scene-bottle::after{max-width:320px}
+}
+
 .product-modal{position:fixed;inset:0;background:#fff;z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s var(--ease);overflow-y:auto;padding:2rem 1rem}
 .product-modal.show{opacity:1;pointer-events:auto}
 .modal-content{width:min(900px,92%);display:grid;grid-template-columns:1fr 1.3fr;gap:3.5rem;align-items:start;position:relative;margin:auto}
@@ -113,7 +122,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .overlay.show{opacity:1;pointer-events:auto}
 .drawer{position:fixed;top:0;right:0;height:100%;width:min(400px,100vw);background:var(--ivory);z-index:70;transform:translateX(100%);transition:transform .5s var(--ease);display:flex;flex-direction:column;box-shadow:-20px 0 50px -20px rgba(0,0,0,.25)}
 .drawer.show{transform:none}
-.drawer-head{padding:1.6rem;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.drawer-head{padding:1.6rem;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.drawer-actions{display:flex;align-items:center;gap:.9rem}
+.clear-btn{padding:.4rem .75rem;border:1px solid var(--line);border-radius:4px;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;font-weight:500;color:var(--burgundy);white-space:nowrap;transition:all .3s var(--ease)}
+.clear-btn:hover{border-color:var(--burgundy)}
+.clear-btn.armed{background:var(--burgundy);border-color:var(--burgundy);color:var(--ivory)}
 .drawer-items{flex:1;overflow:auto;padding:1rem 1.6rem}
 .drawer-foot{padding:1.4rem 1.6rem;border-top:1px solid var(--line);background:#fff}
 .drawer-note{display:block;font-size:.7rem;color:var(--muted);margin:-.6rem 0 1rem;text-align:right}
@@ -197,7 +210,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .pkg-foot{text-align:center;margin-top:2rem;padding:1.8rem;border:1px solid var(--line);background:var(--ivory);border-radius:12px}
 .pkg-foot .price{font-family:var(--serif);font-size:2.2rem;color:var(--burgundy);line-height:1.2}
 .pkg-foot small{display:block;color:var(--muted);margin:.2rem 0 1.2rem}
-/* the pieces of the photo that fly into the cards */
+/* the pieces of the photo that fly into the cards (and back) */
 .fly-tile{position:fixed;z-index:130;margin:0;pointer-events:none;transform-origin:0 0;will-change:transform,opacity;background-repeat:no-repeat}
 
 /* order summary rows */
@@ -409,7 +422,10 @@ footer{background:var(--burgundy-dark);color:rgba(250,246,239,.8);padding:4rem 0
 <aside class="drawer" id="drawer">
   <div class="drawer-head">
     <h3>Shopping Bag</h3>
-    <button id="closeDrawer" style="font-size:1.4rem;" aria-label="Close bag">&times;</button>
+    <div class="drawer-actions">
+      <button type="button" id="clearCart" class="clear-btn" hidden>Clear all</button>
+      <button id="closeDrawer" style="font-size:1.4rem;" aria-label="Close bag">&times;</button>
+    </div>
   </div>
   <div class="drawer-items" id="drawerItems"></div>
   <div class="drawer-foot">
@@ -1069,9 +1085,10 @@ function setMode(m) {
 }
 document.querySelectorAll('.mode-tab').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
 
-/* ---------- Package: the photo breaks into six pieces that fly into the six perfume cards ---------- */
+/* ---------- Package: the photo breaks into six pieces that fly into the six perfume cards (and back) ---------- */
 const PKG_FLY_MS = 850;
-let pkgAnims = [], pkgTiles = [], pkgToken = 0;
+const PKG_CLOSE_MS = 700;
+let pkgAnims = [], pkgTiles = [], pkgToken = 0, pkgBusy = false;
 
 /* text parts (no pictures needed): price, saving */
 function fillPackageText() {
@@ -1100,9 +1117,20 @@ function pkgCleanup() {
   pkgTiles = [];
 }
 
+/* one flying piece of the big photo (col 0-2, row 0-1) */
+function makePkgTile(src, left, top, tw, th, col, row) {
+  const tile = document.createElement('div');
+  tile.className = 'fly-tile';
+  tile.style.cssText = 'left:' + left + 'px;top:' + top + 'px;width:' + tw + 'px;height:' + th + 'px;' +
+    'background-image:url("' + src + '");background-size:300% 200%;background-position:' + (col * 50) + '% ' + (row * 100) + '%;';
+  document.body.appendChild(tile);
+  pkgTiles.push(tile);
+  return tile;
+}
+
 async function openPackage() {
   const modal = $('#pkgModal'), cover = $('#pkgCover'), btn = $('#pkgOpen');
-  if (modal.classList.contains('show') || swiping) return;
+  if (modal.classList.contains('show') || swiping || pkgBusy) return;
   pushLayer('package');
   pkgCleanup();
   const token = ++pkgToken;
@@ -1128,12 +1156,7 @@ async function openPackage() {
     const s = t.width / tw;
     const delay = i * 90;
 
-    const tile = document.createElement('div');
-    tile.className = 'fly-tile';
-    tile.style.cssText = 'left:' + left + 'px;top:' + top + 'px;width:' + tw + 'px;height:' + th + 'px;' +
-      'background-image:url("' + src + '");background-size:300% 200%;background-position:' + (col * 50) + '% ' + (row * 100) + '%;';
-    document.body.appendChild(tile);
-    pkgTiles.push(tile);
+    const tile = makePkgTile(src, left, top, tw, th, col, row);
 
     // the piece flies from its place in the big photo to its card
     add(tile, [
@@ -1155,17 +1178,66 @@ async function openPackage() {
   if (token === pkgToken) pkgCleanup();                // only if it was not closed or reopened meanwhile
 }
 
-function closePackage(fromBack) {
-  const modal = $('#pkgModal');
-  if (!modal.classList.contains('show')) return;
+/* closing = the opening played backwards: the six photos shrink and fly back into the big photo */
+async function closePackage(fromBack) {
+  const modal = $('#pkgModal'), cover = $('#pkgCover'), btn = $('#pkgOpen');
+  if (!modal.classList.contains('show') || pkgBusy) return;
   if (!fromBack) popLayerUI('package');
-  pkgToken++;
+  pkgToken++;                                          // stops the opening animation from cleaning up late
   pkgCleanup();
-  modal.classList.remove('show');                      // fades away
-  modal.setAttribute('aria-hidden', 'true');
-  $('#pkgOpen').classList.remove('opening');
-  document.body.classList.remove('locked');
-  lastMove = Date.now();
+
+  const finish = () => {
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden', 'true');
+    btn.classList.remove('opening');
+    document.body.classList.remove('locked');
+    lastMove = Date.now();
+  };
+
+  const r = cover.getBoundingClientRect();
+  const animate = CAN_ANIMATE && !REDUCED && !document.hidden && r.width > 0 && cover.naturalWidth > 0;
+  if (!animate) { finish(); return; }
+
+  pkgBusy = true;
+  const src = cover.currentSrc || cover.src;
+  const tw = r.width / 3, th = r.height / 2;
+  const add = (el, kf, o) => { const a = el.animate(kf, Object.assign({ fill: 'both' }, o)); pkgAnims.push(a); return a; };
+
+  [...modal.querySelectorAll('.pkg-item')].forEach((card, i) => {
+    const col = i % 3, row = Math.floor(i / 3);
+    const left = r.left + col * tw, top = r.top + row * th;
+    const img = card.querySelector('img'), txt = card.querySelector('.pkg-text');
+    const t = img.getBoundingClientRect();             // where this piece leaves from
+    const s = t.width / tw;
+    const delay = i * 60;
+
+    const tile = makePkgTile(src, left, top, tw, th, col, row);
+
+    // the real photo hands over to the flying piece, the text fades away
+    add(tile, [{ opacity: 0 }, { opacity: 1 }], { duration: 180, delay, easing: 'linear' });
+    add(img, [{ opacity: 1 }, { opacity: 1, offset: 0.9 }, { opacity: 0 }], { duration: 200, delay, easing: 'linear' });
+    add(txt, [{ opacity: 1 }, { opacity: 0 }], { duration: 250, easing: 'ease-in' });
+    // the piece flies back to its place in the big photo
+    add(tile, [
+      { transform: 'translate(' + (t.left - left) + 'px, ' + (t.top - top) + 'px) scale(' + s + ')', borderRadius: (14 / s) + 'px' },
+      { transform: 'translate(0px, 0px) scale(1)', borderRadius: '0px' }
+    ], { duration: PKG_CLOSE_MS, delay, easing: FLY_EASE });
+  });
+  add(modal.querySelector('.pkg-head'), [{ opacity: 1 }, { opacity: 0 }], { duration: 250, easing: 'ease-in' });
+  add(modal.querySelector('.pkg-foot'), [{ opacity: 1 }, { opacity: 0 }], { duration: 250, easing: 'ease-in' });
+  add($('#pkgClose'), [{ opacity: 1 }, { opacity: 0 }], { duration: 200 });
+
+  // the white page fades away to show the collection again
+  setTimeout(() => modal.classList.remove('show'), 250);
+
+  await Promise.race([
+    Promise.all(pkgAnims.map(a => a.finished.catch(() => {}))),
+    new Promise(res => setTimeout(res, PKG_CLOSE_MS + 6 * 60 + 600))     // safety: it can never get stuck
+  ]);
+  pkgCleanup();
+  finish();
+  modal.scrollTop = 0;
+  pkgBusy = false;
 }
 
 $('#pkgOpen').addEventListener('click', openPackage);
@@ -1217,6 +1289,10 @@ function renderCart() {
   $('#cartCount').textContent = cart.reduce((s, i) => s + i.qty, 0);
   $('#subtotal').textContent = CURRENCY + cartTotal();
 
+  /* "Clear all" only shows when there is something to clear */
+  $('#clearCart').hidden = cart.length === 0;
+  if (!cart.length) disarmClear();
+
   /* order summary */
   $('#summarySubtotal').textContent = CURRENCY + cartTotal();
   $('#summaryDeliveryLabel').textContent = free ? 'Delivery (Free with Package)' : 'Delivery (' + DELIVERY[key].label + ')';
@@ -1250,6 +1326,30 @@ function renderCart() {
   }).join('') : '<p class="empty">No items yet.</p>';
 }
 
+/* "Clear all": the first tap asks "Tap again to clear", the second tap empties the bag */
+let clearArmed = false, clearTimer = null;
+function disarmClear() {
+  clearArmed = false;
+  clearTimeout(clearTimer);
+  const b = $('#clearCart');
+  b.textContent = 'Clear all';
+  b.classList.remove('armed');
+}
+$('#clearCart').addEventListener('click', () => {
+  const b = $('#clearCart');
+  if (!clearArmed) {
+    clearArmed = true;
+    b.textContent = 'Tap again to clear';
+    b.classList.add('armed');
+    clearTimer = setTimeout(disarmClear, 2500);
+    return;
+  }
+  disarmClear();
+  cart = [];
+  renderCart();
+  toast('Bag cleared');
+});
+
 /* update totals as soon as the customer changes the delivery area */
 document.querySelectorAll('input[name="deliveryArea"]').forEach(r => r.addEventListener('change', renderCart));
 
@@ -1257,6 +1357,7 @@ function openDrawer() { pushLayer('drawer'); $('#drawer').classList.add('show');
 function closeDrawer(fromBack, after) {
   const open = $('#drawer').classList.contains('show');
   $('#drawer').classList.remove('show'); $('#overlay').classList.remove('show');
+  if (open) disarmClear();
   if (open && !fromBack) popLayerUI('drawer', after);
   else if (after) after();
 }
