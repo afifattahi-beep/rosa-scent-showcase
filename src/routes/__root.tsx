@@ -74,10 +74,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Your Brand Name" }, // CHANGE THIS
-      { name: "description", content: "Your one-line description of the website" }, // CHANGE THIS
-      { property: "og:title", content: "Your Brand Name" }, // CHANGE THIS (same as title)
-      { property: "og:description", content: "Your one-line description of the website" }, // CHANGE THIS (same as description)
+      { title: "ROSA Fragrance" },
+      { name: "description", content: "ROSA Fragrance, Maison de Parfum. Oil-based perfumes, the essence of elegance." },
+      { property: "og:title", content: "ROSA Fragrance" },
+      { property: "og:description", content: "ROSA Fragrance, Maison de Parfum. Oil-based perfumes, the essence of elegance." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
